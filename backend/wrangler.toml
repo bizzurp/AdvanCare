@@ -1,0 +1,62 @@
+# AdvanCare API — Cloudflare Workers + Hono (ADV-CORE-001)
+# Secrets are NEVER committed. Local: copy .env.example to .env (in backend/).
+# Deployed: `wrangler secret put <NAME> --env production` for every name in .env.example.
+name = "advancare-api"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "development"
+# In development any http://localhost:<port> is also allowed (see src/middleware/cors.ts).
+ALLOWED_ORIGINS = "http://localhost:5174,http://127.0.0.1:5174"
+R2_BUCKET_NAME = "advancare-uploads-dev"
+# Staff console (admin/). Dev also allows any http://localhost:<port> (src/middleware/staff.ts).
+ADMIN_ORIGINS = "http://localhost:5176"
+ADMIN_APP_URL = "http://localhost:5176"
+
+# Local development reaches Neon directly through DATABASE_URL (backend/.env).
+# Hyperdrive is bound only in deployed environments; see [env.production].
+
+# remote = true: `wrangler dev` reads the real dev bucket, the same one presigned
+# uploads write to. Tests (vitest) keep using a local simulated bucket.
+[[r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "advancare-uploads-dev"
+remote = true
+
+# Care Assistant: 10 messages per minute per caller (protects the Gemini quota).
+[[ratelimits]]
+name = "ASSISTANT_LIMITER"
+namespace_id = "1001"
+simple = { limit = 10, period = 60 }
+
+# Staff sign-in: 10 attempts per minute per IP and per email (on top of the 5-strike lockout).
+[[ratelimits]]
+name = "ADMIN_LOGIN_LIMITER"
+namespace_id = "1002"
+simple = { limit = 10, period = 60 }
+
+[env.production]
+name = "advancare-api"
+vars = { ENVIRONMENT = "production", ALLOWED_ORIGINS = "", R2_BUCKET_NAME = "advancare-uploads", ADMIN_ORIGINS = "", ADMIN_APP_URL = "" }
+
+# Hyperdrive "advancare-neon": Neon direct (unpooled) URL, query caching disabled so
+# clinical and shift data are never served stale.
+[[env.production.hyperdrive]]
+binding = "HYPERDRIVE"
+id = "11c3b46c749a4eb8acbe2b7c7df8d5da"
+
+[[env.production.ratelimits]]
+name = "ASSISTANT_LIMITER"
+namespace_id = "1001"
+simple = { limit = 10, period = 60 }
+
+[[env.production.ratelimits]]
+name = "ADMIN_LOGIN_LIMITER"
+namespace_id = "1002"
+simple = { limit = 10, period = 60 }
+
+[[env.production.r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "advancare-uploads"

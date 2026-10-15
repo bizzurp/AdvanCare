@@ -1,0 +1,5 @@
+name = "advancare-admin"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-10-01"
+# The console proxy must reach the public API Worker, including on the same account.
+compatibility_flags = ["global_fetch_strictly_public"]

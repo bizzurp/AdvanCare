@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://advancare-api.REPLACE_ME.workers.dev/api/:path*"
+      "destination": "https://advancare-api.mcleinonza0531.workers.dev/api/:path*"
     },
     {
       "source": "/(.*)",

@@ -1,5 +1,18 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-16] - P3: Online Prototype Deployed
+
+### Deployed / changed
+- Workers API: `https://advancare-api.mcleinonza0531.workers.dev`; existing production Hyperdrive/R2/rate-limit bindings retained. Seven required secrets uploaded privately. All five production migrations verified by hash; no database migration needed. Preserved the existing staff key after checking compatibility with the enrolled account; local `.env` stays on demo.
+- Actual Pages Direct Upload projects: families `https://advancare-app.pages.dev`, staff `https://advancare-admin.pages.dev`. Added Pages configs and header policies; staff `/api` Function preserves request/response cookies, Origin, methods, bodies and queries, prevents caller-selected upstreams and sets no-store/security headers. Enabled public Worker fetch and limited Function routing to API paths.
+- Vercel fallback points at the real Worker. Deployment runbook, Architecture, ADR-016 and P3 checklist reflect current hosting. Native releases/app stores deferred.
+- Installed Wrangler redirected the initial Pages-create command into a backend Worker deployment; removed that unintended `advancare-admin` Worker and created the real Pages projects via API. Future uploads target the existing Pages resources.
+
+### Verified
+- All three builds pass; three new proxy tests pass (cookie/header/body/query preservation, fixed destination and static fallback).
+- Both apps render in the browser; live direct and proxied health return production/Hyperdrive `ok`; unauthenticated staff API returns JSON 401; staff POST forwarding and production/foreign/preview Origin checks pass. Family/native upload CORS, deep-link fallback, security headers and service worker no-cache pass.
+- No sign-in email sent, production booking created, staff account added or password changed. Real account holders still need to verify authenticated booking and console reload. No app-store or native deployment.
+
 ## [2026-10-16] - P3: Online Prototype Configuration (Owner Deployment Pending)
 
 ### Added / changed

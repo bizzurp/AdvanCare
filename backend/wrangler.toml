@@ -1,6 +1,6 @@
 # AdvanCare API — Cloudflare Workers + Hono (ADV-CORE-001)
 # Secrets are NEVER committed. Local: copy .env.example to .env (in backend/).
-# Deployed: owner sets secrets with `wrangler secret put <NAME> --env production` (DEPLOY.md).
+# Deployed secrets are managed separately with Wrangler (DEPLOY.md).
 name = "advancare-api"
 main = "src/index.ts"
 compatibility_date = "2026-10-01"
@@ -45,8 +45,8 @@ simple = { limit = 10, period = 60 }
 
 [env.production]
 name = "advancare-api"
-# Vercel project URL placeholders; owner confirms the assigned URLs before use (DEPLOY.md).
-vars = { ENVIRONMENT = "production", ALLOWED_ORIGINS = "https://advancare-app.vercel.app,capacitor://localhost,https://localhost", R2_BUCKET_NAME = "advancare-uploads", ADMIN_ORIGINS = "https://advancare-admin.vercel.app", ADMIN_APP_URL = "https://advancare-admin.vercel.app", MAIL_FROM_NAME = "AdvanCare" }
+# Web apps use Cloudflare Pages; the staff console proxies /api to this Worker.
+vars = { ENVIRONMENT = "production", ALLOWED_ORIGINS = "https://advancare-app.pages.dev,capacitor://localhost,https://localhost", R2_BUCKET_NAME = "advancare-uploads", ADMIN_ORIGINS = "https://advancare-admin.pages.dev", ADMIN_APP_URL = "https://advancare-admin.pages.dev", MAIL_FROM_NAME = "AdvanCare" }
 
 # Hyperdrive "advancare-neon": Neon direct (unpooled) URL, query caching disabled so
 # clinical and shift data are never served stale.

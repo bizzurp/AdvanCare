@@ -1,5 +1,40 @@
 # advanCARE: Project Roadmap & Action Items (Operational Brain)
 
+## Working Prototype Roadmap (2026-10-16) — goal: one full care loop, online
+
+Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, decision or paperwork)
+
+### P1 — Close the care loop (staff ↔ family ↔ caregiver)
+- ⬜ Staff: add caregivers (name, email, phone, municipality, barangay), accredit/suspend, badges, availability.
+- ⬜ Staff: request actions — assign caregiver (suggest accredited + available + same municipality + right badge), confirm, cancel (reason), escalate (reason); all audited.
+- ⬜ Caregiver mode in the app: sign in by email → "My shifts" (today/upcoming) → clock in → clock out → care note (tasks, optional measured vitals, notes).
+- ⬜ Family sees care notes and the caregiver's name on the request; email to the family when a caregiver is assigned.
+- ⬜ Payments: staff record cash/GCash received (with reference), mark caregiver payout sent; family sees "Paid".
+- ⬜ Server enforces the 12-hour booking lead time; fix the "Shift in progress" wording for confirmed requests.
+
+### P2 — Every service reaches staff
+- ⬜ `service_requests` table + API for TeleHealth, RHU services, Triage, Prescription (with uploaded photo), Transport.
+- ⬜ App sends these instead of "Saved on device"; status shown back to the family.
+- ⬜ Staff console: Service requests inbox (filter by type/status), detail, set status (in review / scheduled with date-time / completed / cancelled) + note to family.
+- ⬜ Gate `/storage/*` uploads behind sign-in and link files to their request (prescriptions).
+
+### P3 — Online prototype
+- 👤 Choose hosting (Cloudflare Pages recommended) and domain (optional).
+- ⬜ Deploy API (`wrangler deploy --env production`) with secrets: DATABASE_URL, STAFF_ENCRYPTION_KEY (new), SMTP_USER/SMTP_PASSWORD, GEMINI_API_KEY, R2 keys.
+- ⬜ Deploy the families' app (web) and the staff console; set ALLOWED_ORIGINS / ADMIN_ORIGINS / ADMIN_APP_URL / VITE_API_BASE_URL; production R2 CORS.
+- 👤 Create the real Super Admin on production + a second Super Admin.
+- ⬜ Smoke test on a real phone (web) and the iOS/Android builds pointed at the online API.
+
+### P4 — Polish & cleanup
+- ⬜ Remove the PWA's demo coordinator dashboard and "Coordinator" switch.
+- ⬜ Plans (Silver/Gold/Platinum) stored on the server; LGU subsidy report (Table 4).
+- ⬜ Staff "promote to Super Admin" with second-admin approval.
+- ⬜ Offline: encrypted on-device storage (ADV-FE-001).
+
+### Later (not needed for the prototype)
+- ⬜ GCash/Maya online payments · SMS codes and SMS keyword booking · push notifications · n8n automations (matching, summaries, reports) · NEMT trip tracking/maps (PostGIS) · Tagalog/Ilocano/Ybanag translations.
+- 👤 Non-code: LGU MOU, caregiver recruitment & 40-hour training, CVMC coordination letter, Data Privacy Act review of consent wording, care hotline number.
+
 ## Current Sprint: Phase 0 Setup & Infrastructure Validation
 
 ### 1. Product & Frontend

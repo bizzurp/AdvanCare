@@ -193,9 +193,7 @@ export function Onboarding() {
   );
 }
 
-// ---------------- 02 / Sign in (mobile number + SMS OTP) ----------------
-const PH_MOBILE = /^9\d{9}$/;
-
+// ---------------- 02 / Sign in (email + 6-digit code; SMS later) ----------------
 export function normalizeLocal(input: string) {
   const digits = input.replace(/\D/g, '');
   if (digits.startsWith('63')) return digits.slice(2);
@@ -208,18 +206,17 @@ export function formatPhone(e164: string) {
   return `0${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`;
 }
 
-export function PhoneOtp({ mode, onVerified }: { mode: 'sign-in' | 'register'; onVerified: (phone: string, token: { accessToken: string; demo: boolean }) => void }) {
-  const [step, setStep] = useState<'phone' | 'otp'>('phone');
-  const [phone, setPhone] = useState('');
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function EmailCode({ mode, onVerified }: { mode: 'sign-in' | 'register'; onVerified: (email: string, token: { accessToken: string; demo: boolean }) => void }) {
+  const [step, setStep] = useState<'email' | 'otp'>('email');
+  const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [cooldown, setCooldown] = useState(0);
-  const [attempts, setAttempts] = useState(0);
-  const [lockedUntil, setLockedUntil] = useState(0);
   const otpRef = useRef<HTMLInputElement>(null);
-  const local = normalizeLocal(phone);
-  const e164 = `+63${local}`;
+  const address = email.trim().toLowerCase();
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -232,14 +229,14 @@ export function PhoneOtp({ mode, onVerified }: { mode: 'sign-in' | 'register'; o
   }, [step]);
 
   const send = async () => {
-    if (!PH_MOBILE.test(local)) {
-      setError('Enter a Philippine mobile number, like 0917 123 4567.');
+    if (!EMAIL.test(address)) {
+      setError('Enter an email address, like juan.delacruz@gmail.com.');
       return;
     }
     setError('');
     setLoading(true);
     try {
-      await requestOtp(e164);
+      await requestOtp(address);
       setStep('otp');
       setOtp('');
       setCooldown(60);
@@ -251,32 +248,24 @@ export function PhoneOtp({ mode, onVerified }: { mode: 'sign-in' | 'register'; o
   };
 
   const verify = async () => {
-    if (Date.now() < lockedUntil) {
-      setError('Too many attempts. Please wait 15 minutes before trying again.');
-      return;
-    }
     if (!/^\d{6}$/.test(otp)) {
-      setError('Enter the 6-digit code from the SMS.');
+      setError('Enter the 6-digit code from the email.');
       return;
     }
     setError('');
     setLoading(true);
     try {
-      const r = await verifyOtp(e164, otp);
-      onVerified(e164, r);
+      onVerified(address, await verifyOtp(address, otp));
     } catch (e) {
-      const n = attempts + 1;
-      setAttempts(n);
-      if (n >= 3) {
-        setLockedUntil(Date.now() + 15 * 60 * 1000);
-        setError('Too many incorrect codes. For your security, sign-in is paused for 15 minutes.');
-      } else setError(e instanceof ApiError ? `${e.message} ${3 - n} attempt${3 - n === 1 ? '' : 's'} left.` : 'Something went wrong.');
+      // The server limits wrong tries (5 per code) and says when to ask for a new one.
+      setError(e instanceof ApiError ? e.message : 'Something went wrong.');
+      setOtp('');
     } finally {
       setLoading(false);
     }
   };
 
-  if (step === 'phone')
+  if (step === 'email')
     return (
       <form
         className="stack gap-20"
@@ -287,15 +276,16 @@ export function PhoneOtp({ mode, onVerified }: { mode: 'sign-in' | 'register'; o
         noValidate
       >
         <TextField
-          label="Mobile number"
-          lead="+63"
-          inputMode="tel"
-          autoComplete="tel-national"
-          placeholder="917 123 4567"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          label="Email address"
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          autoCapitalize="none"
+          placeholder="juan.delacruz@gmail.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           error={error}
-          hint={mode === 'register' ? 'We’ll text a 6-digit code to confirm this number.' : 'We’ll text you a 6-digit sign-in code.'}
+          hint={mode === 'register' ? 'We’ll email a 6-digit code to confirm this address.' : 'We’ll email you a 6-digit sign-in code.'}
         />
         <Button type="submit" loading={loading}>
           Send code
@@ -313,8 +303,8 @@ export function PhoneOtp({ mode, onVerified }: { mode: 'sign-in' | 'register'; o
       noValidate
     >
       <p className="t-body t-muted">
-        Enter the code sent to <span className="t-medium" style={{ color: 'var(--ink)' }}>{formatPhone(e164)}</span>.{' '}
-        <button type="button" className="link-btn" style={{ padding: 0, minHeight: 0, fontSize: 16 }} onClick={() => setStep('phone')}>
+        Enter the code sent to <span className="t-medium" style={{ color: 'var(--ink)' }}>{address}</span>.{' '}
+        <button type="button" className="link-btn" style={{ padding: 0, minHeight: 0, fontSize: 16 }} onClick={() => setStep('email')}>
           Change
         </button>
       </p>
@@ -328,10 +318,11 @@ export function PhoneOtp({ mode, onVerified }: { mode: 'sign-in' | 'register'; o
         value={otp}
         onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
         error={error}
+        hint="Can’t find it? Check your Spam or Promotions folder. The code expires in 10 minutes."
       />
       {isDemoMode && (
         <Banner icon="shield-check">
-          Demo mode: no SMS is sent. Use code <strong>{DEMO_OTP}</strong>.
+          Demo mode: no email is sent. Use code <strong>{DEMO_OTP}</strong>.
         </Banner>
       )}
       <Button type="submit" loading={loading} disabled={otp.length !== 6}>
@@ -358,10 +349,10 @@ export function SignIn() {
         </h1>
         <p className="t-body t-muted mt-12">Sign in to care for the people you love.</p>
         <div className="mt-32">
-          <PhoneOtp
+          <EmailCode
             mode="sign-in"
-            onVerified={(phone, r) => {
-              signIn({ phone, accessToken: r.accessToken, demo: r.demo, role: 'household' });
+            onVerified={(email, r) => {
+              signIn({ email, accessToken: r.accessToken, demo: r.demo, role: 'household' });
               const from = (location.state as { from?: string } | null)?.from;
               navigate(from ?? '/home', { replace: true });
             }}
@@ -398,7 +389,7 @@ export function Help() {
       <div className="screen-body stack gap-20">
         <h2 className="t-h2">Contact your AdvanCare team for help with account access or registration.</h2>
         <p className="t-body t-muted">
-          Your Barangay Health Worker can also register you or a family member, and help if you no longer use the mobile number on your account.
+          Your Barangay Health Worker can also register you or a family member, and help if you no longer use the email address on your account.
         </p>
         <a className="btn btn-primary" href="tel:+639000000000" aria-describedby="support-dep">
           <Icon name="phone" size={20} />
@@ -407,7 +398,7 @@ export function Help() {
         <div id="support-dep">
           <DependencyNote>The care support hotline number has not been assigned yet; the button uses a placeholder number.</DependencyNote>
         </div>
-        <DependencyNote title="SMS sign-in">{DEPENDENCIES.sms}</DependencyNote>
+        <DependencyNote title="Sign-in codes">{DEPENDENCIES.sms}</DependencyNote>
       </div>
     </Screen>
   );

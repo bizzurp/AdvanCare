@@ -85,8 +85,14 @@ export const users = pgTable(
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  // role::text so this CHECK never depends on enum values added in the same migration.
-  (t) => [check('users_phone_required_for_non_staff', sql`${t.phoneNumber} IS NOT NULL OR ${t.role}::text IN ('ADMIN', 'SUPER_ADMIN')`)],
+  (t) => [
+    // Everyone needs a way to be reached: clients sign in by email for now (SMS later), staff by email.
+    check('users_contact_required', sql`${t.phoneNumber} IS NOT NULL OR ${t.email} IS NOT NULL`),
+    // One app account per email. Staff rows are separate (a staff member may also be a family member).
+    uniqueIndex('users_app_email_uq')
+      .on(sql`lower(${t.email})`)
+      .where(sql`${t.email} IS NOT NULL AND ${t.role} IN ('CLIENT', 'FAMILY_SPONSOR', 'CAREGIVER', 'BHW_PROXY', 'COORDINATOR')`),
+  ],
 );
 
 export const clientProfiles = pgTable(
@@ -112,10 +118,12 @@ export const clientProfiles = pgTable(
     seniorId: varchar('senior_id', { length: 50 }),
     /** Recorded baseline only; NULL until someone records it. */
     clinicalBaseline: jsonb('clinical_baseline'),
+    /** The profile's id on the family's phone, so re-syncing updates instead of duplicating. */
+    deviceRef: varchar('device_ref', { length: 64 }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (t) => [index('client_profiles_user_id_idx').on(t.userId)],
+  (t) => [index('client_profiles_user_id_idx').on(t.userId), uniqueIndex('client_profiles_user_device_ref_uq').on(t.userId, t.deviceRef)],
 );
 
 export const familyProfiles = pgTable(
@@ -433,4 +441,42 @@ export const auditLogs = pgTable(
     index('audit_logs_actor_idx').on(t.actorUserId, t.createdAt),
     index('audit_logs_entity_idx').on(t.entityType, t.entityId),
   ],
+);
+
+// ---------- App sign-in (ADV-AUTH-001) ----------
+//
+// Families sign in with a 6-digit code sent by email (SMS later). Codes and session tokens
+// are stored only as SHA-256 hashes.
+
+export const clientLoginCodes = pgTable(
+  'client_login_codes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** Always stored lowercased. */
+    email: varchar('email', { length: 255 }).notNull(),
+    codeHash: varchar('code_hash', { length: 64 }).notNull(),
+    attempts: integer('attempts').notNull().default(0),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    consumedAt: timestamp('consumed_at', { withTimezone: true }),
+    ip: varchar('ip', { length: 64 }),
+    createdAt: createdAt(),
+  },
+  (t) => [index('client_login_codes_email_idx').on(t.email, t.createdAt)],
+);
+
+export const clientSessions = pgTable(
+  'client_sessions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, restrict),
+    tokenHash: varchar('token_hash', { length: 64 }).notNull().unique(),
+    createdAt: createdAt(),
+    lastSeenAt: timestamp('last_seen_at', { withTimezone: true }).notNull().defaultNow(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
+    userAgent: varchar('user_agent', { length: 255 }),
+  },
+  (t) => [index('client_sessions_user_idx').on(t.userId)],
 );

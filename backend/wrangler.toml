@@ -37,6 +37,12 @@ name = "ADMIN_LOGIN_LIMITER"
 namespace_id = "1002"
 simple = { limit = 10, period = 60 }
 
+# App sign-in codes: 10 requests/attempts per minute per IP and per email.
+[[ratelimits]]
+name = "CLIENT_AUTH_LIMITER"
+namespace_id = "1003"
+simple = { limit = 10, period = 60 }
+
 [env.production]
 name = "advancare-api"
 vars = { ENVIRONMENT = "production", ALLOWED_ORIGINS = "", R2_BUCKET_NAME = "advancare-uploads", ADMIN_ORIGINS = "", ADMIN_APP_URL = "" }
@@ -55,6 +61,11 @@ simple = { limit = 10, period = 60 }
 [[env.production.ratelimits]]
 name = "ADMIN_LOGIN_LIMITER"
 namespace_id = "1002"
+simple = { limit = 10, period = 60 }
+
+[[env.production.ratelimits]]
+name = "CLIENT_AUTH_LIMITER"
+namespace_id = "1003"
 simple = { limit = 10, period = 60 }
 
 [[env.production.r2_buckets]]

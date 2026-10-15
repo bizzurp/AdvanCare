@@ -144,7 +144,7 @@ function progress(status: RequestStatus): number {
 export function RequestDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { requests, updateRequest, online, session } = useApp();
+  const { requests, updateRequest, online, session, profile } = useApp();
   const r = requests.find((x) => x.id === id);
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [rescheduling, setRescheduling] = useState(false);
@@ -160,8 +160,8 @@ export function RequestDetail() {
   const retry = async (req: ServiceRequest) => {
     setRetrying(true);
     try {
-      const res = await submitServiceRequest(req, session?.accessToken);
-      updateRequest(req.id, { status: res.status, dependencyNote: res.dependencyNote });
+      const res = await submitServiceRequest(req, session?.accessToken, profile);
+      updateRequest(req.id, { status: res.status, dependencyNote: res.dependencyNote, serverId: res.serverId });
     } finally {
       setRetrying(false);
     }
@@ -176,7 +176,9 @@ export function RequestDetail() {
           <h2 className="t-h2">{r.summary}</h2>
           <p className="t-caption t-muted">
             {r.clientName} · requested {formatWhen(r.createdAt)}
+            {r.serverRef ? ` · ${r.serverRef}` : ''}
           </p>
+          {r.caregiverFirstName ? <p className="t-body">Caregiver: {r.caregiverFirstName}</p> : null}
         </div>
 
         {r.status === 'cancelled' ? (

@@ -2,7 +2,7 @@
 // everything else resolves to a local "saved-demo" result with the matching dependency note,
 // so the UI never claims a request reached a provider when it did not.
 import { DEPENDENCIES } from '../data/catalog';
-import type { RequestStatus, ServiceKind, ServiceRequest } from '../data/types';
+import type { ClientProfile, RequestStatus, ServiceKind, ServiceRequest } from '../data/types';
 
 export const API_BASE: string = (import.meta.env.VITE_API_BASE_URL ?? '').trim().replace(/\/$/, '');
 export const isDemoMode = API_BASE === '';
@@ -48,29 +48,64 @@ async function post<T>(path: string, body: unknown, token?: string, idempotencyK
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-// ---------- Auth: ADV-AUTH-001 ----------
-export async function requestOtp(phoneNumber: string): Promise<void> {
+// ---------- Auth: ADV-AUTH-001 (6-digit code by email; SMS can replace the delivery later) ----------
+export async function requestOtp(email: string): Promise<void> {
   if (isDemoMode) {
     await wait(500);
     return;
   }
-  await post('/api/v1/auth/request-otp', { phoneNumber });
+  await post('/api/v1/auth/request-otp', { email });
 }
 
 export interface AuthResult {
   accessToken: string;
-  refreshToken: string;
   demo: boolean;
 }
 
-export async function verifyOtp(phoneNumber: string, otp: string): Promise<AuthResult> {
+export async function verifyOtp(email: string, otp: string): Promise<AuthResult> {
   if (isDemoMode) {
     await wait(500);
-    if (otp !== DEMO_OTP) throw new ApiError('That code is incorrect. Check the SMS and try again.', 401);
-    return { accessToken: 'demo', refreshToken: 'demo', demo: true };
+    if (otp !== DEMO_OTP) throw new ApiError('That code is incorrect. Check the email and try again.', 401);
+    return { accessToken: 'demo', demo: true };
   }
-  const r = await post<{ accessToken: string; refreshToken: string }>('/api/v1/auth/verify-otp', { phoneNumber, otp });
-  return { ...r, demo: false };
+  const r = await post<{ accessToken: string }>('/api/v1/auth/verify-otp', { email, otp });
+  return { accessToken: r.accessToken, demo: false };
+}
+
+export async function signOutRemote(token?: string): Promise<void> {
+  if (isDemoMode || !token) return;
+  await post('/api/v1/auth/sign-out', {}, token).catch(() => undefined);
+}
+
+// ---------- Client profile copy (the server needs it before a booking) ----------
+export const DEMO_PROFILE_ID = 'demo-client-1';
+
+/** Copies the profile kept on this phone to the server (create or update, keyed by its id here). */
+export async function syncClient(profile: ClientProfile, token?: string): Promise<string> {
+  if (profile.id === DEMO_PROFILE_ID) throw new ApiError('Finish registering the client first (More → Create an account), then try again.', 409);
+  const r = await post<{ clientId: string }>(
+    '/api/v1/clients/sync',
+    {
+      deviceRef: profile.id,
+      fullName: profile.fullName,
+      dateOfBirth: profile.dateOfBirth || '',
+      gender: profile.gender || undefined,
+      municipality: profile.municipality,
+      barangay: profile.barangay,
+      sitio: profile.sitio || undefined,
+      landmarkNotes: profile.landmarkNotes || undefined,
+      philhealthId: profile.philhealthId || undefined,
+      // Only what the family actually entered (no placeholder values).
+      clinical: {
+        conditions: profile.conditions,
+        mobility: profile.mobility || undefined,
+        allergies: profile.allergies && profile.allergies !== 'None known' ? profile.allergies : undefined,
+      },
+      family: profile.family.map((f) => ({ name: f.name, relationship: f.relationship, phone: f.phone, isPrimary: f.isPrimary, isRemoteSponsor: f.isRemoteSponsor, location: f.location || undefined })),
+    },
+    token,
+  );
+  return r.clientId;
 }
 
 // ---------- Service requests ----------
@@ -113,17 +148,58 @@ const KIND_DEPENDENCY: Record<ServiceKind, string> = {
 export interface SubmitResult {
   status: RequestStatus;
   dependencyNote?: string;
+  /** The server's id for the booking, used to follow its status. */
+  serverId?: string;
 }
 
-export async function submitServiceRequest(req: ServiceRequest, token?: string): Promise<SubmitResult> {
+export async function submitServiceRequest(req: ServiceRequest, token?: string, profile?: ClientProfile): Promise<SubmitResult> {
   if (typeof navigator !== 'undefined' && !navigator.onLine) return { status: 'queued' };
-  await wait(600);
+  await wait(300);
   if (isDemoMode) return { status: 'saved-demo', dependencyNote: `${DEPENDENCIES.api} ${KIND_DEPENDENCY[req.kind]}` };
   const contract = CONTRACTS[req.kind];
   if (!contract) return { status: 'saved-demo', dependencyNote: KIND_DEPENDENCY[req.kind] };
+  if (!token) throw new ApiError('Please sign in again to send this request.', 401);
+  // Keep the server's copy of the client up to date (address, family) before booking.
+  if (profile) await syncClient(profile, token);
   const { path, body } = contract(req.payload);
-  await post(path, body, token, req.idempotencyKey);
-  return { status: 'submitted' };
+  const r = await post<{ id: string }>(path, body, token, req.idempotencyKey);
+  return { status: 'submitted', serverId: r.id };
+}
+
+// ---------- Live status of bookings (GET /api/v1/shifts/mine) ----------
+export type ServerShiftStatus = 'REQUESTED' | 'MATCHING' | 'CONFIRMED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'ESCALATED';
+
+export interface ServerShift {
+  id: string;
+  ref: string;
+  status: ServerShiftStatus;
+  scheduledDate: string;
+  scheduledStartTime: string;
+  caregiverFirstName: string | null;
+  updatedAt: string;
+}
+
+const SERVER_STATUS: Record<ServerShiftStatus, RequestStatus> = {
+  REQUESTED: 'submitted',
+  MATCHING: 'submitted',
+  ESCALATED: 'submitted',
+  CONFIRMED: 'confirmed',
+  IN_PROGRESS: 'in-progress',
+  COMPLETED: 'completed',
+  CANCELLED: 'cancelled',
+};
+export const appStatus = (s: ServerShiftStatus): RequestStatus => SERVER_STATUS[s];
+
+export async function myShifts(token: string): Promise<ServerShift[]> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 15000);
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/shifts/mine`, { headers: { Authorization: `Bearer ${token}` }, signal: ctrl.signal });
+    if (!res.ok) throw new ApiError('Could not refresh request status.', res.status);
+    return ((await res.json()) as { shifts: ServerShift[] }).shifts;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 // ---------- Care Assistant (backend /api/v1/assistant/chat) ----------

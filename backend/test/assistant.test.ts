@@ -172,9 +172,11 @@ describe('assistant: what the model is given', () => {
     expect(await res.text()).not.toContain('AIza');
   });
 
-  it('never treats client-set headers as a signed-in user', () => {
-    const fakeContext = { req: { header: () => 'attacker-chosen-user-id' } } as never;
-    expect(authenticatedUserId(fakeContext)).toBeNull();
+  it('never treats client-set headers as a signed-in user', async () => {
+    // Every header (including Authorization) carries an attacker-chosen value; with no valid
+    // server-side session behind it, nobody is signed in.
+    const fakeContext = { req: { header: () => 'attacker-chosen-user-id' }, get: () => undefined, set: () => undefined, env: {} } as never;
+    expect(await authenticatedUserId(fakeContext)).toBeNull();
   });
 });
 

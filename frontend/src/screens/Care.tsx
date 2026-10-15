@@ -19,6 +19,7 @@ import {
   TextArea,
   TextField,
 } from '../components/ui';
+import { isDemoMode } from '../services/api';
 import { DEPENDENCIES, peso, SHIFT_RATES, VEHICLES, type VehicleCategory } from '../data/catalog';
 import { DEMO_FACILITIES, DEMO_GPS } from '../data/demo';
 import { useApp, useDraft } from '../state/AppState';
@@ -422,7 +423,7 @@ export function CaregiverRequest({ kind }: { kind: CareKind }) {
         {isCvmc && (
           <DependencyNote title="Provisional">CVMC ward access for AdvanCare caregivers awaits a coordination letter with CVMC Nursing Administration.</DependencyNote>
         )}
-        <DependencyNote>{DEPENDENCIES.caregiver}</DependencyNote>
+        {isDemoMode && <DependencyNote>{DEPENDENCIES.caregiver}</DependencyNote>}
         {error && <Banner tone="error">{error}</Banner>}
       </div>
       <ActionBar>

@@ -182,7 +182,7 @@ export function More() {
         </div>
         {session && (
           <p className="t-caption t-muted t-center mt-8">
-            {isDemoMode ? 'Demo mode · ' : ''}Signed in as {session.phone}
+            {isDemoMode ? 'Demo mode · ' : ''}Signed in as {session.email ?? session.phone}
           </p>
         )}
       </div>

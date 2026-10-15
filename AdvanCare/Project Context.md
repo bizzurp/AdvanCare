@@ -111,11 +111,13 @@ Target Market: Barangay Residents — 1. Subscription with 50% LGU subsidy (50% 
 
 ```
  advanCARE Structural Revenue Model (PH)
-        ├── Institutional Rate (Cities/Hospitals): ₱500 per 8 hours
-        │    └── Mandate: Active when family/friends are unavailable
+        ├── Institutional Rate (CVMC / Tertiary Hospitals): ₱500 per 8 hours
+        │    └── Mandate: Dedicated bedside watcher active when family/friends must work farm/fishery
         │
-        ├── Community Rate (Home/Clinics): ₱300 per hour
-        │    └── Driver: Barangay-led health initiatives
+        ├── Community Rates (Home / Clinics):
+        │    ├── Home-Based Barangay Caregiver: ₱300 per 8 hours (Daily ADL, vitals, respite)
+        │    └── Specialized Clinical Home Visit: ₱300 per hour (Licensed nurse/therapy procedures)
+        │    └── Driver: Barangay-led health initiatives & accredited youth care corps
         │
         └── advanCARE Ecosystem Tier Membership (50% LGU + 50% out-of-pocket)
  			├─ Platinum: ₱4,200/yr total (₱350/mo)
@@ -139,3 +141,31 @@ Target Market: Barangay Residents — 1. Subscription with 50% LGU subsidy (50% 
  					├── Scheduled Care Only (24–48hr notice)
  					└──	No emergency/on-demand routing
 ```
+
+## 11. Global & Regional Benchmark Synthesis
+
+advanCARE fuses operational lessons from four proven international models:
+- [[Homage - Holistic On-Demand Care Model]]: On-demand dispatch, medical escort, ADL support, and transparent digital care notes for remote family peace-of-mind.
+- [[Honor Technology - Care Platform & Logistics Model]]: Centralized back-office logistics, multi-dimensional smart matching algorithms, and workforce retention lowering caregiver turnover from 80% to 30%.
+- [[Auxilio Care - Complex Care & Multi-Payer Model]]: Tailored person-centered care for PWD/complex needs, and blended public-private co-pay mechanisms (local council + out-of-pocket top-ups).
+- [[Centene Corporation - Managed Care & NEMT Model]]: Capitated PMPM financing, addressing Social Determinants of Health (SDOH), and establishing Non-Emergency Medical Transport (NEMT) to prevent avoidable hospitalizations.
+- [[Comparative Benchmark Matrix]]: Comprehensive side-by-side operational and economic comparison.
+
+## 12. Core Mobile App System & Service Catalog
+
+Detailed functional designs are documented in:
+- [[Mobile App System Specification]]: Client registration for 50/50 LGU subscriptions, comprehensive Client Profile & Family Profile (with remote OFW tracking), and the 5 service request modules:
+  1. **Tele-Consultation:** Remote doctor/nurse triage and clinical assessment.
+  2. **Medical Prescription Request:** Maintenance refills, DoH Yakap coordination, and pooled pharmacy procurement.
+  3. **Non-Emergency Medical Transport (NEMT):** Scheduled medical trips with pickup time, rural origin, and CVMC/clinic destination.
+  4. **Home-Based Barangay Caregiver:** ₱300 for 8 hours of community care, ADLs, and family respite.
+  5. **CVMC Institutional Caregiver:** ₱500 for 8 hours of hospital bedside watcher duty at Cagayan Valley Medical Center.
+- [[Service Catalog & Caregiver Operations]]: Unit economics, caregiver badges, and clinical bedside watcher protocols.
+- [[Reporting Engine & Dashboard Specifications]]: Automated tabular reports, trend graphs, and executive/LGU dashboards.
+
+## 13. Agentic AI & Automation Engine (by n8n)
+
+Operational workflows are orchestrated autonomously through:
+- [[Agentic AI & n8n Workflow Architecture]]: Multi-agent event-driven orchestration (Triage Agent, Smart Matching Agent, Tele-Consult Agent, Rx Logistics Agent, NEMT Agent, Care Note Summarizer Agent, and LGU Billing Agent).
+- [[Data Models & Entity Schemas]]: Complete PostgreSQL schemas, PostGIS spatial queries, and webhook JSON contracts.
+

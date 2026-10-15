@@ -13,8 +13,8 @@ Affordability anchor: minimum PhilHealth = ₱500/mo (₱6,000/yr). All advanCAR
 - Platinum: ₱4,200/yr total (₱2,100 LGU + ₱2,100 household)
 - Gold: ₱3,000/yr total (₱1,500 + ₱1,500)
 - Silver: ₱1,800/yr total (₱900 + ₱900, 4Ps/indigents)
-- Community Rate: ₱300/hr home/clinic
-- Institutional Rate: ₱500/8hrs city/hospital gap coverage
+- Community Rate: ₱300/8hrs home-based care (or ₱300/hr for specialized clinical procedures)
+- Institutional Rate: ₱500/8hrs CVMC hospital bedside watcher coverage
 
 LGU 50% is treated as earned fee-for-coverage, not a donation. If an LGU delays or exits, households downgrade tiers or shift to pay-per-visit instead of losing service.
 
@@ -129,3 +129,22 @@ Mapped to Project Context §9:
 2. Every peso has a named payer; no "future monetization" hand-waving.
 3. Every fishbone cause has a 1:1 implementation answer.
 4. Graceful degradation: if LGU or connectivity fails, service thins but does not die.
+
+## 10. Operational & Technical Document Links
+
+- **Benchmarking & Research:**
+  - [[Comparative Benchmark Matrix]]
+  - [[Homage - Holistic On-Demand Care Model]]
+  - [[Honor Technology - Care Platform & Logistics Model]]
+  - [[Auxilio Care - Complex Care & Multi-Payer Model]]
+  - [[Centene Corporation - Managed Care & NEMT Model]]
+- **Product & Caregiver Operations:**
+  - [[Mobile App System Specification]]
+  - [[Service Catalog & Caregiver Operations]]
+  - [[Reporting Engine & Dashboard Specifications]]
+- **AI Automation & Infrastructure:**
+  - [[Agentic AI & n8n Workflow Architecture]]
+  - [[Data Models & Entity Schemas]]
+- **Root Cause Mapping:**
+  - [[Fishbone Root Cause Analysis]]
+

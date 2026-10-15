@@ -30,7 +30,8 @@ export function AcceptInvite() {
     if (invite.data?.fullName) setFullName((v) => v || invite.data!.fullName!);
   }, [invite.data]);
 
-  if (me && !challenge) return <Navigate to="/" replace />;
+  // Also covers finishing enrollment: onDone sets `me`, which moves on to the console.
+  if (me) return <Navigate to="/" replace />;
   if (challenge) return <Enroll challenge={challenge} onDone={setMe} onRestart={() => (window.location.href = '/login')} />;
 
   if (!token) {

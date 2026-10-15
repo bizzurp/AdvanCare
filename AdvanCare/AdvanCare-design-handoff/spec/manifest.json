@@ -1,0 +1,192 @@
+{
+  "fileKey": "LTCdUXgSlGR87DwJm6QLiY",
+  "pageId": "2:2647",
+  "name": "AdvanCare · Refined care / 16 core views",
+  "exportedAt": "2026-10-15T04:48:02.367Z",
+  "frames": [
+    {
+      "id": "2:3061",
+      "name": "01 / Welcome",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:3130",
+      "name": "02 / Sign in",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:3216",
+      "name": "03 / Home",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:3365",
+      "name": "04 / Plans",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:3485",
+      "name": "05 / Profile",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:3595",
+      "name": "06 / Services",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:3756",
+      "name": "07 / Tele-consultation",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:3855",
+      "name": "08 / Prescription",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:3958",
+      "name": "09 / Transport",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:4078",
+      "name": "10 / Home caregiver",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:4192",
+      "name": "11 / CVMC caregiver",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:4302",
+      "name": "12 / Reports",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:4442",
+      "name": "13 / Service records",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:4584",
+      "name": "14 / Service trends",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:4736",
+      "name": "15 / Dashboard",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:4875",
+      "name": "16 / Assistant",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:5004",
+      "name": "17 / Prescription review",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:5099",
+      "name": "18 / Family profile",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:5176",
+      "name": "19 / More",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:5266",
+      "name": "20 / Request received",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:5323",
+      "name": "21 / Help",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:5371",
+      "name": "22 / Edit profile",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:5446",
+      "name": "23 / Edit visit",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:5521",
+      "name": "24 / Choose doctor",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:5584",
+      "name": "25 / Attachment options",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:5634",
+      "name": "26 / Export report",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:6356",
+      "name": "Onboarding / 01 · Connected care",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:6401",
+      "name": "Onboarding / 02 · Care your way",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "2:6500",
+      "name": "Onboarding / 03 · Clearer picture",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "flowStartingPoints": [
+    {
+      "nodeId": "2:6356",
+      "name": "AdvanCare · Animated onboarding"
+    },
+    {
+      "nodeId": "2:3216",
+      "name": "AdvanCare · Explore care"
+    }
+  ]
+}

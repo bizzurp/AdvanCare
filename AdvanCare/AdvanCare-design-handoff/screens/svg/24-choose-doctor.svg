@@ -1,0 +1,98 @@
+<svg width="390" height="844" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="24 / Choose doctor">
+<rect width="390" height="844" rx="28" fill="#F7F9F5"/>
+<g id="StatusBar">
+<rect width="390" height="48" fill="#F7F9F5"/>
+<text id="9:41" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="14" font-weight="600" letter-spacing="0em"><tspan x="24" y="31.0909">9:41</tspan></text>
+<g id="System indicators">
+<g id="Group">
+<path id="Vector" d="M298 25H297C296.448 25 296 25.4477 296 26V29C296 29.5523 296.448 30 297 30H298C298.552 30 299 29.5523 299 29V26C299 25.4477 298.552 25 298 25Z" fill="#173E37"/>
+<path id="Vector_2" d="M303 22H302C301.448 22 301 22.4477 301 23V29C301 29.5523 301.448 30 302 30H303C303.552 30 304 29.5523 304 29V23C304 22.4477 303.552 22 303 22Z" fill="#173E37"/>
+<path id="Vector_3" d="M308 19H307C306.448 19 306 19.4477 306 20V29C306 29.5523 306.448 30 307 30H308C308.552 30 309 29.5523 309 29V20C309 19.4477 308.552 19 308 19Z" fill="#173E37"/>
+<path id="Vector_4" d="M313 16H312C311.448 16 311 16.4477 311 17V29C311 29.5523 311.448 30 312 30H313C313.552 30 314 29.5523 314 29V17C314 16.4477 313.552 16 313 16Z" fill="#173E37"/>
+</g>
+<g id="Group_2">
+<path id="Vector_5" d="M321 20C326.333 16 331.667 16 337 20M324 24C327.333 21.3333 330.667 21.3333 334 24M327 27C328.333 25.6667 329.667 25.6667 331 27" stroke="#173E37" stroke-width="1.8" stroke-linecap="round"/>
+</g>
+<path id="Vector_6" d="M329 31.3002C329.718 31.3002 330.3 30.7182 330.3 30.0002C330.3 29.2822 329.718 28.7002 329 28.7002C328.282 28.7002 327.7 29.2822 327.7 30.0002C327.7 30.7182 328.282 31.3002 329 31.3002Z" fill="#173E37"/>
+<path id="Vector_7" d="M359.5 18H346.5C345.119 18 344 19.1193 344 20.5V25.5C344 26.8807 345.119 28 346.5 28H359.5C360.881 28 362 26.8807 362 25.5V20.5C362 19.1193 360.881 18 359.5 18Z" stroke="#173E37"/>
+<path id="Vector_8" d="M359 20H347C346.448 20 346 20.4477 346 21V25C346 25.5523 346.448 26 347 26H359C359.552 26 360 25.5523 360 25V21C360 20.4477 359.552 20 359 20Z" fill="#173E37"/>
+<path id="Vector_9" d="M365 22C365 21.4477 364.552 21 364 21C363.448 21 363 21.4477 363 22V24C363 24.5523 363.448 25 364 25C364.552 25 365 24.5523 365 24V22Z" fill="#173E37"/>
+</g>
+</g>
+<g id="Page navigation">
+<g id="Control / alt-arrow-left">
+<g id="Solar / alt-arrow-left" clip-path="url(#clip0_2_5521)">
+<g id="Frame">
+<path id="Vector_10" d="M49 67L43 74L49 81" stroke="#173E37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+<text id="Choose a doctor" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="18" font-weight="600" letter-spacing="0em"><tspan x="68" y="80.5455">Choose a doctor</tspan></text>
+</g>
+<g id="Home indicator">
+<rect x="129" y="830" width="132" height="5" rx="2.5" fill="#173E37"/>
+</g>
+<g id="Fixed action &#194;&#183; safe area">
+<rect width="390" height="100" transform="translate(0 740)" fill="#F7F9F5"/>
+<g id="AdvanCare / Button">
+<rect x="24" y="754" width="342" height="52" rx="12" fill="#086B5B"/>
+<text id="Continue" fill="white" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="127" y="785.818">Choose Dr. Reyes</tspan></text>
+</g>
+</g>
+<g id="Content viewport / scroll vertically">
+<g id="Scrollable content" clip-path="url(#clip1_2_5521)">
+<text id="Your consultation provider." fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="24" font-weight="600" letter-spacing="-0.02em"><tspan x="24" y="145.727">Your consultation provider.</tspan></text>
+<g id="AdvanCare / Choice">
+<rect x="24.75" y="174.75" width="340.5" height="77.5" rx="13.25" fill="#E3F0E8"/>
+<rect x="24.75" y="174.75" width="340.5" height="77.5" rx="13.25" stroke="#086B5B" stroke-width="1.5"/>
+<g id="Choice icon" clip-path="url(#clip2_2_5521)">
+<g id="Solar / user-rounded" clip-path="url(#clip3_2_5521)">
+<g id="Frame_2">
+<g id="Group_3">
+<path id="Vector_11" d="M50.5 213.735V216.5C50.5 219.261 52.7386 221.5 55.5 221.5H56.3824C58.2691 221.5 59.8595 220.231 60.3465 218.5" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_12" d="M46.9286 202.5H46.8369C46.524 202.5 46.3676 202.5 46.2357 202.512C44.7876 202.64 43.6397 203.788 43.5117 205.236C43.5 205.368 43.5 205.524 43.5 205.837V206.735C43.5 210.601 46.634 213.735 50.5 213.735C54.2082 213.735 57.2143 210.729 57.2143 207.021V205.837C57.2143 205.524 57.2143 205.368 57.2026 205.236C57.0746 203.788 55.9267 202.64 54.4785 202.512C54.3467 202.5 54.1902 202.5 53.8774 202.5H53.7857" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_13" d="M60.5 218.5C62.1569 218.5 63.5 217.157 63.5 215.5C63.5 213.843 62.1569 212.5 60.5 212.5C58.8431 212.5 57.5 213.843 57.5 215.5C57.5 217.157 58.8431 218.5 60.5 218.5Z" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_14" d="M53.5 201.5V203.5" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_15" d="M47.5 201.5V203.5" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+<g id="Choice copy" clip-path="url(#clip4_2_5521)">
+<text id="General caregiver" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="81.5" y="209.318">Dr. Santos Reyes</tspan></text>
+<text id="&#226;&#130;&#177;300 for 8 hours" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="81.5" y="231.227">General practitioner &#xb7; 4.9 rating</tspan></text>
+</g>
+<g id="Solar / check-circle" clip-path="url(#clip5_2_5521)">
+<g id="Frame_3">
+<g id="Group_4">
+<path id="Vector_16" d="M335.5 221.833C340.102 221.833 343.833 218.102 343.833 213.5C343.833 208.897 340.102 205.167 335.5 205.167C330.898 205.167 327.167 208.897 327.167 213.5C327.167 218.102 330.898 221.833 335.5 221.833Z" stroke="#086B5B" stroke-width="1.25" stroke-linecap="round"/>
+<path id="Vector_17" d="M332.583 213.917L334.25 215.583L338.417 211.417" stroke="#086B5B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_2_5521">
+<rect width="24" height="24" fill="white" transform="translate(34 62)"/>
+</clipPath>
+<clipPath id="clip1_2_5521">
+<rect width="342" height="133" fill="white" transform="translate(24 120)"/>
+</clipPath>
+<clipPath id="clip2_2_5521">
+<rect width="28" height="28" fill="white" transform="translate(41.5 199.5)"/>
+</clipPath>
+<clipPath id="clip3_2_5521">
+<rect width="24" height="24" fill="white" transform="translate(41.5 199.5)"/>
+</clipPath>
+<clipPath id="clip4_2_5521">
+<rect width="232" height="44" fill="white" transform="translate(81.5 191.5)"/>
+</clipPath>
+<clipPath id="clip5_2_5521">
+<rect width="20" height="20" fill="white" transform="translate(325.5 203.5)"/>
+</clipPath>
+</defs>
+</svg>

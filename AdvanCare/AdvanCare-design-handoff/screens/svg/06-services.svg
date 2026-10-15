@@ -1,0 +1,333 @@
+<svg width="390" height="844" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="06 / Services">
+<g clip-path="url(#clip0_2_3595)">
+<rect width="390" height="844" rx="28" fill="#F7F9F5"/>
+<g id="StatusBar">
+<rect width="390" height="48" fill="#F7F9F5"/>
+<text id="9:41" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="14" font-weight="600" letter-spacing="0em"><tspan x="24" y="31.0909">9:41</tspan></text>
+<g id="System indicators">
+<g id="Group">
+<path id="Vector" d="M298 25H297C296.448 25 296 25.4477 296 26V29C296 29.5523 296.448 30 297 30H298C298.552 30 299 29.5523 299 29V26C299 25.4477 298.552 25 298 25Z" fill="#173E37"/>
+<path id="Vector_2" d="M303 22H302C301.448 22 301 22.4477 301 23V29C301 29.5523 301.448 30 302 30H303C303.552 30 304 29.5523 304 29V23C304 22.4477 303.552 22 303 22Z" fill="#173E37"/>
+<path id="Vector_3" d="M308 19H307C306.448 19 306 19.4477 306 20V29C306 29.5523 306.448 30 307 30H308C308.552 30 309 29.5523 309 29V20C309 19.4477 308.552 19 308 19Z" fill="#173E37"/>
+<path id="Vector_4" d="M313 16H312C311.448 16 311 16.4477 311 17V29C311 29.5523 311.448 30 312 30H313C313.552 30 314 29.5523 314 29V17C314 16.4477 313.552 16 313 16Z" fill="#173E37"/>
+</g>
+<g id="Group_2">
+<path id="Vector_5" d="M321 20C326.333 16 331.667 16 337 20M324 24C327.333 21.3333 330.667 21.3333 334 24M327 27C328.333 25.6667 329.667 25.6667 331 27" stroke="#173E37" stroke-width="1.8" stroke-linecap="round"/>
+</g>
+<path id="Vector_6" d="M329 31.3C329.718 31.3 330.3 30.7179 330.3 30C330.3 29.282 329.718 28.7 329 28.7C328.282 28.7 327.7 29.282 327.7 30C327.7 30.7179 328.282 31.3 329 31.3Z" fill="#173E37"/>
+<path id="Vector_7" d="M359.5 18H346.5C345.119 18 344 19.1193 344 20.5V25.5C344 26.8807 345.119 28 346.5 28H359.5C360.881 28 362 26.8807 362 25.5V20.5C362 19.1193 360.881 18 359.5 18Z" stroke="#173E37"/>
+<path id="Vector_8" d="M359 20H347C346.448 20 346 20.4477 346 21V25C346 25.5523 346.448 26 347 26H359C359.552 26 360 25.5523 360 25V21C360 20.4477 359.552 20 359 20Z" fill="#173E37"/>
+<path id="Vector_9" d="M365 22C365 21.4477 364.552 21 364 21C363.448 21 363 21.4477 363 22V24C363 24.5523 363.448 25 364 25C364.552 25 365 24.5523 365 24V22Z" fill="#173E37"/>
+</g>
+</g>
+<g id="Page navigation">
+<g id="Control / alt-arrow-left">
+<g id="Solar / alt-arrow-left" clip-path="url(#clip1_2_3595)">
+<g id="Frame">
+<path id="Vector_10" d="M49 67L43 74L49 81" stroke="#173E37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+<text id="Request a service" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="18" font-weight="600" letter-spacing="0em"><tspan x="68" y="80.5455">Request a service</tspan></text>
+</g>
+<g id="Primary navigation">
+<rect x="0.5" y="760.5" width="389" height="83" fill="white"/>
+<rect x="0.5" y="760.5" width="389" height="83" stroke="#D3DFD7"/>
+<g id="AdvanCare / Navigation">
+<g id="Navigation icon">
+<g id="Solar / home-angle" clip-path="url(#clip2_2_3595)">
+<g id="Frame_2">
+<g id="Group_3">
+<path id="Vector_11" d="M34.3641 783.958C33.9846 781.321 33.7949 780.002 34.3354 778.875C34.8758 777.748 36.0262 777.062 38.3269 775.692L39.7117 774.867C41.801 773.622 42.8457 773 44 773C45.1543 773 46.199 773.622 48.2882 774.867L49.6731 775.692C51.9738 777.062 53.1242 777.748 53.6646 778.875C54.2051 780.002 54.0154 781.321 53.6359 783.958L53.3572 785.895C52.8697 789.283 52.626 790.976 51.451 791.988C50.2759 793 48.5526 793 45.1061 793H42.8939C39.4474 793 37.7241 793 36.549 791.988C35.374 790.976 35.1302 789.283 34.6428 785.895L34.3641 783.958Z" stroke="#536D65" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_12" d="M47 789H41" stroke="#536D65" stroke-width="1.5" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+<text id="Home" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="11" font-weight="500" letter-spacing="0em"><tspan x="32.5" y="814">Home</tspan></text>
+</g>
+<g id="AdvanCare / Navigation_2">
+<g id="Navigation icon_2">
+<g id="Solar / home-angle_2" clip-path="url(#clip3_2_3595)">
+<g id="Frame_3">
+<g id="Group_4">
+<path id="Vector_13" d="M108 785C108 781.229 108 779.343 109.172 778.172C110.343 777 112.229 777 116 777H120C123.771 777 125.657 777 126.828 778.172C128 779.343 128 781.229 128 785C128 788.771 128 790.657 126.828 791.828C125.657 793 123.771 793 120 793H116C112.229 793 110.343 793 109.172 791.828C108 790.657 108 788.771 108 785Z" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_14" d="M122 777C122 775.114 122 774.172 121.414 773.586C120.828 773 119.886 773 118 773C116.114 773 115.172 773 114.586 773.586C114 774.172 114 775.114 114 777" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_15" d="M119.5 785H116.5M118 783.5V786.5" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_16" d="M118 789C120.209 789 122 787.209 122 785C122 782.791 120.209 781 118 781C115.791 781 114 782.791 114 785C114 787.209 115.791 789 118 789Z" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+<text id="Home_2" fill="#086B5B" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="11" font-weight="500" letter-spacing="0em"><tspan x="99" y="814">Services</tspan></text>
+</g>
+<g id="AdvanCare / Navigation_3">
+<g id="Navigation icon_3">
+<g id="Solar / home-angle_3" clip-path="url(#clip4_2_3595)">
+<g id="Frame_4">
+<g id="Group_5">
+<path id="Vector_17" d="M182 783C182 778.286 182 775.929 183.464 774.464C184.929 773 187.286 773 192 773C196.714 773 199.071 773 200.535 774.464C202 775.929 202 778.286 202 783C202 787.714 202 790.071 200.535 791.535C199.071 793 196.714 793 192 793C187.286 793 184.929 793 183.464 791.535C182 790.071 182 787.714 182 783Z" stroke="#536D65" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_18" d="M187 789V780" stroke="#536D65" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_19" d="M192 789V777" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_20" d="M197 789V784" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+<text id="Home_3" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="11" font-weight="500" letter-spacing="0em"><tspan x="175" y="814">Reports</tspan></text>
+</g>
+<g id="AdvanCare / Navigation_4">
+<g id="Navigation icon_4">
+<g id="Solar / home-angle_4" clip-path="url(#clip5_2_3595)">
+<g id="Frame_5">
+<g id="Group_6">
+<path id="Vector_21" d="M266 793C271.523 793 276 788.523 276 783C276 777.477 271.523 773 266 773C260.477 773 256 777.477 256 783C256 784.6 256.376 786.112 257.043 787.452C257.221 787.809 257.28 788.216 257.177 788.601L256.582 790.827C256.323 791.793 257.207 792.677 258.173 792.419L260.399 791.823C260.784 791.72 261.191 791.779 261.548 791.956C262.888 792.624 264.4 793 266 793Z" stroke="#536D65" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_22" d="M262 783H262.009M265.991 783H266M269.991 783H270" stroke="#536D65" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</g>
+<text id="Home_4" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="11" font-weight="500" letter-spacing="0em"><tspan x="245" y="814">Assistant</tspan></text>
+</g>
+<g id="AdvanCare / Navigation_5">
+<g id="Navigation icon_5">
+<g id="Solar / home-angle_5" clip-path="url(#clip6_2_3595)">
+<g id="Frame_6">
+<g id="Group_7">
+<path id="Vector_23" d="M333 785C334.105 785 335 784.105 335 783C335 781.895 334.105 781 333 781C331.895 781 331 781.895 331 783C331 784.105 331.895 785 333 785Z" stroke="#536D65" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_24" d="M340 785C341.105 785 342 784.105 342 783C342 781.895 341.105 781 340 781C338.895 781 338 781.895 338 783C338 784.105 338.895 785 340 785Z" stroke="#536D65" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_25" d="M347 785C348.105 785 349 784.105 349 783C349 781.895 348.105 781 347 781C345.895 781 345 781.895 345 783C345 784.105 345.895 785 347 785Z" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+<text id="Home_5" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="11" font-weight="500" letter-spacing="0em"><tspan x="330.5" y="814">More</tspan></text>
+</g>
+</g>
+<g id="Content viewport / scroll vertically">
+<g id="Scrollable content" clip-path="url(#clip7_2_3595)">
+<text id="What care do you need today?" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="28" font-weight="600" letter-spacing="-0.02em"><tspan x="24" y="147.182">What care do&#10;</tspan><tspan x="24" y="181.182">you need today?</tspan></text>
+<text id="Choose a service to get started." fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" letter-spacing="0em"><tspan x="24" y="219.818">Choose a service to get started.</tspan></text>
+<g id="ServiceRow">
+<rect x="24.5" y="240.5" width="341" height="77" rx="13.5" fill="white"/>
+<rect x="24.5" y="240.5" width="341" height="77" rx="13.5" stroke="#D3DFD7"/>
+<g id="Service icon">
+<rect x="41" y="259" width="40" height="40" rx="12" fill="#E3F0E8"/>
+<g id="Solar / medical-kit" clip-path="url(#clip8_2_3595)">
+<g id="Frame_7">
+<g id="Group_8">
+<path id="Vector_26" d="M57.75 281.422V284.417C57.75 287.408 60.1752 289.833 63.1667 289.833H64.1226C66.1665 289.833 67.8895 288.459 68.417 286.583" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_27" d="M53.881 269.25H53.7816C53.4427 269.25 53.2732 269.25 53.1304 269.263C51.5616 269.401 50.318 270.645 50.1793 272.214C50.1667 272.357 50.1667 272.526 50.1667 272.865V273.838C50.1667 278.026 53.5618 281.422 57.75 281.422C61.7672 281.422 65.0238 278.165 65.0238 274.148V272.865C65.0238 272.526 65.0238 272.357 65.0112 272.214C64.8725 270.645 63.6289 269.401 62.06 269.263C61.9173 269.25 61.7477 269.25 61.4089 269.25H61.3095" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_28" d="M68.5833 286.583C70.3783 286.583 71.8333 285.128 71.8333 283.333C71.8333 281.538 70.3783 280.083 68.5833 280.083C66.7884 280.083 65.3333 281.538 65.3333 283.333C65.3333 285.128 66.7884 286.583 68.5833 286.583Z" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_29" d="M61 268.167V270.333" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_30" d="M54.5 268.167V270.333" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+<g id="Service information" clip-path="url(#clip9_2_3595)">
+<text id="Tele-consultation" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="93" y="274.818">Tele-consultation</tspan></text>
+<text id="Talk with a licensed doctor" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="93" y="296.727">Speak with a licensed doctor</tspan></text>
+</g>
+<g id="Solar / alt-arrow-right" clip-path="url(#clip10_2_3595)">
+<g id="Frame_8">
+<path id="Vector_31" d="M335.75 273.75L340.25 279L335.75 284.25" stroke="#536D65" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+<g id="ServiceRow_2">
+<rect x="24.5" y="332.5" width="341" height="95" rx="13.5" fill="white"/>
+<rect x="24.5" y="332.5" width="341" height="95" rx="13.5" stroke="#D3DFD7"/>
+<g id="Service icon_2">
+<rect x="41" y="360" width="40" height="40" rx="12" fill="#E3F0E8"/>
+<g id="Solar / medical-kit_2" clip-path="url(#clip11_2_3595)">
+<g id="Frame_9">
+<g id="Group_9">
+<path id="Vector_32" d="M51.25 377.833C51.25 373.748 51.25 371.705 52.5192 370.436C53.7884 369.167 55.8312 369.167 59.9167 369.167H62.0833C66.1688 369.167 68.2116 369.167 69.4808 370.436C70.75 371.705 70.75 373.748 70.75 377.833V382.167C70.75 386.252 70.75 388.295 69.4808 389.564C68.2116 390.833 66.1688 390.833 62.0833 390.833H59.9167C55.8312 390.833 53.7884 390.833 52.5192 389.564C51.25 388.295 51.25 386.252 51.25 382.167V377.833Z" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_33" d="M61 373.5V375.667M61 375.667V377.833M61 375.667H58.8333M61 375.667H63.1667" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_34" d="M56.6667 382.167H65.3333" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_35" d="M57.75 386.5H64.25" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+<g id="Service information_2" clip-path="url(#clip12_2_3595)">
+<text id="Tele-consultation_2" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="93" y="366.818">Medical prescription</tspan></text>
+<text id="Talk with a licensed doctor_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="93" y="388.727">Request a prescription from your </tspan><tspan x="93" y="406.727">doctor</tspan></text>
+</g>
+<g id="Solar / alt-arrow-right_2" clip-path="url(#clip13_2_3595)">
+<g id="Frame_10">
+<path id="Vector_36" d="M335.75 374.75L340.25 380L335.75 385.25" stroke="#536D65" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+<g id="ServiceRow_3">
+<rect x="24.5" y="442.5" width="341" height="77" rx="13.5" fill="white"/>
+<rect x="24.5" y="442.5" width="341" height="77" rx="13.5" stroke="#D3DFD7"/>
+<g id="Service icon_3">
+<rect x="41" y="461" width="40" height="40" rx="12" fill="#E3F0E8"/>
+<g id="Solar / medical-kit_3" clip-path="url(#clip14_2_3595)">
+<g id="Frame_11">
+<g id="Group_10">
+<path id="Vector_37" d="M52.3333 478.833C52.3333 474.748 52.3333 472.705 53.6025 471.436C54.8718 470.167 56.9145 470.167 61 470.167C65.0855 470.167 67.1283 470.167 68.3974 471.436C69.6667 472.705 69.6667 474.748 69.6667 478.833V481C69.6667 485.085 69.6667 487.128 68.3974 488.397C67.1283 489.667 65.0855 489.667 61 489.667C56.9145 489.667 54.8718 489.667 53.6025 488.397C52.3333 487.128 52.3333 485.085 52.3333 481V478.833Z" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_38" d="M52.3333 482.083H69.6667" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_39" d="M64.7917 485.333H66.4167" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_40" d="M55.5833 485.333H57.2083" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_41" d="M54.5 489.125V490.75C54.5 491.348 54.985 491.833 55.5833 491.833H57.2083C57.8066 491.833 58.2917 491.348 58.2917 490.75V489.667" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_42" d="M67.5 489.125V490.75C67.5 491.348 67.015 491.833 66.4167 491.833H64.7917C64.1934 491.833 63.7083 491.348 63.7083 490.75V489.667" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_43" d="M69.6667 477.75H70.75C71.3483 477.75 71.8333 478.235 71.8333 478.833V479.917C71.8333 480.258 71.6728 480.579 71.4 480.783L69.6667 482.083" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_44" d="M52.3333 477.75H51.25C50.6517 477.75 50.1667 478.235 50.1667 478.833V479.917C50.1667 480.258 50.3272 480.579 50.6 480.783L52.3333 482.083" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_45" d="M69.125 473.417H52.875" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+<g id="Service information_3" clip-path="url(#clip15_2_3595)">
+<text id="Tele-consultation_3" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="93" y="476.818">Non-emergency transport</tspan></text>
+<text id="Talk with a licensed doctor_3" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="93" y="498.727">Travel to your next medical visit</tspan></text>
+</g>
+<g id="Solar / alt-arrow-right_3" clip-path="url(#clip16_2_3595)">
+<g id="Frame_12">
+<path id="Vector_46" d="M335.75 475.75L340.25 481L335.75 486.25" stroke="#536D65" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+<g id="ServiceRow_4">
+<rect x="24.5" y="534.5" width="341" height="77" rx="13.5" fill="white"/>
+<rect x="24.5" y="534.5" width="341" height="77" rx="13.5" stroke="#D3DFD7"/>
+<g id="Service icon_4">
+<rect x="41" y="553" width="40" height="40" rx="12" fill="#E3F0E8"/>
+<g id="Solar / medical-kit_4" clip-path="url(#clip17_2_3595)">
+<g id="Frame_13">
+<g id="Group_11">
+<path id="Vector_47" d="M58.8333 570.833C61.2266 570.833 63.1667 568.893 63.1667 566.5C63.1667 564.107 61.2266 562.167 58.8333 562.167C56.4401 562.167 54.5 564.107 54.5 566.5C54.5 568.893 56.4401 570.833 58.8333 570.833Z" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_48" d="M67.5 578.958C67.5 581.651 67.5 583.833 58.8333 583.833C50.1667 583.833 50.1667 581.651 50.1667 578.958C50.1667 576.266 54.0469 574.083 58.8333 574.083C63.6198 574.083 67.5 576.266 67.5 578.958Z" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_49" d="M65.3333 570.508C65.3333 572.038 66.6396 572.853 67.5959 573.583C67.9333 573.841 68.2583 574.083 68.5833 574.083C68.9083 574.083 69.2333 573.841 69.5708 573.583C70.5271 572.853 71.8333 572.038 71.8333 570.508C71.8333 568.978 70.0458 567.893 68.5833 569.364C67.1208 567.893 65.3333 568.978 65.3333 570.508Z" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</g>
+<g id="Service information_4" clip-path="url(#clip18_2_3595)">
+<text id="Tele-consultation_4" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="93" y="568.818">Home-based caregiver</tspan></text>
+<text id="Talk with a licensed doctor_4" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="93" y="590.727">From &#x20b1;300 for an 8-hour visit</tspan></text>
+</g>
+<g id="Solar / alt-arrow-right_4" clip-path="url(#clip19_2_3595)">
+<g id="Frame_14">
+<path id="Vector_50" d="M335.75 567.75L340.25 573L335.75 578.25" stroke="#536D65" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+<g id="ServiceRow_5">
+<rect x="24.5" y="626.5" width="341" height="77" rx="13.5" fill="white"/>
+<rect x="24.5" y="626.5" width="341" height="77" rx="13.5" stroke="#D3DFD7"/>
+<g id="Service icon_5">
+<rect x="41" y="645" width="40" height="40" rx="12" fill="#E3F0E8"/>
+<g id="Solar / medical-kit_5" clip-path="url(#clip20_2_3595)">
+<g id="Frame_15">
+<g id="Group_12">
+<path id="Vector_51" d="M71.8333 675.833H50.1667" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_52" d="M66.4167 675.833V658.5C66.4167 656.457 66.4167 655.436 65.7821 654.801C65.1474 654.167 64.1261 654.167 62.0833 654.167H59.9167C57.8739 654.167 56.8525 654.167 56.2179 654.801C55.5833 655.436 55.5833 656.457 55.5833 658.5V675.833" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_53" d="M70.75 675.833V661.208C70.75 659.687 70.75 658.926 70.3848 658.38C70.2268 658.143 70.0236 657.94 69.787 657.782C69.2406 657.417 68.4799 657.417 66.9583 657.417" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_54" d="M51.25 675.833V661.208C51.25 659.687 51.25 658.926 51.6151 658.38C51.7732 658.143 51.9764 657.94 52.2129 657.782C52.7594 657.417 53.5202 657.417 55.0417 657.417" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_55" d="M61 675.833V672.583" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_56" d="M58.8333 665H63.1667" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_57" d="M53.9583 663.917H55.5833" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_58" d="M53.9583 667.167H55.5833" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_59" d="M66.4167 663.917H68.0417" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_60" d="M66.4167 667.167H68.0417" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_61" d="M53.9583 660.667H55.5833" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_62" d="M66.4167 660.667H68.0417" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_63" d="M58.8333 668.25H63.1667" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_64" d="M61 661.75V657.417" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_65" d="M63.1667 659.583H58.8333" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</g>
+<g id="Service information_5" clip-path="url(#clip21_2_3595)">
+<text id="Tele-consultation_5" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="93" y="660.818">CVMC institutional caregiver</tspan></text>
+<text id="Talk with a licensed doctor_5" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="93" y="682.727">&#x20b1;500 for an 8-hour visit</tspan></text>
+</g>
+<g id="Solar / alt-arrow-right_5" clip-path="url(#clip22_2_3595)">
+<g id="Frame_16">
+<path id="Vector_66" d="M335.75 659.75L340.25 665L335.75 670.25" stroke="#536D65" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_2_3595">
+<rect width="390" height="844" rx="28" fill="white"/>
+</clipPath>
+<clipPath id="clip1_2_3595">
+<rect width="24" height="24" fill="white" transform="translate(34 62)"/>
+</clipPath>
+<clipPath id="clip2_2_3595">
+<rect width="24" height="24" fill="white" transform="translate(32 771)"/>
+</clipPath>
+<clipPath id="clip3_2_3595">
+<rect width="24" height="24" fill="white" transform="translate(106 771)"/>
+</clipPath>
+<clipPath id="clip4_2_3595">
+<rect width="24" height="24" fill="white" transform="translate(180 771)"/>
+</clipPath>
+<clipPath id="clip5_2_3595">
+<rect width="24" height="24" fill="white" transform="translate(254 771)"/>
+</clipPath>
+<clipPath id="clip6_2_3595">
+<rect width="24" height="24" fill="white" transform="translate(328 771)"/>
+</clipPath>
+<clipPath id="clip7_2_3595">
+<rect width="342" height="584" fill="white" transform="translate(24 120)"/>
+</clipPath>
+<clipPath id="clip8_2_3595">
+<rect width="26" height="26" fill="white" transform="translate(48 266)"/>
+</clipPath>
+<clipPath id="clip9_2_3595">
+<rect width="224" height="44" fill="white" transform="translate(93 257)"/>
+</clipPath>
+<clipPath id="clip10_2_3595">
+<rect width="18" height="18" fill="white" transform="translate(329 270)"/>
+</clipPath>
+<clipPath id="clip11_2_3595">
+<rect width="26" height="26" fill="white" transform="translate(48 367)"/>
+</clipPath>
+<clipPath id="clip12_2_3595">
+<rect width="224" height="62" fill="white" transform="translate(93 349)"/>
+</clipPath>
+<clipPath id="clip13_2_3595">
+<rect width="18" height="18" fill="white" transform="translate(329 371)"/>
+</clipPath>
+<clipPath id="clip14_2_3595">
+<rect width="26" height="26" fill="white" transform="translate(48 468)"/>
+</clipPath>
+<clipPath id="clip15_2_3595">
+<rect width="224" height="44" fill="white" transform="translate(93 459)"/>
+</clipPath>
+<clipPath id="clip16_2_3595">
+<rect width="18" height="18" fill="white" transform="translate(329 472)"/>
+</clipPath>
+<clipPath id="clip17_2_3595">
+<rect width="26" height="26" fill="white" transform="translate(48 560)"/>
+</clipPath>
+<clipPath id="clip18_2_3595">
+<rect width="224" height="44" fill="white" transform="translate(93 551)"/>
+</clipPath>
+<clipPath id="clip19_2_3595">
+<rect width="18" height="18" fill="white" transform="translate(329 564)"/>
+</clipPath>
+<clipPath id="clip20_2_3595">
+<rect width="26" height="26" fill="white" transform="translate(48 652)"/>
+</clipPath>
+<clipPath id="clip21_2_3595">
+<rect width="224" height="44" fill="white" transform="translate(93 643)"/>
+</clipPath>
+<clipPath id="clip22_2_3595">
+<rect width="18" height="18" fill="white" transform="translate(329 656)"/>
+</clipPath>
+</defs>
+</svg>

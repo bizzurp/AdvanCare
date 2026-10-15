@@ -1,0 +1,121 @@
+<svg width="390" height="844" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="18 / Family profile">
+<rect width="390" height="844" rx="28" fill="#F7F9F5"/>
+<g id="StatusBar">
+<rect width="390" height="48" fill="#F7F9F5"/>
+<text id="9:41" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="14" font-weight="600" letter-spacing="0em"><tspan x="24" y="31.0909">9:41</tspan></text>
+<g id="System indicators">
+<g id="Group">
+<path id="Vector" d="M298 25H297C296.448 25 296 25.4477 296 26V29C296 29.5523 296.448 30 297 30H298C298.552 30 299 29.5523 299 29V26C299 25.4477 298.552 25 298 25Z" fill="#173E37"/>
+<path id="Vector_2" d="M303 22H302C301.448 22 301 22.4477 301 23V29C301 29.5523 301.448 30 302 30H303C303.552 30 304 29.5523 304 29V23C304 22.4477 303.552 22 303 22Z" fill="#173E37"/>
+<path id="Vector_3" d="M308 19H307C306.448 19 306 19.4477 306 20V29C306 29.5523 306.448 30 307 30H308C308.552 30 309 29.5523 309 29V20C309 19.4477 308.552 19 308 19Z" fill="#173E37"/>
+<path id="Vector_4" d="M313 16H312C311.448 16 311 16.4477 311 17V29C311 29.5523 311.448 30 312 30H313C313.552 30 314 29.5523 314 29V17C314 16.4477 313.552 16 313 16Z" fill="#173E37"/>
+</g>
+<g id="Group_2">
+<path id="Vector_5" d="M321 20C326.333 16 331.667 16 337 20M324 24C327.333 21.3333 330.667 21.3333 334 24M327 27C328.333 25.6667 329.667 25.6667 331 27" stroke="#173E37" stroke-width="1.8" stroke-linecap="round"/>
+</g>
+<path id="Vector_6" d="M329 31.3C329.718 31.3 330.3 30.7179 330.3 30C330.3 29.282 329.718 28.7 329 28.7C328.282 28.7 327.7 29.282 327.7 30C327.7 30.7179 328.282 31.3 329 31.3Z" fill="#173E37"/>
+<path id="Vector_7" d="M359.5 18H346.5C345.119 18 344 19.1193 344 20.5V25.5C344 26.8807 345.119 28 346.5 28H359.5C360.881 28 362 26.8807 362 25.5V20.5C362 19.1193 360.881 18 359.5 18Z" stroke="#173E37"/>
+<path id="Vector_8" d="M359 20H347C346.448 20 346 20.4477 346 21V25C346 25.5523 346.448 26 347 26H359C359.552 26 360 25.5523 360 25V21C360 20.4477 359.552 20 359 20Z" fill="#173E37"/>
+<path id="Vector_9" d="M365 22C365 21.4477 364.552 21 364 21C363.448 21 363 21.4477 363 22V24C363 24.5523 363.448 25 364 25C364.552 25 365 24.5523 365 24V22Z" fill="#173E37"/>
+</g>
+</g>
+<g id="Page navigation">
+<g id="Control / alt-arrow-left">
+<g id="Solar / alt-arrow-left" clip-path="url(#clip0_2_5099)">
+<g id="Frame">
+<path id="Vector_10" d="M49 67L43 74L49 81" stroke="#173E37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+<text id="Family profile" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="18" font-weight="600" letter-spacing="0em"><tspan x="68" y="80.5455">Family profile</tspan></text>
+</g>
+<g id="Home indicator">
+<rect x="129" y="830" width="132" height="5" rx="2.5" fill="#173E37"/>
+</g>
+<g id="Content viewport / scroll vertically">
+<g id="Scrollable content" clip-path="url(#clip1_2_5099)">
+<text id="Your circle of care." fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="24" font-weight="600" letter-spacing="-0.02em"><tspan x="24" y="145.727">Your circle of care.</tspan></text>
+<g id="ServiceRow">
+<rect x="24.5" y="174.5" width="341" height="77" rx="13.5" fill="white"/>
+<rect x="24.5" y="174.5" width="341" height="77" rx="13.5" stroke="#D3DFD7"/>
+<g id="Service icon">
+<rect x="41" y="193" width="40" height="40" rx="12" fill="#E3F0E8"/>
+<g id="Solar / medical-kit" clip-path="url(#clip2_2_5099)">
+<g id="Frame_2">
+<g id="Group_3">
+<path id="Vector_11" d="M61 210.833C63.3932 210.833 65.3333 208.893 65.3333 206.5C65.3333 204.107 63.3932 202.167 61 202.167C58.6067 202.167 56.6666 204.107 56.6666 206.5C56.6666 208.893 58.6067 210.833 61 210.833Z" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_12" d="M61 222.75C65.1881 222.75 68.5833 220.81 68.5833 218.417C68.5833 216.024 65.1881 214.083 61 214.083C56.8118 214.083 53.4166 216.024 53.4166 218.417C53.4166 220.81 56.8118 222.75 61 222.75Z" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+<g id="Service information" clip-path="url(#clip3_2_5099)">
+<text id="Tele-consultation" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="93" y="208.818">Juan Santos &#xb7; Son</tspan></text>
+<text id="Talk with a licensed doctor" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="93" y="230.727">Primary contact &#xb7; 0918 765 4321</tspan></text>
+</g>
+<g id="Solar / alt-arrow-right" clip-path="url(#clip4_2_5099)">
+<g id="Frame_3">
+<path id="Vector_13" d="M335.75 207.75L340.25 213L335.75 218.25" stroke="#536D65" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+<g id="ServiceRow_2">
+<rect x="24.5" y="272.5" width="341" height="77" rx="13.5" fill="white"/>
+<rect x="24.5" y="272.5" width="341" height="77" rx="13.5" stroke="#D3DFD7"/>
+<g id="Service icon_2">
+<rect x="41" y="291" width="40" height="40" rx="12" fill="#E3F0E8"/>
+<g id="Solar / medical-kit_2" clip-path="url(#clip5_2_5099)">
+<g id="Frame_4">
+<g id="Group_4">
+<path id="Vector_14" d="M61 308.833C63.3932 308.833 65.3333 306.893 65.3333 304.5C65.3333 302.107 63.3932 300.167 61 300.167C58.6067 300.167 56.6666 302.107 56.6666 304.5C56.6666 306.893 58.6067 308.833 61 308.833Z" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+<path id="Vector_15" d="M61 320.75C65.1881 320.75 68.5833 318.81 68.5833 316.417C68.5833 314.024 65.1881 312.083 61 312.083C56.8118 312.083 53.4166 314.024 53.4166 316.417C53.4166 318.81 56.8118 320.75 61 320.75Z" stroke="#086B5B" stroke-width="1.625" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+<g id="Service information_2" clip-path="url(#clip6_2_5099)">
+<text id="Tele-consultation_2" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="93" y="306.818">Ana Santos &#xb7; Daughter</tspan></text>
+<text id="Talk with a licensed doctor_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="93" y="328.727">0920 111 2233</tspan></text>
+</g>
+<g id="Solar / alt-arrow-right_2" clip-path="url(#clip7_2_5099)">
+<g id="Frame_5">
+<path id="Vector_16" d="M335.75 305.75L340.25 311L335.75 316.25" stroke="#536D65" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+<g id="AdvanCare / Button">
+<rect x="24.5" y="370.5" width="341" height="51" rx="11.5" fill="white"/>
+<rect x="24.5" y="370.5" width="341" height="51" rx="11.5" stroke="#80958A"/>
+<text id="Continue" fill="#086B5B" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="96" y="401.818">Back to client information</tspan></text>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_2_5099">
+<rect width="24" height="24" fill="white" transform="translate(34 62)"/>
+</clipPath>
+<clipPath id="clip1_2_5099">
+<rect width="342" height="302" fill="white" transform="translate(24 120)"/>
+</clipPath>
+<clipPath id="clip2_2_5099">
+<rect width="26" height="26" fill="white" transform="translate(48 200)"/>
+</clipPath>
+<clipPath id="clip3_2_5099">
+<rect width="224" height="44" fill="white" transform="translate(93 191)"/>
+</clipPath>
+<clipPath id="clip4_2_5099">
+<rect width="18" height="18" fill="white" transform="translate(329 204)"/>
+</clipPath>
+<clipPath id="clip5_2_5099">
+<rect width="26" height="26" fill="white" transform="translate(48 298)"/>
+</clipPath>
+<clipPath id="clip6_2_5099">
+<rect width="224" height="44" fill="white" transform="translate(93 289)"/>
+</clipPath>
+<clipPath id="clip7_2_5099">
+<rect width="18" height="18" fill="white" transform="translate(329 302)"/>
+</clipPath>
+</defs>
+</svg>

@@ -1,0 +1,209 @@
+<svg width="390" height="844" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="05 / Profile">
+<rect width="390" height="844" rx="28" fill="#F7F9F5"/>
+<g id="StatusBar">
+<rect width="390" height="48" fill="#F7F9F5"/>
+<text id="9:41" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="14" font-weight="600" letter-spacing="0em"><tspan x="24" y="31.0909">9:41</tspan></text>
+<g id="System indicators">
+<g id="Group">
+<path id="Vector" d="M298 25H297C296.448 25 296 25.4477 296 26V29C296 29.5523 296.448 30 297 30H298C298.552 30 299 29.5523 299 29V26C299 25.4477 298.552 25 298 25Z" fill="#173E37"/>
+<path id="Vector_2" d="M303 22H302C301.448 22 301 22.4477 301 23V29C301 29.5523 301.448 30 302 30H303C303.552 30 304 29.5523 304 29V23C304 22.4477 303.552 22 303 22Z" fill="#173E37"/>
+<path id="Vector_3" d="M308 19H307C306.448 19 306 19.4477 306 20V29C306 29.5523 306.448 30 307 30H308C308.552 30 309 29.5523 309 29V20C309 19.4477 308.552 19 308 19Z" fill="#173E37"/>
+<path id="Vector_4" d="M313 16H312C311.448 16 311 16.4477 311 17V29C311 29.5523 311.448 30 312 30H313C313.552 30 314 29.5523 314 29V17C314 16.4477 313.552 16 313 16Z" fill="#173E37"/>
+</g>
+<g id="Group_2">
+<path id="Vector_5" d="M321 20C326.333 16 331.667 16 337 20M324 24C327.333 21.3333 330.667 21.3333 334 24M327 27C328.333 25.6667 329.667 25.6667 331 27" stroke="#173E37" stroke-width="1.8" stroke-linecap="round"/>
+</g>
+<path id="Vector_6" d="M329 31.3C329.718 31.3 330.3 30.718 330.3 30C330.3 29.282 329.718 28.7 329 28.7C328.282 28.7 327.7 29.282 327.7 30C327.7 30.718 328.282 31.3 329 31.3Z" fill="#173E37"/>
+<path id="Vector_7" d="M359.5 18H346.5C345.119 18 344 19.1193 344 20.5V25.5C344 26.8807 345.119 28 346.5 28H359.5C360.881 28 362 26.8807 362 25.5V20.5C362 19.1193 360.881 18 359.5 18Z" stroke="#173E37"/>
+<path id="Vector_8" d="M359 20H347C346.448 20 346 20.4477 346 21V25C346 25.5523 346.448 26 347 26H359C359.552 26 360 25.5523 360 25V21C360 20.4477 359.552 20 359 20Z" fill="#173E37"/>
+<path id="Vector_9" d="M365 22C365 21.4477 364.552 21 364 21C363.448 21 363 21.4477 363 22V24C363 24.5523 363.448 25 364 25C364.552 25 365 24.5523 365 24V22Z" fill="#173E37"/>
+</g>
+</g>
+<g id="Page navigation">
+<g id="Control / alt-arrow-left">
+<g id="Solar / alt-arrow-left" clip-path="url(#clip0_2_3485)">
+<g id="Frame">
+<path id="Vector_10" d="M49 67L43 74L49 81" stroke="#173E37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+<text id="Client profile" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="18" font-weight="600" letter-spacing="0em"><tspan x="68" y="80.5455">Client profile</tspan></text>
+</g>
+<g id="Home indicator">
+<rect x="129" y="830" width="132" height="5" rx="2.5" fill="#173E37"/>
+</g>
+<g id="Fixed action &#194;&#183; safe area">
+<rect width="390" height="100" transform="translate(0 740)" fill="#F7F9F5"/>
+<g id="AdvanCare / Button">
+<rect x="24.5" y="754.5" width="341" height="51" rx="11.5" fill="white"/>
+<rect x="24.5" y="754.5" width="341" height="51" rx="11.5" stroke="#80958A"/>
+<text id="Continue" fill="#086B5B" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="153" y="785.818">Edit profile</tspan></text>
+</g>
+</g>
+<g id="Content viewport / scroll vertically">
+<g id="Scrollable content" clip-path="url(#clip1_2_3485)">
+<g id="Profile tabs">
+<rect x="24" y="120" width="342" height="60" rx="12" fill="#E3F0E8"/>
+<g id="AdvanCare / Button_2">
+<rect x="28.5" y="124.5" width="164" height="51" rx="11.5" fill="white"/>
+<rect x="28.5" y="124.5" width="164" height="51" rx="11.5" stroke="#80958A"/>
+<text id="Continue_2" fill="#086B5B" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="71" y="155.818">Client info</tspan></text>
+</g>
+<g id="AdvanCare / Button_3">
+<rect x="197" y="124" width="165" height="52" rx="12" fill="#E3F0E8"/>
+<text id="Continue_3" fill="#086B5B" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="254" y="155.818">Family</tspan></text>
+</g>
+</g>
+<g id="Client identity" clip-path="url(#clip2_2_3485)">
+<g id="Maria avatar">
+<rect x="24" y="198" width="72" height="72" rx="36" fill="#E3F0E8"/>
+<text id="MS" fill="#086B5B" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="24" font-weight="600" letter-spacing="-0.02em"><tspan x="39" y="242.727">MS</tspan></text>
+</g>
+<g id="Identity details">
+<text id="Maria Santos" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="24" font-weight="600" letter-spacing="-0.02em"><tspan x="112" y="223.727">Maria Santos</tspan></text>
+<text id="Client ID &#194;&#183; AC-001234" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="112" y="247.727">Client ID &#xb7; AC-001234</tspan></text>
+<g id="AdvanCare / Badge">
+<rect x="112" y="254" width="115" height="30" rx="8" fill="#E3F0E8"/>
+<text id="Completed" fill="#124E43" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="12" font-weight="500" letter-spacing="0em"><tspan x="121" y="273.364">Registered client</tspan></text>
+</g>
+</g>
+</g>
+<g id="Divider">
+<rect width="342" height="1" transform="translate(24 302)" fill="#D3DFD7"/>
+</g>
+<g id="Section heading">
+<text id="Personal information" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="18" font-weight="600" letter-spacing="0em"><tspan x="24" y="341.545">Personal information</tspan></text>
+</g>
+<g id="Age &#38; gender" clip-path="url(#clip3_2_3485)">
+<g id="Solar / user-rounded" clip-path="url(#clip4_2_3485)">
+<g id="Frame_2">
+<g id="Group_3">
+<path id="Vector_11" d="M35 376.167C37.0251 376.167 38.6667 374.525 38.6667 372.5C38.6667 370.475 37.0251 368.833 35 368.833C32.975 368.833 31.3334 370.475 31.3334 372.5C31.3334 374.525 32.975 376.167 35 376.167Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_12" d="M35 386.25C38.5439 386.25 41.4167 384.608 41.4167 382.583C41.4167 380.558 38.5439 378.917 35 378.917C31.4562 378.917 28.5834 380.558 28.5834 382.583C28.5834 384.608 31.4562 386.25 35 386.25Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+<g id="Label and value" clip-path="url(#clip5_2_3485)">
+<text id="Age &#38; gender_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="58" y="380.727">Age &#38; gender</tspan></text>
+<text id="72 years old &#194;&#183; Female" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="58" y="404.818">72 years old &#xb7; Female</tspan></text>
+</g>
+</g>
+<g id="Home address" clip-path="url(#clip6_2_3485)">
+<g id="Solar / map-point" clip-path="url(#clip7_2_3485)">
+<g id="Frame_3">
+<g id="Group_4">
+<path id="Vector_13" d="M27.6666 438.298C27.6666 434.175 30.9499 430.833 35 430.833C39.0501 430.833 42.3333 434.175 42.3333 438.298C42.3333 442.388 39.9928 447.161 36.341 448.868C35.4897 449.266 34.5102 449.266 33.659 448.868C30.0072 447.161 27.6666 442.388 27.6666 438.298Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_14" d="M35 440.917C36.5188 440.917 37.75 439.685 37.75 438.167C37.75 436.648 36.5188 435.417 35 435.417C33.4812 435.417 32.25 436.648 32.25 438.167C32.25 439.685 33.4812 440.917 35 440.917Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+<g id="Label and value_2" clip-path="url(#clip8_2_3485)">
+<text id="Home address_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="58" y="442.727">Home address</tspan></text>
+<text id="Brgy. San Vicente, Tuguegarao City, Cagayan" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="58" y="466.818">Brgy. San Vicente, Tuguegarao City, </tspan><tspan x="58" y="490.818">Cagayan</tspan></text>
+</g>
+</g>
+<g id="Contact number" clip-path="url(#clip9_2_3485)">
+<g id="Solar / phone" clip-path="url(#clip10_2_3485)">
+<g id="Frame_4">
+<path id="Vector_15" d="M41.1199 533.299C41.5923 533.253 42.0032 532.998 42.3343 532.649L43.6365 531.279C44.5155 530.353 44.2676 528.767 43.143 528.119L41.3917 527.111C40.6532 526.686 39.7536 526.811 39.1765 527.419L38.7589 527.858C38.7589 527.858 37.7665 528.903 35.0578 526.051C32.3491 523.199 33.3414 522.155 33.3414 522.155L33.6043 521.878C34.252 521.196 34.3131 520.101 33.748 519.302L32.5921 517.667C31.8927 516.678 30.5413 516.547 29.7396 517.391L28.3008 518.906C27.9033 519.325 27.637 519.867 27.6693 520.469C27.7519 522.008 28.4098 525.321 32.0807 529.186C35.9735 533.284 39.6262 533.447 41.1199 533.299Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+</g>
+</g>
+<g id="Label and value_3" clip-path="url(#clip11_2_3485)">
+<text id="Contact number_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="58" y="528.727">Contact number</tspan></text>
+<text id="0917 123 4567" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="58" y="552.818">0917 123 4567</tspan></text>
+</g>
+</g>
+<g id="Section heading_2">
+<text id="Family &#38; caregivers" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="18" font-weight="600" letter-spacing="0em"><tspan x="24" y="597.545">Family &#38; caregivers</tspan></text>
+</g>
+<g id="Juan Santos &#194;&#183; Son" clip-path="url(#clip12_2_3485)">
+<g id="Solar / users-group-rounded" clip-path="url(#clip13_2_3485)">
+<g id="Frame_5">
+<g id="Group_5">
+<path id="Vector_16" d="M32.25 632.167C34.2751 632.167 35.9167 630.525 35.9167 628.5C35.9167 626.475 34.2751 624.833 32.25 624.833C30.225 624.833 28.5834 626.475 28.5834 628.5C28.5834 630.525 30.225 632.167 32.25 632.167Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_17" d="M37.75 631.25C39.2688 631.25 40.5 630.019 40.5 628.5C40.5 626.981 39.2688 625.75 37.75 625.75" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_18" d="M32.25 642.25C35.7939 642.25 38.6667 640.608 38.6667 638.583C38.6667 636.558 35.7939 634.917 32.25 634.917C28.7062 634.917 25.8334 636.558 25.8334 638.583C25.8334 640.608 28.7062 642.25 32.25 642.25Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_19" d="M40.5 635.833C42.108 636.186 43.25 637.079 43.25 638.125C43.25 639.069 42.3208 639.888 40.9583 640.298" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+<g id="Label and value_4" clip-path="url(#clip14_2_3485)">
+<text id="Juan Santos &#194;&#183; Son_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="58" y="636.727">Juan Santos &#xb7; Son</tspan></text>
+<text id="Primary contact &#194;&#183; 0918 765 4321" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="58" y="660.818">Primary contact &#xb7; 0918 765 4321</tspan></text>
+</g>
+</g>
+<g id="Ana Santos &#194;&#183; Daughter" clip-path="url(#clip15_2_3485)">
+<g id="Solar / user-rounded_2" clip-path="url(#clip16_2_3485)">
+<g id="Frame_6">
+<g id="Group_6">
+<path id="Vector_20" d="M35 694.167C37.0251 694.167 38.6667 692.525 38.6667 690.5C38.6667 688.475 37.0251 686.833 35 686.833C32.975 686.833 31.3334 688.475 31.3334 690.5C31.3334 692.525 32.975 694.167 35 694.167Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_21" d="M35 704.25C38.5439 704.25 41.4167 702.608 41.4167 700.583C41.4167 698.558 38.5439 696.917 35 696.917C31.4562 696.917 28.5834 698.558 28.5834 700.583C28.5834 702.608 31.4562 704.25 35 704.25Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+<g id="Label and value_5" clip-path="url(#clip17_2_3485)">
+<text id="Ana Santos &#194;&#183; Daughter_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="58" y="698.727">Ana Santos &#xb7; Daughter</tspan></text>
+<text id="0920 111 2233" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="58" y="722.818">0920 111 2233</tspan></text>
+</g>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_2_3485">
+<rect width="24" height="24" fill="white" transform="translate(34 62)"/>
+</clipPath>
+<clipPath id="clip1_2_3485">
+<rect width="342" height="609" fill="white" transform="translate(24 120)"/>
+</clipPath>
+<clipPath id="clip2_2_3485">
+<rect width="342" height="86" fill="white" transform="translate(24 198)"/>
+</clipPath>
+<clipPath id="clip3_2_3485">
+<rect width="342" height="44" fill="white" transform="translate(24 367)"/>
+</clipPath>
+<clipPath id="clip4_2_3485">
+<rect width="22" height="22" fill="white" transform="translate(24 367)"/>
+</clipPath>
+<clipPath id="clip5_2_3485">
+<rect width="308" height="44" fill="white" transform="translate(58 367)"/>
+</clipPath>
+<clipPath id="clip6_2_3485">
+<rect width="342" height="68" fill="white" transform="translate(24 429)"/>
+</clipPath>
+<clipPath id="clip7_2_3485">
+<rect width="22" height="22" fill="white" transform="translate(24 429)"/>
+</clipPath>
+<clipPath id="clip8_2_3485">
+<rect width="308" height="68" fill="white" transform="translate(58 429)"/>
+</clipPath>
+<clipPath id="clip9_2_3485">
+<rect width="342" height="44" fill="white" transform="translate(24 515)"/>
+</clipPath>
+<clipPath id="clip10_2_3485">
+<rect width="22" height="22" fill="white" transform="translate(24 515)"/>
+</clipPath>
+<clipPath id="clip11_2_3485">
+<rect width="308" height="44" fill="white" transform="translate(58 515)"/>
+</clipPath>
+<clipPath id="clip12_2_3485">
+<rect width="342" height="44" fill="white" transform="translate(24 623)"/>
+</clipPath>
+<clipPath id="clip13_2_3485">
+<rect width="22" height="22" fill="white" transform="translate(24 623)"/>
+</clipPath>
+<clipPath id="clip14_2_3485">
+<rect width="308" height="44" fill="white" transform="translate(58 623)"/>
+</clipPath>
+<clipPath id="clip15_2_3485">
+<rect width="342" height="44" fill="white" transform="translate(24 685)"/>
+</clipPath>
+<clipPath id="clip16_2_3485">
+<rect width="22" height="22" fill="white" transform="translate(24 685)"/>
+</clipPath>
+<clipPath id="clip17_2_3485">
+<rect width="308" height="44" fill="white" transform="translate(58 685)"/>
+</clipPath>
+</defs>
+</svg>

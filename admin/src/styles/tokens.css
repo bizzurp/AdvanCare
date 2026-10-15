@@ -1,0 +1,53 @@
+/* AdvanCare / Refined care — mapped from design-handoff/design-system/tokens.json */
+:root {
+  --ink: #173e37;
+  --muted: #536d65;
+  --teal: #086b5b;
+  --deep: #124e43;
+  --mint: #e3f0e8;
+  --lime: #cbe49c;
+  --olive: #697d34;
+  --paper: #f7f9f5;
+  --white: #ffffff;
+  --line: #d3dfd7;
+  --control: #80958a;
+  --gold: #996116;
+  --gold-bg: #fff1d6;
+  --red: #a83a32;
+  --red-bg: #fbe9e7;
+  --blue: #376e85;
+  --brand-blue: #075582;
+  --brand-green: #149361;
+
+  --s4: 4px;
+  --s8: 8px;
+  --s12: 12px;
+  --s16: 16px;
+  --s20: 20px;
+  --s24: 24px;
+  --s32: 32px;
+  --s48: 48px;
+
+  --gutter: 24px;
+  --btn-h: 52px;
+  --btn-r: 12px;
+  --input-r: 10px;
+  --card-r: 16px;
+  --tap: 44px;
+  --nav-h: 64px;
+
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --motion-onboarding: 320ms;
+  --motion-fade: 180ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-onboarding: 0ms;
+    --motion-fade: 0ms;
+  }
+}

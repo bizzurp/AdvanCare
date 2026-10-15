@@ -4,6 +4,7 @@ declare global {
   namespace Cloudflare {
     interface Env extends Bindings {
       TEST_HAS_DATABASE: 'true' | 'false';
+      TEST_DB_DISPOSABLE: 'true' | 'false';
     }
   }
 }

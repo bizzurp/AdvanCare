@@ -12,6 +12,16 @@ try {
 
 // Tests run inside workerd via Miniflare. The health "database ok" test runs only when
 // DATABASE_URL is set (backend/.env or the shell); it is skipped otherwise.
+//
+// TEST_LOCAL_DATABASE_URL (a migrated, throwaway Postgres on this computer) additionally runs
+// the DB-backed suites (staff scope/permissions), which write rows that can't be deleted
+// (audit_logs is append-only) — so they never run against the shared Neon database.
+const localTestDb = process.env.TEST_LOCAL_DATABASE_URL;
+if (localTestDb && !/^postgres(ql)?:\/\/[^@]*@(localhost|127\.0\.0\.1)(:\d+)?\//.test(localTestDb)) {
+  throw new Error('TEST_LOCAL_DATABASE_URL must point at localhost.');
+}
+const databaseUrl = localTestDb ?? process.env.DATABASE_URL;
+
 export default defineConfig({
   plugins: [
     cloudflareTest({
@@ -20,8 +30,9 @@ export default defineConfig({
       remoteBindings: false,
       miniflare: {
         bindings: {
-          TEST_HAS_DATABASE: process.env.DATABASE_URL ? 'true' : 'false',
-          ...(process.env.DATABASE_URL ? { DATABASE_URL: process.env.DATABASE_URL } : {}),
+          TEST_HAS_DATABASE: databaseUrl ? 'true' : 'false',
+          TEST_DB_DISPOSABLE: localTestDb ? 'true' : 'false',
+          ...(databaseUrl ? { DATABASE_URL: databaseUrl } : {}),
           // Dummy credentials: presigning is local HMAC work, nothing is sent to R2.
           R2_ACCOUNT_ID: 'testaccount',
           R2_ACCESS_KEY_ID: 'test-access-key',

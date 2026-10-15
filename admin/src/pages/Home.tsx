@@ -1,24 +1,44 @@
-import { Link } from 'react-router-dom';
-import { api, type Account, type AuditEntry } from '../api';
+import { Link, useSearchParams } from 'react-router-dom';
+import { api, type Account, type AlertRow, type AuditEntry } from '../api';
 import { useMe } from '../auth';
+import { BarList, ColumnChart } from '../components/charts';
 import { Icon } from '../components/Icon';
-import { Badge, ErrorNotice, Loading, Notice, PageHeader, useLoad } from '../components/ui';
-import { actionLabel, isFailureAction, personName, relative } from '../format';
+import { ScopeNote, StatusBadge } from '../components/ops';
+import { Badge, Button, ErrorNotice, Loading, Notice, PageHeader, useLoad } from '../components/ui';
+import { actionLabel, clock, day, isFailureAction, money, num, personName, relative, TIER_LABEL, todayManila, waitedFor } from '../format';
 
 function greeting(): string {
   const hour = Number(new Date().toLocaleString('en-PH', { timeZone: 'Asia/Manila', hour: 'numeric', hour12: false }));
   return hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
 }
 
+const RANGES = [
+  { value: '7', label: 'Last 7 days' },
+  { value: '30', label: 'Last 30 days' },
+  { value: '90', label: 'Last 90 days' },
+] as const;
+
 export function Home() {
   const me = useMe();
   const isSuper = me.role === 'SUPER_ADMIN';
+  const [params, setParams] = useSearchParams();
+  const range = RANGES.some((r) => r.value === params.get('range')) ? params.get('range')! : '30';
+  const overview = useLoad(() => api.overview(range), [range]);
   const activity = useLoad(() => api.audit({}), []);
   const accounts = useLoad(() => (isSuper ? api.accounts().then((r) => r.accounts) : Promise.resolve([] as Account[])), [isSuper]);
+  const o = overview.data;
+  const from = todayManila(-(Number(range) - 1));
 
   return (
     <>
-      <PageHeader title={`${greeting()}, ${personName(me).split(' ')[0]}`} subtitle={isSuper ? 'You can see every municipality and manage staff access.' : `You’re working in ${me.municipalities === 'ALL' ? 'all municipalities' : me.municipalities.join(', ')}.`} />
+      <PageHeader
+        title={`${greeting()}, ${personName(me).split(' ')[0]}`}
+        subtitle={
+          <>
+            Operations in <ScopeNote municipalities={me.municipalities} />. Figures update when you open this page.
+          </>
+        }
+      />
 
       {me.recoveryCodesRemaining <= 3 ? (
         <Notice tone="warn" title={me.recoveryCodesRemaining === 0 ? 'You have no recovery codes left' : `Only ${me.recoveryCodesRemaining} recovery codes left`}>
@@ -26,25 +46,135 @@ export function Home() {
         </Notice>
       ) : null}
 
+      <div className="filters" role="group" aria-label="Date range">
+        <div className="segmented">
+          {RANGES.map((r) => (
+            <button key={r.value} type="button" aria-pressed={range === r.value} onClick={() => setParams({ range: r.value }, { replace: true })}>
+              {r.label}
+            </button>
+          ))}
+        </div>
+        <Button variant="quiet" onClick={() => void overview.reload()} busy={overview.loading && !!o}>
+          Refresh
+        </Button>
+      </div>
+
+      {overview.error ? <ErrorNotice error={overview.error} /> : null}
+      {!o ? (
+        overview.loading ? <Loading /> : null
+      ) : (
+        <div className={`stack20 ${overview.loading ? 'refetching' : ''}`}>
+          <div className="kpis">
+            <Kpi label="Waiting for a caregiver" value={o.kpis.waiting} to="/requests?status=WAITING" tone={o.kpis.waiting ? 'warn' : undefined} />
+            <Kpi label="In progress now" value={o.kpis.inProgress} to="/requests?status=IN_PROGRESS" />
+            <Kpi label="Escalated" value={o.kpis.escalated} to="/requests?status=ESCALATED" tone={o.kpis.escalated ? 'bad' : undefined} />
+            <Kpi label="Confirmed, not started" value={o.kpis.confirmedUpcoming} to="/requests?status=CONFIRMED" />
+          </div>
+
+          <div className="kpis">
+            <Kpi label={`Requests, ${RANGES.find((r) => r.value === range)!.label.toLowerCase()}`} value={o.kpis.requests} to={`/requests?from=${from}`} sub={`${num(o.kpis.requestsToday)} today`} />
+            <Kpi label="Completed shifts" value={o.kpis.completed} to={`/requests?status=COMPLETED&from=${from}`} sub={`${num(o.kpis.cancelled)} cancelled`} />
+            <Kpi label="Billed for completed shifts" value={money(o.kpis.revenue)} to={`/payments?from=${from}`} sub={`${money(o.kpis.payouts)} to caregivers · ${money(o.kpis.margin)} margin`} />
+            <Kpi
+              label="Caregivers available"
+              value={o.kpis.caregivers.available}
+              to="/caregivers?accredited=yes&available=yes"
+              sub={`of ${num(o.kpis.caregivers.accredited)} accredited`}
+              tone={o.kpis.caregivers.accredited && !o.kpis.caregivers.available ? 'warn' : undefined}
+            />
+          </div>
+
+          <div className="grid-detail">
+            <section className="card">
+              <div className="card-head">
+                <h2>Needs attention</h2>
+                <Link to="/requests?status=OPEN" className="link-arrow">
+                  Open requests <Icon name="alt-arrow-right" size={16} />
+                </Link>
+              </div>
+              <AttentionList waiting={o.alerts.waiting} escalated={o.alerts.escalated} />
+            </section>
+            <section className="card">
+              <h2>Requests by service</h2>
+              <BarList
+                valueLabel={num}
+                empty="No requests in this period."
+                items={o.byService.map((s) => ({ key: s.tier, label: TIER_LABEL[s.tier], value: s.requests, href: `/requests?tier=${s.tier}&from=${from}` }))}
+              />
+              <h2 className="mt8">Requests by status</h2>
+              <BarList
+                valueLabel={num}
+                empty="No requests in this period."
+                items={o.byStatus.filter((s) => s.requests > 0).map((s) => ({ key: s.status, label: <StatusBadge status={s.status} />, value: s.requests, href: `/requests?status=${s.status}&from=${from}` }))}
+              />
+            </section>
+          </div>
+
+          <section className="card">
+            <div className="card-head">
+              <h2>New requests per day</h2>
+            </div>
+            <ColumnChart
+              valueLabel={(n) => `${num(n)} request${n === 1 ? '' : 's'}`}
+              points={o.daily.map((d, i, all) => ({
+                key: d.day,
+                label: day(d.day, { weekday: 'short', month: 'short', day: 'numeric' }),
+                tick: i === all.length - 1 || i % Math.ceil(all.length / 7) === 0 ? day(d.day, { month: 'short', day: 'numeric' }) : '',
+                value: d.requests,
+              }))}
+            />
+            <p className="muted small">
+              {num(o.kpis.clientsServed)} of {num(o.kpis.clientsRegistered)} registered clients had a request in this period.
+            </p>
+          </section>
+        </div>
+      )}
+
       {isSuper ? <StaffSummary accounts={accounts.data} loading={accounts.loading} error={accounts.error} /> : null}
 
       <section className="card">
         <div className="card-head">
-          <h2>{isSuper ? 'Recent activity' : 'Your recent activity'}</h2>
+          <h2>{isSuper ? 'Recent staff activity' : 'Your recent activity'}</h2>
           <Link to="/audit" className="link-arrow">
             Full audit log <Icon name="alt-arrow-right" size={16} />
           </Link>
         </div>
         {activity.loading ? <Loading /> : activity.error ? <ErrorNotice error={activity.error} /> : <ActivityList entries={activity.data?.entries.slice(0, 8) ?? []} />}
       </section>
-
-      <section className="card card-mint">
-        <h2>What’s next in this console</h2>
-        <p className="muted">
-          Phase B adds the operations dashboards: today’s requests and SLA alerts, the shifts board, clients, caregivers, payments and exports, all limited to each Admin’s municipalities. They’ll appear in the sidebar as they go live.
-        </p>
-      </section>
     </>
+  );
+}
+
+function Kpi({ label, value, to, sub, tone }: { label: string; value: number | string; to: string; sub?: string; tone?: 'warn' | 'bad' }) {
+  return (
+    <Link to={to} className={`kpi ${tone ? `kpi-${tone}` : ''}`}>
+      <span className="kpi-label">{label}</span>
+      <span className="kpi-value">{typeof value === 'number' ? num(value) : value}</span>
+      {sub ? <span className="kpi-sub">{sub}</span> : null}
+    </Link>
+  );
+}
+
+function AttentionList({ waiting, escalated }: { waiting: AlertRow[]; escalated: AlertRow[] }) {
+  if (!waiting.length && !escalated.length) return <p className="muted">Nothing waiting. Every request has a caregiver or is closed.</p>;
+  const rows = [...escalated.map((r) => ({ ...r, why: 'Escalated' })), ...waiting.map((r) => ({ ...r, why: `Waiting ${waitedFor(r.createdAt)}` }))];
+  return (
+    <ul className="list">
+      {rows.map((r) => (
+        <li key={r.id}>
+          <Link to={`/requests/${r.id}`} className="list-row attention-row">
+            <span className="attention-main">
+              <b>{r.client.name}</b>
+              <span className="muted small">
+                {TIER_LABEL[r.tier]} · Brgy. {r.barangay}, {r.municipality} · {day(r.scheduledDate, { month: 'short', day: 'numeric' })} {clock(r.scheduledStartTime)}
+              </span>
+            </span>
+            <Badge tone={r.status === 'ESCALATED' ? 'bad' : 'warn'}>{r.why}</Badge>
+            <Icon name="alt-arrow-right" size={16} />
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -61,18 +191,19 @@ function StaffSummary({ accounts, loading, error }: { accounts: Account[] | null
   const attention = list.filter((a) => a.locked || a.pendingInvite?.awaitingApproval || a.pendingInvite?.expired);
   return (
     <>
+      <h2 className="section-title">Staff accounts</h2>
       <div className="kpis">
         {tiles.map((t) => (
           <Link key={t.label} to={t.to} className="kpi">
-            <span className="kpi-value">{t.value}</span>
             <span className="kpi-label">{t.label}</span>
+            <span className="kpi-value">{t.value}</span>
           </Link>
         ))}
       </div>
       {attention.length ? (
         <section className="card">
           <div className="card-head">
-            <h2>Needs your attention</h2>
+            <h2>Staff accounts needing attention</h2>
           </div>
           <ul className="list">
             {attention.map((a) => (

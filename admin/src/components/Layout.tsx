@@ -12,9 +12,19 @@ interface NavItem {
   superOnly?: boolean;
 }
 
-// Operations pages (Requests, Shifts, Clients, Caregivers, Payments…) arrive in phase B.
 const NAV: { heading?: string; items: NavItem[] }[] = [
-  { items: [{ to: '/', label: 'Overview', icon: 'home-angle' }] },
+  {
+    heading: 'Operations',
+    items: [
+      { to: '/', label: 'Overview', icon: 'home-angle' },
+      { to: '/requests', label: 'Requests', icon: 'document-medicine' },
+      { to: '/shifts', label: 'Shifts board', icon: 'calendar' },
+      { to: '/clients', label: 'Clients', icon: 'user-heart' },
+      { to: '/caregivers', label: 'Caregivers', icon: 'stethoscope' },
+      { to: '/payments', label: 'Payments', icon: 'wallet' },
+      { to: '/reports', label: 'Reports', icon: 'chart-square' },
+    ],
+  },
   {
     heading: 'Administration',
     items: [
@@ -83,7 +93,7 @@ export function Layout() {
             );
           })}
         </nav>
-        <p className="sidebar-note">Requests, shifts, clients, caregivers and payments are coming in the next phase.</p>
+        <p className="sidebar-note">Read-only for now. Assigning caregivers and marking payments arrive in the next phase.</p>
       </aside>
       <div className="main-col">
         <header className="topbar">

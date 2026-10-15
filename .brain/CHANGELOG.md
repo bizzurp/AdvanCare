@@ -1,5 +1,16 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-15] - Staff Console Phase B: Operations Dashboards
+
+### Added
+- Backend read APIs under `/api/v1/admin`: overview, requests ledger + detail, shifts board, clients + detail, reason-gated clinical notes, caregivers + detail, payments, CSV exports (requests, payouts, payments). All limited to the staff member's municipalities; out-of-scope records return 404; opening a client, viewing clinical notes and exporting are audited.
+- Admin pages: Overview (KPI tiles, needs-attention list, requests by service/status, daily requests chart with tooltip and table view), Requests, Request detail, Shifts board, Clients, Client detail, Caregivers, Caregiver detail, Payments, Reports. Sidebar "Operations" group; narrow screens no longer scroll sideways.
+- `npm run db:seed-demo` (local databases only) and an optional DB-backed scope test suite (`TEST_LOCAL_DATABASE_URL`).
+
+### Verified
+- Backend: 75 tests pass (9 skipped without a local DB); with a local Postgres, 82 pass including the role × scope matrix. Builds pass for backend and admin.
+- Browser, against seeded local data as a Super Admin: overview figures, chart and drill-downs, waiting filter, request → client → clinical notes (reason required, audited), payments, caregivers, shifts board, payouts CSV (159 rows), audit entries for each.
+
 ## [2026-10-15] - Staff Console Phase A: Accounts, 2FA, Audit (ADR-011/012)
 
 ### Added

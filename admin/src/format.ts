@@ -1,4 +1,4 @@
-import type { AuditEntry, Scope, StaffRole, StaffStatus } from './api';
+import type { AuditEntry, PaymentMethod, PaymentStatus, Scope, ShiftStatus, ShiftTier, StaffRole, StaffStatus } from './api';
 
 const TZ = 'Asia/Manila';
 
@@ -68,6 +68,9 @@ export const ACTION_LABEL: Record<string, string> = {
   'me.sessions_revoked': 'Signed out other sessions',
   'me.recovery_codes_regenerated': 'Made new recovery codes',
   'me.mfa_reset': 'Reset own 2-step verification',
+  'client.viewed': 'Opened a client record',
+  'client.clinical_viewed': 'Viewed clinical notes',
+  'export.downloaded': 'Downloaded an export',
 };
 
 export const actionLabel = (action: string) => ACTION_LABEL[action] ?? action;
@@ -87,5 +90,70 @@ export function metadataSummary(entry: AuditEntry): string {
   if (typeof m.sessionsEnded === 'number' && m.sessionsEnded) parts.push(`${m.sessionsEnded} session(s) ended`);
   if (typeof m.count === 'number') parts.push(`${m.count} session(s)`);
   if (typeof m.via === 'string') parts.push(`via ${m.via}`);
+  if (typeof m.table === 'string') parts.push(`${m.table}${typeof m.rows === 'number' ? `, ${m.rows} rows` : ''}`);
+  if (typeof m.notes === 'number') parts.push(`${m.notes} note(s)`);
   return parts.join(' · ');
+}
+
+// ---------- Operations ----------
+
+export type Tone = 'neutral' | 'good' | 'warn' | 'bad' | 'info' | 'deep';
+
+export const TIER_LABEL: Record<ShiftTier, string> = { BGAY_HOME_300: 'Home caregiver ₱300', CVMC_INSTITUTIONAL_500: 'CVMC caregiver ₱500' };
+
+/** Status always shows as words + tone, never colour alone. */
+export const SHIFT_STATUS: Record<ShiftStatus, { label: string; tone: Tone }> = {
+  REQUESTED: { label: 'New', tone: 'warn' },
+  MATCHING: { label: 'Finding caregiver', tone: 'warn' },
+  CONFIRMED: { label: 'Confirmed', tone: 'info' },
+  IN_PROGRESS: { label: 'In progress', tone: 'deep' },
+  COMPLETED: { label: 'Completed', tone: 'good' },
+  CANCELLED: { label: 'Cancelled', tone: 'neutral' },
+  ESCALATED: { label: 'Escalated', tone: 'bad' },
+};
+
+export const PAYMENT_STATUS: Record<PaymentStatus, { label: string; tone: Tone }> = {
+  PENDING: { label: 'Pending', tone: 'warn' },
+  SUCCEEDED: { label: 'Paid', tone: 'good' },
+  FAILED: { label: 'Failed', tone: 'bad' },
+  REFUNDED: { label: 'Refunded', tone: 'neutral' },
+};
+
+export const METHOD_LABEL: Record<PaymentMethod, string> = { GCASH: 'GCash', MAYA: 'Maya', CASH: 'Cash', BANK_TRANSFER: 'Bank transfer' };
+
+const peso = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', maximumFractionDigits: 0 });
+export const money = (n: number) => peso.format(n);
+export const num = (n: number) => n.toLocaleString('en-PH');
+
+/** "08:00:00" → "8:00 AM". */
+export function clock(time: string | null | undefined): string {
+  if (!time) return '—';
+  const [h = '0', m = '00'] = time.split(':');
+  const hour = Number(h);
+  return `${hour % 12 || 12}:${m} ${hour < 12 ? 'AM' : 'PM'}`;
+}
+
+/** "2026-10-15" → "Oct 15, 2026" without timezone drift. */
+export function day(isoDate: string | null | undefined, opts: Intl.DateTimeFormatOptions = { dateStyle: 'medium' }): string {
+  if (!isoDate) return '—';
+  return new Date(`${isoDate}T12:00:00+08:00`).toLocaleDateString('en-PH', { timeZone: TZ, ...opts });
+}
+
+export function timeOnly(iso: string | null | undefined): string {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleTimeString('en-PH', { timeZone: TZ, hour: 'numeric', minute: '2-digit' });
+}
+
+/** "2 h 15 min" since a timestamp. */
+export function waitedFor(iso: string): string {
+  const mins = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+  if (mins < 60) return `${mins} min`;
+  const h = Math.floor(mins / 60);
+  if (h < 48) return `${h} h ${mins % 60} min`;
+  return `${Math.round(h / 24)} days`;
+}
+
+/** Today in Asia/Manila as YYYY-MM-DD. */
+export function todayManila(offsetDays = 0): string {
+  return new Date(Date.now() + 8 * 3600_000 + offsetDays * 86400_000).toISOString().slice(0, 10);
 }

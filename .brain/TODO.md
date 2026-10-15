@@ -55,7 +55,9 @@
 - [ ] Email provider for invite links (they're copied from the UI for now).
 - [ ] DB-backed integration tests for the role × endpoint matrix and lockout (needs a disposable Postgres/Neon branch in CI).
 - [ ] Promote an existing Admin to Super Admin (needs second-Super-Admin approval; only invites exist now).
-- [ ] Phase B: Overview KPIs, Requests (+ detail), Shifts board, Clients, Caregivers, Payments, Reports/exports — all through a `scopedClients` helper (out-of-scope → 404).
+- [x] Phase B: Overview KPIs/charts, Requests (+ detail), Shifts board, Clients (+ detail, reason-gated clinical notes), Caregivers (+ detail), Payments, Reports/CSV exports, all municipality-scoped and audited (2026-10-15).
+- [ ] Real data: the Neon database has no clients/requests yet, so the live console is empty until ADV-AUTH-001/ADV-BOOK-001 send real bookings (use `db:seed-demo` on a local DB to review).
+- [ ] SLA deadlines and adherence on the Overview once plan tiers exist (`subscriptions`, phase D).
 - [ ] Phase C: assign/confirm/cancel/escalate, caregiver accreditation, payment marking; client `GET /shifts/mine`; remove the PWA demo coordinator dashboard.
 - [ ] Phase D: `subscriptions` + LGU subsidy reconciliation, System status page, scheduled exports.
 

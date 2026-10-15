@@ -1,5 +1,5 @@
 ---
-status: in-progress (phase A done 2026-10-15)
+status: in-progress (phases A and B done 2026-10-15)
 date: 2026-10-15
 ---
 

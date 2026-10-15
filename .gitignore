@@ -1,5 +1,6 @@
 # macOS
 .DS_Store
+.wrangler/
 
 # Local env files (secrets and personal notes) — commit only *.example templates
 .env

@@ -1,0 +1,158 @@
+<svg width="390" height="844" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="08 / Prescription">
+<rect width="390" height="844" rx="28" fill="#F7F9F5"/>
+<g id="StatusBar">
+<rect width="390" height="48" fill="#F7F9F5"/>
+<text id="9:41" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="14" font-weight="600" letter-spacing="0em"><tspan x="24" y="31.0909">9:41</tspan></text>
+<g id="System indicators">
+<g id="Group">
+<path id="Vector" d="M298 25H297C296.448 25 296 25.4477 296 26V29C296 29.5523 296.448 30 297 30H298C298.552 30 299 29.5523 299 29V26C299 25.4477 298.552 25 298 25Z" fill="#173E37"/>
+<path id="Vector_2" d="M303 22H302C301.448 22 301 22.4477 301 23V29C301 29.5523 301.448 30 302 30H303C303.552 30 304 29.5523 304 29V23C304 22.4477 303.552 22 303 22Z" fill="#173E37"/>
+<path id="Vector_3" d="M308 19H307C306.448 19 306 19.4477 306 20V29C306 29.5523 306.448 30 307 30H308C308.552 30 309 29.5523 309 29V20C309 19.4477 308.552 19 308 19Z" fill="#173E37"/>
+<path id="Vector_4" d="M313 16H312C311.448 16 311 16.4477 311 17V29C311 29.5523 311.448 30 312 30H313C313.552 30 314 29.5523 314 29V17C314 16.4477 313.552 16 313 16Z" fill="#173E37"/>
+</g>
+<g id="Group_2">
+<path id="Vector_5" d="M321 20C326.333 16 331.667 16 337 20M324 24C327.333 21.3333 330.667 21.3333 334 24M327 27C328.333 25.6667 329.667 25.6667 331 27" stroke="#173E37" stroke-width="1.8" stroke-linecap="round"/>
+</g>
+<path id="Vector_6" d="M329 31.3C329.718 31.3 330.3 30.7179 330.3 30C330.3 29.282 329.718 28.7 329 28.7C328.282 28.7 327.7 29.282 327.7 30C327.7 30.7179 328.282 31.3 329 31.3Z" fill="#173E37"/>
+<path id="Vector_7" d="M359.5 18H346.5C345.119 18 344 19.1193 344 20.5V25.5C344 26.8807 345.119 28 346.5 28H359.5C360.881 28 362 26.8807 362 25.5V20.5C362 19.1193 360.881 18 359.5 18Z" stroke="#173E37"/>
+<path id="Vector_8" d="M359 20H347C346.448 20 346 20.4477 346 21V25C346 25.5523 346.448 26 347 26H359C359.552 26 360 25.5523 360 25V21C360 20.4477 359.552 20 359 20Z" fill="#173E37"/>
+<path id="Vector_9" d="M365 22C365 21.4477 364.552 21 364 21C363.448 21 363 21.4477 363 22V24C363 24.5523 363.448 25 364 25C364.552 25 365 24.5523 365 24V22Z" fill="#173E37"/>
+</g>
+</g>
+<g id="Page navigation">
+<g id="Control / alt-arrow-left">
+<g id="Solar / alt-arrow-left" clip-path="url(#clip0_2_3855)">
+<g id="Frame">
+<path id="Vector_10" d="M49 67L43 74L49 81" stroke="#173E37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+<text id="Medical prescription" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="18" font-weight="600" letter-spacing="0em"><tspan x="68" y="80.5455">Medical prescription</tspan></text>
+</g>
+<g id="Home indicator">
+<rect x="129" y="830" width="132" height="5" rx="2.5" fill="#173E37"/>
+</g>
+<g id="Fixed action &#194;&#183; safe area">
+<rect width="390" height="100" transform="translate(0 740)" fill="#F7F9F5"/>
+<g id="AdvanCare / Button">
+<rect x="24" y="754" width="342" height="52" rx="12" fill="#086B5B"/>
+<text id="Continue" fill="white" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="135" y="785.818">Review request</tspan></text>
+</g>
+</g>
+<g id="Content viewport / scroll vertically">
+<g id="Scrollable content" clip-path="url(#clip1_2_3855)">
+<g id="Request progress">
+<g id="Details">
+<g id="Step 1">
+<rect x="24" y="120" width="24" height="24" rx="12" fill="#086B5B"/>
+<text id="1" fill="white" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="12" font-weight="500" letter-spacing="0em"><tspan x="32" y="136.364">1</tspan></text>
+</g>
+<text id="Details_2" fill="#086B5B" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" font-weight="500" letter-spacing="0em"><tspan x="54" y="133.727">Details</tspan></text>
+</g>
+<g id="Review">
+<g id="Step 2">
+<rect x="140" y="120" width="24" height="24" rx="12" fill="#D3DFD7"/>
+<text id="2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="12" font-weight="500" letter-spacing="0em"><tspan x="148" y="136.364">2</tspan></text>
+</g>
+<text id="Review_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="170" y="133.727">Review</tspan></text>
+</g>
+<g id="Sent">
+<g id="Step 3">
+<rect x="256" y="120" width="24" height="24" rx="12" fill="#D3DFD7"/>
+<text id="3" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="12" font-weight="500" letter-spacing="0em"><tspan x="264" y="136.364">3</tspan></text>
+</g>
+<text id="Sent_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="286" y="133.727">Sent</tspan></text>
+</g>
+</g>
+<text id="Your consultation details, in one place." fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="24" font-weight="600" letter-spacing="-0.02em"><tspan x="24" y="191.727">Your consultation&#10;</tspan><tspan x="24" y="225.727">details, in one place.</tspan></text>
+<g id="Consultation details">
+<rect x="24.5" y="256.5" width="341" height="166" rx="15.5" fill="white"/>
+<rect x="24.5" y="256.5" width="341" height="166" rx="15.5" stroke="#D3DFD7"/>
+<g id="Doctor" clip-path="url(#clip2_2_3855)">
+<g id="Solar / stethoscope" clip-path="url(#clip3_2_3855)">
+<g id="Frame_2">
+<g id="Group_3">
+<path id="Vector_11" d="M51.25 288.049V290.584C51.25 293.115 53.3021 295.167 55.8333 295.167H56.6422C58.3717 295.167 59.8295 294.004 60.276 292.417" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_12" d="M47.9762 277.75H47.8922C47.6054 277.75 47.462 277.75 47.3411 277.761C46.0137 277.878 44.9615 278.93 44.8441 280.258C44.8334 280.379 44.8334 280.522 44.8334 280.809V281.632C44.8334 285.176 47.7062 288.049 51.25 288.049C54.6492 288.049 57.4048 285.293 57.4048 281.894V280.809C57.4048 280.522 57.4048 280.379 57.3941 280.258C57.2768 278.93 56.2245 277.878 54.897 277.761C54.7762 277.75 54.6327 277.75 54.346 277.75H54.2619" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_13" d="M60.4167 292.417C61.9355 292.417 63.1667 291.186 63.1667 289.667C63.1667 288.148 61.9355 286.917 60.4167 286.917C58.898 286.917 57.6667 288.148 57.6667 289.667C57.6667 291.186 58.898 292.417 60.4167 292.417Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_14" d="M54 276.833V278.667" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_15" d="M48.5 276.833V278.667" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+<g id="Label and value" clip-path="url(#clip4_2_3855)">
+<text id="Doctor_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="77" y="288.727">Doctor</tspan></text>
+<text id="Dr. Santos Reyes" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="77" y="312.818">Dr. Santos Reyes</tspan></text>
+</g>
+</g>
+<g id="Divider">
+<rect width="306" height="1" transform="translate(43 339)" fill="#D3DFD7"/>
+</g>
+<g id="Date &#38; time" clip-path="url(#clip5_2_3855)">
+<g id="Solar / calendar" clip-path="url(#clip6_2_3855)">
+<g id="Frame_3">
+<g id="Group_4">
+<path id="Vector_16" d="M44.8334 371C44.8334 367.543 44.8334 365.815 45.9073 364.741C46.9813 363.667 48.7097 363.667 52.1667 363.667H55.8334C59.2903 363.667 61.0189 363.667 62.0927 364.741C63.1667 365.815 63.1667 367.543 63.1667 371V372.833C63.1667 376.29 63.1667 378.019 62.0927 379.093C61.0189 380.167 59.2903 380.167 55.8334 380.167H52.1667C48.7097 380.167 46.9813 380.167 45.9073 379.093C44.8334 378.019 44.8334 376.29 44.8334 372.833V371Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_17" d="M49.4167 363.667V362.292" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_18" d="M58.5834 363.667V362.292" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_19" d="M45.2917 368.25H62.7084" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+<g id="Label and value_2" clip-path="url(#clip7_2_3855)">
+<text id="Date &#38; time_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="77" y="373.727">Date &#38; time</tspan></text>
+<text id="26 April 2025 &#194;&#183; 10:00 AM" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="77" y="397.818">26 April 2025 &#xb7; 10:00 AM</tspan></text>
+</g>
+</g>
+</g>
+<text id="Prescription attachment" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="24" y="462.818">Prescription attachment</tspan></text>
+<text id="Optional &#194;&#183; Add a previous prescription for context." fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="14" letter-spacing="0em"><tspan x="24" y="508.091">Optional &#xb7; Add a previous prescription for context.</tspan></text>
+<g id="Upload prescription control">
+<rect x="24.5" y="537.5" width="341" height="143" rx="15.5" fill="white"/>
+<rect x="24.5" y="537.5" width="341" height="143" rx="15.5" stroke="#80958A"/>
+<g id="Solar / camera" clip-path="url(#clip8_2_3855)">
+<g id="Frame_4">
+<g id="Group_5">
+<path id="Vector_20" d="M195 583.333C197.209 583.333 199 581.543 199 579.333C199 577.124 197.209 575.333 195 575.333C192.791 575.333 191 577.124 191 579.333C191 581.543 192.791 583.333 195 583.333Z" stroke="#086B5B" stroke-width="2" stroke-linecap="round"/>
+<path id="Vector_21" d="M192.037 590H197.963C202.124 590 204.205 590 205.7 589.019C206.347 588.595 206.902 588.049 207.335 587.414C208.333 585.947 208.333 583.904 208.333 579.818C208.333 575.733 208.333 573.69 207.335 572.222C206.902 571.587 206.347 571.041 205.7 570.617C204.739 569.987 203.537 569.762 201.696 569.681C200.817 569.681 200.061 569.028 199.889 568.182C199.63 566.913 198.496 566 197.178 566H192.822C191.504 566 190.369 566.913 190.111 568.182C189.939 569.028 189.182 569.681 188.304 569.681C186.463 569.762 185.261 569.987 184.3 570.617C183.653 571.041 183.098 571.587 182.665 572.222C181.667 573.69 181.667 575.733 181.667 579.818C181.667 583.904 181.667 585.947 182.665 587.414C183.098 588.049 183.653 588.595 184.3 589.019C185.795 590 187.876 590 192.037 590Z" stroke="#086B5B" stroke-width="2" stroke-linecap="round"/>
+<path id="Vector_22" d="M204.333 575.333H203" stroke="#086B5B" stroke-width="2" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+<text id="Take a photo or upload a file" fill="#086B5B" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="87" y="621.818">Take a photo or upload a file</tspan></text>
+<text id="JPG, PNG or PDF &#194;&#183; Up to 10 MB" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="99" y="651.727">JPG, PNG or PDF &#xb7; Up to 10 MB</tspan></text>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_2_3855">
+<rect width="24" height="24" fill="white" transform="translate(34 62)"/>
+</clipPath>
+<clipPath id="clip1_2_3855">
+<rect width="342" height="561" fill="white" transform="translate(24 120)"/>
+</clipPath>
+<clipPath id="clip2_2_3855">
+<rect width="306" height="44" fill="white" transform="translate(43 275)"/>
+</clipPath>
+<clipPath id="clip3_2_3855">
+<rect width="22" height="22" fill="white" transform="translate(43 275)"/>
+</clipPath>
+<clipPath id="clip4_2_3855">
+<rect width="272" height="44" fill="white" transform="translate(77 275)"/>
+</clipPath>
+<clipPath id="clip5_2_3855">
+<rect width="306" height="44" fill="white" transform="translate(43 360)"/>
+</clipPath>
+<clipPath id="clip6_2_3855">
+<rect width="22" height="22" fill="white" transform="translate(43 360)"/>
+</clipPath>
+<clipPath id="clip7_2_3855">
+<rect width="272" height="44" fill="white" transform="translate(77 360)"/>
+</clipPath>
+<clipPath id="clip8_2_3855">
+<rect width="32" height="32" fill="white" transform="translate(179 562)"/>
+</clipPath>
+</defs>
+</svg>

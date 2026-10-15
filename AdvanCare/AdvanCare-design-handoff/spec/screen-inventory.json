@@ -1,0 +1,42 @@
+{
+  "referenceFrame": {
+    "width": 390,
+    "height": 844
+  },
+  "onboarding": [
+    "Connected care",
+    "Care your way",
+    "Clearer picture"
+  ],
+  "core": [
+    "Welcome",
+    "Sign in",
+    "Home",
+    "Plans",
+    "Profile",
+    "Services",
+    "Tele-consultation",
+    "Prescription",
+    "Transport",
+    "Home caregiver",
+    "CVMC caregiver",
+    "Reports",
+    "Service records",
+    "Service trends",
+    "Dashboard",
+    "Assistant"
+  ],
+  "support": [
+    "Prescription review",
+    "Family profile",
+    "More",
+    "Request received",
+    "Help",
+    "Edit profile",
+    "Edit visit",
+    "Choose doctor",
+    "Attachment options",
+    "Export report"
+  ],
+  "total": 29
+}

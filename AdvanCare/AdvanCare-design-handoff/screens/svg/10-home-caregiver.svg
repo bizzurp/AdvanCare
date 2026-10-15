@@ -1,0 +1,202 @@
+<svg width="390" height="844" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="10 / Home caregiver">
+<rect width="390" height="844" rx="28" fill="#F7F9F5"/>
+<g id="StatusBar">
+<rect width="390" height="48" fill="#F7F9F5"/>
+<text id="9:41" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="14" font-weight="600" letter-spacing="0em"><tspan x="24" y="31.0909">9:41</tspan></text>
+<g id="System indicators">
+<g id="Group">
+<path id="Vector" d="M298 25H297C296.448 25 296 25.4477 296 26V29C296 29.5523 296.448 30 297 30H298C298.552 30 299 29.5523 299 29V26C299 25.4477 298.552 25 298 25Z" fill="#173E37"/>
+<path id="Vector_2" d="M303 22H302C301.448 22 301 22.4477 301 23V29C301 29.5523 301.448 30 302 30H303C303.552 30 304 29.5523 304 29V23C304 22.4477 303.552 22 303 22Z" fill="#173E37"/>
+<path id="Vector_3" d="M308 19H307C306.448 19 306 19.4477 306 20V29C306 29.5523 306.448 30 307 30H308C308.552 30 309 29.5523 309 29V20C309 19.4477 308.552 19 308 19Z" fill="#173E37"/>
+<path id="Vector_4" d="M313 16H312C311.448 16 311 16.4477 311 17V29C311 29.5523 311.448 30 312 30H313C313.552 30 314 29.5523 314 29V17C314 16.4477 313.552 16 313 16Z" fill="#173E37"/>
+</g>
+<g id="Group_2">
+<path id="Vector_5" d="M321 20C326.333 16 331.667 16 337 20M324 24C327.333 21.3333 330.667 21.3333 334 24M327 27C328.333 25.6667 329.667 25.6667 331 27" stroke="#173E37" stroke-width="1.8" stroke-linecap="round"/>
+</g>
+<path id="Vector_6" d="M329 31.3C329.718 31.3 330.3 30.7179 330.3 30C330.3 29.282 329.718 28.7 329 28.7C328.282 28.7 327.7 29.282 327.7 30C327.7 30.7179 328.282 31.3 329 31.3Z" fill="#173E37"/>
+<path id="Vector_7" d="M359.5 18H346.5C345.119 18 344 19.1193 344 20.5V25.5C344 26.8807 345.119 28 346.5 28H359.5C360.881 28 362 26.8807 362 25.5V20.5C362 19.1193 360.881 18 359.5 18Z" stroke="#173E37"/>
+<path id="Vector_8" d="M359 20H347C346.448 20 346 20.4477 346 21V25C346 25.5523 346.448 26 347 26H359C359.552 26 360 25.5523 360 25V21C360 20.4477 359.552 20 359 20Z" fill="#173E37"/>
+<path id="Vector_9" d="M365 22C365 21.4477 364.552 21 364 21C363.448 21 363 21.4477 363 22V24C363 24.5523 363.448 25 364 25C364.552 25 365 24.5523 365 24V22Z" fill="#173E37"/>
+</g>
+</g>
+<g id="Page navigation">
+<g id="Control / alt-arrow-left">
+<g id="Solar / alt-arrow-left" clip-path="url(#clip0_2_4078)">
+<g id="Frame">
+<path id="Vector_10" d="M49 67L43 74L49 81" stroke="#173E37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+<text id="Home-based caregiver" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="18" font-weight="600" letter-spacing="0em"><tspan x="68" y="80.5455">Home-based caregiver</tspan></text>
+</g>
+<g id="Home indicator">
+<rect x="129" y="830" width="132" height="5" rx="2.5" fill="#173E37"/>
+</g>
+<g id="Fixed action &#194;&#183; safe area">
+<rect width="390" height="100" transform="translate(0 740)" fill="#F7F9F5"/>
+<g id="AdvanCare / Button">
+<rect x="24" y="754" width="342" height="52" rx="12" fill="#086B5B"/>
+<text id="Continue" fill="white" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="600" letter-spacing="0em"><tspan x="124.5" y="785.818">Request caregiver</tspan></text>
+</g>
+</g>
+<g id="Content viewport / scroll vertically" clip-path="url(#clip1_2_4078)">
+<g id="Scrollable content" clip-path="url(#clip2_2_4078)">
+<text id="A helping hand, in the comfort of home." fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="24" font-weight="600" letter-spacing="-0.02em"><tspan x="24" y="145.727">A helping hand,&#10;</tspan><tspan x="24" y="179.727">in the comfort of home.</tspan></text>
+<g id="Visit details">
+<rect x="24.5" y="206.5" width="341" height="162" rx="15.5" fill="white"/>
+<rect x="24.5" y="206.5" width="341" height="162" rx="15.5" stroke="#D3DFD7"/>
+<g id="Care location" clip-path="url(#clip3_2_4078)">
+<g id="Solar / map-point" clip-path="url(#clip4_2_4078)">
+<g id="Frame_2">
+<g id="Group_3">
+<path id="Vector_11" d="M46.6666 234.298C46.6666 230.175 49.9499 226.833 54 226.833C58.0501 226.833 61.3333 230.175 61.3333 234.298C61.3333 238.388 58.9928 243.161 55.341 244.868C54.4897 245.266 53.5102 245.266 52.659 244.868C49.0072 243.161 46.6666 238.388 46.6666 234.298Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_12" d="M54 236.917C55.5188 236.917 56.75 235.686 56.75 234.167C56.75 232.648 55.5188 231.417 54 231.417C52.4812 231.417 51.25 232.648 51.25 234.167C51.25 235.686 52.4812 236.917 54 236.917Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+<g id="Label and value" clip-path="url(#clip5_2_4078)">
+<text id="Care location_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="77" y="238.727">Care location</tspan></text>
+<text id="Brgy. San Vicente, Tuguegarao City" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="77" y="262.818">Brgy. San Vicente, Tuguegarao City</tspan></text>
+</g>
+</g>
+<g id="Divider">
+<rect width="306" height="1" transform="translate(43 287)" fill="#D3DFD7"/>
+</g>
+<g id="Date &#38; time" clip-path="url(#clip6_2_4078)">
+<g id="Solar / calendar" clip-path="url(#clip7_2_4078)">
+<g id="Frame_3">
+<g id="Group_4">
+<path id="Vector_13" d="M44.8334 317C44.8334 313.543 44.8334 311.815 45.9073 310.741C46.9813 309.667 48.7097 309.667 52.1667 309.667H55.8334C59.2903 309.667 61.0189 309.667 62.0927 310.741C63.1667 311.815 63.1667 313.543 63.1667 317V318.833C63.1667 322.29 63.1667 324.019 62.0927 325.093C61.0189 326.167 59.2903 326.167 55.8334 326.167H52.1667C48.7097 326.167 46.9813 326.167 45.9073 325.093C44.8334 324.019 44.8334 322.29 44.8334 318.833V317Z" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_14" d="M49.4167 309.667V308.292" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_15" d="M58.5834 309.667V308.292" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+<path id="Vector_16" d="M45.2917 314.25H62.7084" stroke="#086B5B" stroke-width="1.375" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+<g id="Label and value_2" clip-path="url(#clip8_2_4078)">
+<text id="Date &#38; time_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="77" y="319.727">Date &#38; time</tspan></text>
+<text id="26 Apr 2025 &#194;&#183; 8:00 AM&#226;&#128;&#147;4:00 PM" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="77" y="343.818">26 Apr 2025 &#xb7; 8:00 AM&#x2013;4:00 PM</tspan></text>
+</g>
+</g>
+</g>
+<text id="Edit visit details" fill="#086B5B" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="14" font-weight="600" letter-spacing="0em"><tspan x="24" y="404.091">Edit visit details</tspan></text>
+<g id="Section heading">
+<text id="Caregiver type" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="18" font-weight="600" letter-spacing="0em"><tspan x="24" y="449.545">Caregiver type</tspan></text>
+</g>
+<g id="AdvanCare / Choice">
+<rect x="24.75" y="475.75" width="340.5" height="77.5" rx="13.25" fill="#E3F0E8"/>
+<rect x="24.75" y="475.75" width="340.5" height="77.5" rx="13.25" stroke="#086B5B" stroke-width="1.5"/>
+<g id="Choice icon" clip-path="url(#clip9_2_4078)">
+<g id="Solar / user-rounded" clip-path="url(#clip10_2_4078)">
+<g id="Frame_4">
+<g id="Group_5">
+<path id="Vector_17" d="M51.5 510.5C53.7091 510.5 55.5 508.709 55.5 506.5C55.5 504.291 53.7091 502.5 51.5 502.5C49.2909 502.5 47.5 504.291 47.5 506.5C47.5 508.709 49.2909 510.5 51.5 510.5Z" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_18" d="M59.5 518C59.5 520.485 59.5 522.5 51.5 522.5C43.5 522.5 43.5 520.485 43.5 518C43.5 515.515 47.0817 513.5 51.5 513.5C55.9183 513.5 59.5 515.515 59.5 518Z" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_19" d="M57.5 510.2C57.5 511.612 58.7058 512.365 59.5885 513.038C59.9 513.276 60.2 513.5 60.5 513.5C60.8 513.5 61.1 513.276 61.4115 513.038C62.2942 512.365 63.5 511.612 63.5 510.2C63.5 508.787 61.85 507.786 60.5 509.144C59.15 507.786 57.5 508.787 57.5 510.2Z" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</g>
+<g id="Choice copy" clip-path="url(#clip11_2_4078)">
+<text id="General caregiver" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="81.5" y="510.318">General caregiver</tspan></text>
+<text id="&#226;&#130;&#177;300 for 8 hours" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="81.5" y="532.227">&#x20b1;300 for 8 hours</tspan></text>
+</g>
+<g id="Solar / check-circle" clip-path="url(#clip12_2_4078)">
+<g id="Frame_5">
+<g id="Group_6">
+<path id="Vector_20" d="M335.5 522.833C340.102 522.833 343.833 519.102 343.833 514.5C343.833 509.898 340.102 506.167 335.5 506.167C330.898 506.167 327.167 509.898 327.167 514.5C327.167 519.102 330.898 522.833 335.5 522.833Z" stroke="#086B5B" stroke-width="1.25" stroke-linecap="round"/>
+<path id="Vector_21" d="M332.583 514.917L334.25 516.583L338.417 512.417" stroke="#086B5B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</g>
+<g id="AdvanCare / Choice_2">
+<rect x="24.5" y="572.5" width="341" height="77" rx="13.5" fill="white"/>
+<rect x="24.5" y="572.5" width="341" height="77" rx="13.5" stroke="#80958A"/>
+<g id="Choice icon_2">
+<g id="Solar / user-rounded_2" clip-path="url(#clip13_2_4078)">
+<g id="Frame_6">
+<g id="Group_7">
+<path id="Vector_22" d="M43 611C43 607.229 43 605.343 44.1716 604.172C45.3432 603 47.2288 603 51 603H55C58.7712 603 60.6569 603 61.8284 604.172C63 605.343 63 607.229 63 611C63 614.771 63 616.657 61.8284 617.828C60.6569 619 58.7712 619 55 619H51C47.2288 619 45.3432 619 44.1716 617.828C43 616.657 43 614.771 43 611Z" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_23" d="M57 603C57 601.114 57 600.172 56.4142 599.586C55.8284 599 54.8856 599 53 599C51.1144 599 50.1716 599 49.5858 599.586C49 600.172 49 601.114 49 603" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_24" d="M54.5 611H51.5M53 609.5V612.5" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector_25" d="M53 615C55.2091 615 57 613.209 57 611C57 608.791 55.2091 607 53 607C50.7909 607 49 608.791 49 611C49 613.209 50.7909 615 53 615Z" stroke="#086B5B" stroke-width="1.5" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+<g id="Choice copy_2" clip-path="url(#clip14_2_4078)">
+<text id="General caregiver_2" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="81" y="606.818">Specialized caregiver</tspan></text>
+<text id="&#226;&#130;&#177;300 for 8 hours_2" fill="#536D65" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="13" letter-spacing="0em"><tspan x="81" y="628.727">&#x20b1;500 for 8 hours</tspan></text>
+</g>
+<g id="Solar / record-circle" clip-path="url(#clip15_2_4078)">
+<g id="Frame_7">
+<g id="Group_8">
+<path id="Vector_26" d="M340.417 611C340.417 612.151 339.484 613.083 338.333 613.083C337.183 613.083 336.25 612.151 336.25 611C336.25 609.849 337.183 608.917 338.333 608.917C339.484 608.917 340.417 609.849 340.417 611Z" stroke="#80958A" stroke-width="1.25" stroke-linecap="round"/>
+<path id="Vector_27" d="M343.333 611C343.333 615.602 339.602 619.333 335 619.333C330.398 619.333 326.667 615.602 326.667 611C326.667 606.398 330.398 602.667 335 602.667C339.602 602.667 343.333 606.398 343.333 611Z" stroke="#80958A" stroke-width="1.25" stroke-linecap="round"/>
+<path id="Vector_28" d="M333.75 611C333.75 612.151 332.817 613.083 331.667 613.083C330.516 613.083 329.583 612.151 329.583 611C329.583 609.849 330.516 608.917 331.667 608.917C332.817 608.917 333.75 609.849 333.75 611Z" stroke="#80958A" stroke-width="1.25" stroke-linecap="round"/>
+<path id="Vector_29" d="M331.667 613.083H338.333" stroke="#80958A" stroke-width="1.25" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+<g id="Visit estimate">
+<rect x="24" y="668" width="342" height="64" rx="14" fill="#E3F0E8"/>
+<text id="8-hour visit" fill="#173E37" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="16" font-weight="500" letter-spacing="0em"><tspan x="42" y="703.818">8-hour visit</tspan></text>
+<text id="&#226;&#130;&#177;300" fill="#086B5B" style="white-space: pre" xml:space="preserve" font-family="Inter" font-size="20" font-weight="600" letter-spacing="0em"><tspan x="292" y="707.273">&#x20b1;300</tspan></text>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_2_4078">
+<rect width="24" height="24" fill="white" transform="translate(34 62)"/>
+</clipPath>
+<clipPath id="clip1_2_4078">
+<rect width="390" height="610" fill="white" transform="translate(0 120)"/>
+</clipPath>
+<clipPath id="clip2_2_4078">
+<rect width="342" height="612" fill="white" transform="translate(24 120)"/>
+</clipPath>
+<clipPath id="clip3_2_4078">
+<rect width="306" height="44" fill="white" transform="translate(43 225)"/>
+</clipPath>
+<clipPath id="clip4_2_4078">
+<rect width="22" height="22" fill="white" transform="translate(43 225)"/>
+</clipPath>
+<clipPath id="clip5_2_4078">
+<rect width="272" height="44" fill="white" transform="translate(77 225)"/>
+</clipPath>
+<clipPath id="clip6_2_4078">
+<rect width="306" height="44" fill="white" transform="translate(43 306)"/>
+</clipPath>
+<clipPath id="clip7_2_4078">
+<rect width="22" height="22" fill="white" transform="translate(43 306)"/>
+</clipPath>
+<clipPath id="clip8_2_4078">
+<rect width="272" height="44" fill="white" transform="translate(77 306)"/>
+</clipPath>
+<clipPath id="clip9_2_4078">
+<rect width="28" height="28" fill="white" transform="translate(41.5 500.5)"/>
+</clipPath>
+<clipPath id="clip10_2_4078">
+<rect width="24" height="24" fill="white" transform="translate(41.5 500.5)"/>
+</clipPath>
+<clipPath id="clip11_2_4078">
+<rect width="232" height="44" fill="white" transform="translate(81.5 492.5)"/>
+</clipPath>
+<clipPath id="clip12_2_4078">
+<rect width="20" height="20" fill="white" transform="translate(325.5 504.5)"/>
+</clipPath>
+<clipPath id="clip13_2_4078">
+<rect width="24" height="24" fill="white" transform="translate(41 597)"/>
+</clipPath>
+<clipPath id="clip14_2_4078">
+<rect width="232" height="44" fill="white" transform="translate(81 589)"/>
+</clipPath>
+<clipPath id="clip15_2_4078">
+<rect width="20" height="20" fill="white" transform="translate(325 601)"/>
+</clipPath>
+</defs>
+</svg>

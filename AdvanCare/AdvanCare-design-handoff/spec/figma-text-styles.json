@@ -1,0 +1,317 @@
+[
+  {
+    "id": "S:51ae7af8d1560a2bc9a16e1353dd4a194b62615a,",
+    "name": "AdvanCare/11/Medium",
+    "fontName": {
+      "family": "Inter",
+      "style": "Medium",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 500
+      }
+    },
+    "fontSize": 11,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 18
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": 0
+    }
+  },
+  {
+    "id": "S:43ab0143e5147f030d1835c0a9a6ef6445b812af,",
+    "name": "AdvanCare/12/Medium",
+    "fontName": {
+      "family": "Inter",
+      "style": "Medium",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 500
+      }
+    },
+    "fontSize": 12,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 18
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": 0
+    }
+  },
+  {
+    "id": "S:b84bbba60d72514d3cb7d53582d2ea9ae1c09a4d,",
+    "name": "AdvanCare/13/Regular",
+    "fontName": {
+      "family": "Inter",
+      "style": "Regular",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 400
+      }
+    },
+    "fontSize": 13,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 18
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": 0
+    }
+  },
+  {
+    "id": "S:f4135d23110999d592a72e7e3793c93b611677fb,",
+    "name": "AdvanCare/13/Medium",
+    "fontName": {
+      "family": "Inter",
+      "style": "Medium",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 500
+      }
+    },
+    "fontSize": 13,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 18
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": 0
+    }
+  },
+  {
+    "id": "S:f9ff34984fd9b80598ce9239d6b90ebea20999d4,",
+    "name": "AdvanCare/14/Regular",
+    "fontName": {
+      "family": "Inter",
+      "style": "Regular",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 400
+      }
+    },
+    "fontSize": 14,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 24
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": 0
+    }
+  },
+  {
+    "id": "S:b672ac93c8beaa0afdbafb61df606301c2fe0880,",
+    "name": "AdvanCare/14/Medium",
+    "fontName": {
+      "family": "Inter",
+      "style": "Medium",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 500
+      }
+    },
+    "fontSize": 14,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 24
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": 0
+    }
+  },
+  {
+    "id": "S:0d2017983c68705fe3478183e7e27ba597cf6a2c,",
+    "name": "AdvanCare/14/Semi Bold",
+    "fontName": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 600
+      }
+    },
+    "fontSize": 14,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 24
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": 0
+    }
+  },
+  {
+    "id": "S:f2dc862f74057fad327cc5650d6143d8dd7969ee,",
+    "name": "AdvanCare/16/Regular",
+    "fontName": {
+      "family": "Inter",
+      "style": "Regular",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 400
+      }
+    },
+    "fontSize": 16,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 24
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": 0
+    }
+  },
+  {
+    "id": "S:498708578a9ab9e617a64305d7abae97d4526d9e,",
+    "name": "AdvanCare/16/Medium",
+    "fontName": {
+      "family": "Inter",
+      "style": "Medium",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 500
+      }
+    },
+    "fontSize": 16,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 24
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": 0
+    }
+  },
+  {
+    "id": "S:9e3aaf467c833e2b7a4048b2bd7c41936b7f0bbf,",
+    "name": "AdvanCare/16/Semi Bold",
+    "fontName": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 600
+      }
+    },
+    "fontSize": 16,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 24
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": 0
+    }
+  },
+  {
+    "id": "S:da50c1b474f197a724b48dd7845c7cd65632eb7f,",
+    "name": "AdvanCare/18/Semi Bold",
+    "fontName": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 600
+      }
+    },
+    "fontSize": 18,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 28
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": 0
+    }
+  },
+  {
+    "id": "S:007dfb19e818a76fd179cb8e12907fd12c2e2631,",
+    "name": "AdvanCare/20/Semi Bold",
+    "fontName": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 600
+      }
+    },
+    "fontSize": 20,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 28
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": 0
+    }
+  },
+  {
+    "id": "S:92a5e276d00ec2fef17160048663c670b2150ca1,",
+    "name": "AdvanCare/24/Semi Bold",
+    "fontName": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 600
+      }
+    },
+    "fontSize": 24,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 34
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": -2
+    }
+  },
+  {
+    "id": "S:bc3b67d26cbc367ac9665cf0bc72486c2ac733c7,",
+    "name": "AdvanCare/28/Semi Bold",
+    "fontName": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 600
+      }
+    },
+    "fontSize": 28,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 34
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": -2
+    }
+  },
+  {
+    "id": "S:75f85047fa5d7e7b29e5a2663c71c85e979749e6,",
+    "name": "AdvanCare/36/Semi Bold",
+    "fontName": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "variationSettings": {
+        "slnt": 0,
+        "wght": 600
+      }
+    },
+    "fontSize": 36,
+    "lineHeight": {
+      "unit": "PIXELS",
+      "value": 42
+    },
+    "letterSpacing": {
+      "unit": "PERCENT",
+      "value": -2
+    }
+  }
+]

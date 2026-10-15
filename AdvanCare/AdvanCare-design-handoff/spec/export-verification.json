@@ -1,0 +1,24 @@
+{
+  "screenCount": 29,
+  "pngDimensions": [
+    390,
+    844
+  ],
+  "svgCount": 29,
+  "iconCount": 32,
+  "nativeCounts": {
+    "COMPONENT": 49,
+    "COMPONENT_SET": 5,
+    "INSTANCE": 320,
+    "TEXT": 497
+  },
+  "prototypeActions": 124,
+  "invalidDestinations": 0,
+  "figArchiveIntegrity": "passed",
+  "pngFilesReadable": "passed",
+  "svgXML": "passed",
+  "jsonParse": "passed",
+  "logoSHA256": "ff0ff13bcb8cd323801dad8f3a81990123a3d365c32400eca5e384ff2ec01a1e",
+  "visualReview": "Core overview and all onboarding frames previously inspected in Figma; exported onboarding/home reviewed separately.",
+  "playbackStatus": "Full playback not verified; native reaction destinations validated."
+}

@@ -1,0 +1,32 @@
+/* AdvanCare visual tokens; map to your existing app theme. */
+:root {
+  --advancare-ink: #173E37;
+  --advancare-muted: #536D65;
+  --advancare-teal: #086B5B;
+  --advancare-deep: #124E43;
+  --advancare-mint: #E3F0E8;
+  --advancare-lime: #CBE49C;
+  --advancare-olive: #697D34;
+  --advancare-paper: #F7F9F5;
+  --advancare-white: #FFFFFF;
+  --advancare-line: #D3DFD7;
+  --advancare-control: #80958A;
+  --advancare-gold: #996116;
+  --advancare-goldBg: #FFF1D6;
+  --advancare-red: #A83A32;
+  --advancare-blue: #376E85;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
+  --font-body: "Inter", system-ui, sans-serif;
+  --page-gutter: 24px;
+  --button-height: 52px;
+  --button-radius: 12px;
+  --input-radius: 10px;
+  --motion-onboarding: 320ms;
+}

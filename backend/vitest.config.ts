@@ -37,6 +37,10 @@ export default defineConfig({
           R2_ACCOUNT_ID: 'testaccount',
           R2_ACCESS_KEY_ID: 'test-access-key',
           R2_SECRET_ACCESS_KEY: 'test-secret-key',
+          // Never send real email from tests, even when backend/.env has Gmail settings:
+          // with these blank, the mailer only logs (development) instead of sending.
+          SMTP_USER: '',
+          SMTP_PASSWORD: '',
           // Test-only key (32 bytes of 0x01..0x20); never a real environment's key.
           STAFF_ENCRYPTION_KEY: 'AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyA=',
         },

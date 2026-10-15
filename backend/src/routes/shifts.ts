@@ -1,8 +1,8 @@
-import { and, desc, eq, or } from 'drizzle-orm';
+import { and, desc, eq, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { Hono } from 'hono';
 import * as v from 'valibot';
-import { caregivers, clientProfiles, idempotencyRecords, shifts, users } from '../db/schema';
+import { careNotes, caregivers, clientProfiles, idempotencyRecords, payments, shifts, users } from '../db/schema';
 import type { AppEnv } from '../env';
 import { ApiError } from '../lib/errors';
 import { validate } from '../lib/validation';
@@ -19,6 +19,7 @@ export const RATES = {
 const BOOK_PATH = '/api/v1/shifts/request';
 const IDEMPOTENCY_TTL_MS = 24 * 3600_000;
 const MAX_DAYS_AHEAD = 90;
+export const MIN_LEAD_MS = 12 * 3600_000;
 
 const ShiftRequest = v.strictObject({
   /** Server client id, or the profile's id on the phone (deviceRef). */
@@ -81,8 +82,9 @@ appShifts.post('/shifts/request', validate('json', ShiftRequest), async (c) => {
   const today = manilaDate(manilaDayStart(0));
   const last = manilaDate(manilaDayStart(MAX_DAYS_AHEAD));
   if (body.scheduledDate < today) throw new ApiError(422, 'VALIDATION_FAILED', 'Choose today or a later date.', { nested: { scheduledDate: ['Choose today or a later date.'] } });
-  if (Date.parse(`${body.scheduledDate}T${body.scheduledStartTime}:00+08:00`) <= Date.now()) {
-    throw new ApiError(422, 'VALIDATION_FAILED', 'That start time has already passed.', { nested: { scheduledStartTime: ['Choose a later start time.'] } });
+  // Shifts are pre-scheduled at least 12 hours ahead (same rule the app shows).
+  if (Date.parse(`${body.scheduledDate}T${body.scheduledStartTime}:00+08:00`) < Date.now() + MIN_LEAD_MS) {
+    throw new ApiError(422, 'VALIDATION_FAILED', 'Book at least 12 hours before the shift starts.', { nested: { scheduledStartTime: ['Choose a start at least 12 hours from now.'] } });
   }
   if (body.scheduledDate > last) throw new ApiError(422, 'VALIDATION_FAILED', `Bookings open up to ${MAX_DAYS_AHEAD} days ahead.`, { nested: { scheduledDate: [`Choose a date within ${MAX_DAYS_AHEAD} days.`] } });
 
@@ -149,6 +151,8 @@ appShifts.get('/shifts/mine', async (c) => {
       clockOut: shifts.clockOut,
       updatedAt: shifts.updatedAt,
       cancellationReason: shifts.cancellationReason,
+      paid: sql<boolean>`exists (select 1 from ${payments} where ${payments.shiftId} = ${shifts.id} and ${payments.status} = 'SUCCEEDED')`,
+      careNotes: sql<number>`(select count(*)::int from ${careNotes} where ${careNotes.shiftId} = ${shifts.id})`,
       clientId: clientProfiles.id,
       clientDeviceRef: clientProfiles.deviceRef,
       caregiverName: caregiverUser.fullName,
@@ -170,3 +174,23 @@ appShifts.get('/shifts/mine', async (c) => {
   });
 });
 
+
+/** Care notes for one of the family's own bookings (what the caregiver recorded). */
+appShifts.get('/shifts/:id/notes', validate('param', v.object({ id: v.pipe(v.string(), v.uuid()) })), async (c) => {
+  const db = c.get('db');
+  const [own] = await db
+    .select({ id: shifts.id })
+    .from(shifts)
+    .innerJoin(clientProfiles, eq(clientProfiles.id, shifts.clientId))
+    .where(and(eq(shifts.id, c.req.valid('param').id), eq(clientProfiles.userId, c.get('clientUserId'))))
+    .limit(1);
+  if (!own) throw new ApiError(404, 'NOT_FOUND', 'Request not found.');
+  const notes = await db
+    .select({ id: careNotes.id, recordedAt: careNotes.recordedAt, vitals: careNotes.vitalsRecorded, tasks: careNotes.tasksCompleted, notes: careNotes.rawCaregiverNotes, summary: careNotes.aiGeneratedFamilySummary, caregiverName: caregiverUser.fullName })
+    .from(careNotes)
+    .innerJoin(caregivers, eq(caregivers.id, careNotes.caregiverId))
+    .innerJoin(caregiverUser, eq(caregiverUser.id, caregivers.userId))
+    .where(eq(careNotes.shiftId, own.id))
+    .orderBy(desc(careNotes.recordedAt));
+  return c.json({ notes: notes.map(({ caregiverName, ...n }) => ({ ...n, caregiverFirstName: caregiverName ? caregiverName.trim().split(/\s+/)[0] : null })) });
+});

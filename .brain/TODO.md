@@ -5,12 +5,16 @@
 Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, decision or paperwork)
 
 ### P1 — Close the care loop (staff ↔ family ↔ caregiver)
-- ⬜ Staff: add caregivers (name, email, phone, municipality, barangay), accredit/suspend, badges, availability.
-- ⬜ Staff: request actions — assign caregiver (suggest accredited + available + same municipality + right badge), confirm, cancel (reason), escalate (reason); all audited.
-- ⬜ Caregiver mode in the app: sign in by email → "My shifts" (today/upcoming) → clock in → clock out → care note (tasks, optional measured vitals, notes).
-- ⬜ Family sees care notes and the caregiver's name on the request; email to the family when a caregiver is assigned.
-- ⬜ Payments: staff record cash/GCash received (with reference), mark caregiver payout sent; family sees "Paid".
-- ⬜ Server enforces the 12-hour booking lead time; fix the "Shift in progress" wording for confirmed requests.
+- ✅ Staff: add caregivers (name, email, phone, municipality, barangay), accredit/suspend, badges, availability (2026-10-16).
+- ✅ Staff: request actions — assign (ranked candidates with blockers/warnings), matching, unassign, cancel (reason, family emailed), escalate (reason); all audited (2026-10-16).
+- ✅ Caregiver mode in the app: sign in by email → "My shifts" → clock in (from 2 h before) → care note (tasks, measured vitals only, notes, family message) → clock out (2026-10-16).
+- ✅ Family sees care notes, caregiver first name and Paid on the request; email to the family on assignment and cancellation (2026-10-16).
+- ✅ Payments: staff record cash/GCash/Maya/bank (reference required except cash), mark caregiver payout sent (2026-10-16).
+- ✅ Server enforces the 12-hour booking lead time (2026-10-16). ⬜ Still to fix: "Shift in progress · current step" wording for confirmed requests in the app timeline.
+
+### Demo environment (2026-10-16)
+- ✅ Neon branch `demo-advancare` (Advancare project) seeded with fictional data; `backend/.env` currently points at it (production lines kept as comments). Switch back before real use; delete the branch to remove all demo data.
+- ⬜ Demo Admin invites from the seed: Solana one used for testing (password set by Claude, can be reset via console → Reset 2-step / new invite); Tuguegarao one unused (expires ~2026-10-18).
 
 ### P2 — Every service reaches staff
 - ⬜ `service_requests` table + API for TeleHealth, RHU services, Triage, Prescription (with uploaded photo), Transport.

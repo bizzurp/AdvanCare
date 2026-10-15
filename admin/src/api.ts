@@ -157,6 +157,9 @@ export interface RequestDetail {
     clockOut: string | null;
     cancelledAt: string | null;
     cancellationReason: string | null;
+    escalationReason: string | null;
+    payoutPaidAt: string | null;
+    payoutReference: string | null;
     careNotes: number;
   };
   client: { id: string; name: string; sitio: string | null; barangay: string; municipality: string; landmarkNotes: string | null };
@@ -258,6 +261,27 @@ export interface PaymentRow extends PaymentLite {
 }
 
 export type ExportTable = 'requests' | 'payouts' | 'payments';
+
+export type Badge = 'BADGE_ADL' | 'BADGE_CVMC_WATCHER';
+
+export interface Candidate {
+  id: string;
+  fullName: string | null;
+  phone: string | null;
+  municipality: string | null;
+  barangay: string | null;
+  isAccredited: boolean;
+  isAvailable: boolean;
+  badges: string[];
+  averageRating: number | null;
+  totalShiftsCompleted: number;
+  current: boolean;
+  eligible: boolean;
+  blockers: string[];
+  warnings: string[];
+}
+
+export type RequestAction = { action: 'matching' } | { action: 'unassign'; reason?: string } | { action: 'escalate'; reason: string } | { action: 'cancel'; reason: string };
 
 export type SignInStep = { next: 'mfa' | 'enroll'; challenge: string };
 
@@ -376,6 +400,17 @@ export const api = {
     URL.revokeObjectURL(url);
     return filename;
   },
+
+  // Staff actions (P1)
+  createCaregiver: (input: { fullName: string; email: string; phone: string; municipality: string; barangay: string; sitio?: string; badges: Badge[]; isAccredited: boolean }) =>
+    request<{ id: string }>('POST', '/caregivers', input),
+  updateCaregiver: (id: string, change: { isAccredited?: boolean; isAvailable?: boolean; active?: boolean; badges?: Badge[]; municipality?: string; barangay?: string; phone?: string; email?: string; reason?: string }) =>
+    request<{ ok: true }>('PATCH', `/caregivers/${id}`, change),
+  candidates: (requestId: string) => request<{ candidates: Candidate[] }>('GET', `/requests/${requestId}/candidates`),
+  assign: (requestId: string, caregiverId: string) => request<{ ok: true; familyEmail: string; warnings: string[] }>('POST', `/requests/${requestId}/assign`, { caregiverId }),
+  requestAction: (requestId: string, action: RequestAction) => request<{ ok: true; familyEmail?: string }>('POST', `/requests/${requestId}/status`, action),
+  recordPayment: (requestId: string, input: { method: PaymentMethod; providerReference?: string }) => request<{ id: string }>('POST', `/requests/${requestId}/payments`, input),
+  markPayout: (requestId: string, reference?: string) => request<{ ok: true }>('POST', `/requests/${requestId}/payout`, { reference: reference || undefined }),
 
   // Audit
   audit: (filters: Record<string, string | undefined>) => request<{ entries: AuditEntry[]; nextCursor: string | null; scope: 'all' | 'own' }>('GET', `/audit${query(filters)}`),

@@ -52,11 +52,11 @@ const profile = (deviceRef: string, municipality = 'Solana') => ({
   family: [{ name: 'Ana Test', relationship: 'Daughter', phone: '+63 917 000 0000', isPrimary: true, isRemoteSponsor: false }],
 });
 
-const tomorrow = () => manilaDate(manilaDayStart(1));
+const tomorrow = () => manilaDate(manilaDayStart(2)); // ≥ 12 h ahead whatever the time of day
 
 describe.runIf(run)('app sign-in by email code', () => {
   it('signs in with the emailed code, once, and maps the same email to the same account', async () => {
-    const email = `Family.${crypto.randomUUID().slice(0, 8)}@Example.ph`;
+    const email = `Family.${crypto.randomUUID().slice(0, 8)}@Example.test`;
     const res = await json('/auth/request-otp', { email });
     expect(res.status).toBe(202);
     expect(await res.json()).toMatchObject({ sent: true, devNote: expect.any(String) });
@@ -74,7 +74,7 @@ describe.runIf(run)('app sign-in by email code', () => {
   });
 
   it('locks a code after 5 wrong tries', async () => {
-    const email = `lock.${crypto.randomUUID().slice(0, 8)}@example.ph`;
+    const email = `lock.${crypto.randomUUID().slice(0, 8)}@example.test`;
     await json('/auth/request-otp', { email });
     const code = await knownCode(email);
     for (let i = 0; i < 5; i++) await json('/auth/verify-otp', { email, otp: '111111' });
@@ -84,7 +84,7 @@ describe.runIf(run)('app sign-in by email code', () => {
   });
 
   it('rate-limits code requests per email', async () => {
-    const email = `burst.${crypto.randomUUID().slice(0, 8)}@example.ph`;
+    const email = `burst.${crypto.randomUUID().slice(0, 8)}@example.test`;
     const statuses: number[] = [];
     for (let i = 0; i < 7; i++) statuses.push((await json('/auth/request-otp', { email })).status);
     expect(statuses.slice(0, 5)).toEqual([202, 202, 202, 202, 202]);
@@ -92,7 +92,7 @@ describe.runIf(run)('app sign-in by email code', () => {
   });
 
   it('refuses expired codes', async () => {
-    const email = `exp.${crypto.randomUUID().slice(0, 8)}@example.ph`;
+    const email = `exp.${crypto.randomUUID().slice(0, 8)}@example.test`;
     await json('/auth/request-otp', { email });
     const code = await knownCode(email);
     await withDb((db) => db.update(clientLoginCodes).set({ expiresAt: new Date(Date.now() - CODE_TTL_MS) }).where(eq(clientLoginCodes.email, email)));
@@ -100,7 +100,7 @@ describe.runIf(run)('app sign-in by email code', () => {
   });
 
   it('signs out', async () => {
-    const email = `out.${crypto.randomUUID().slice(0, 8)}@example.ph`;
+    const email = `out.${crypto.randomUUID().slice(0, 8)}@example.test`;
     const token = await signIn(email);
     expect((await json('/auth/sign-out', {}, { Authorization: `Bearer ${token}` })).status).toBe(200);
     expect((await SELF.fetch(`${BASE}/auth/me`, { headers: { Authorization: `Bearer ${token}` } })).status).toBe(401);
@@ -112,8 +112,8 @@ describe.runIf(run)('profile sync and booking', () => {
   let other: string;
   const deviceRef = `dev-${crypto.randomUUID()}`;
   beforeAll(async () => {
-    token = await signIn(`book.${crypto.randomUUID().slice(0, 8)}@example.ph`);
-    other = await signIn(`other.${crypto.randomUUID().slice(0, 8)}@example.ph`);
+    token = await signIn(`book.${crypto.randomUUID().slice(0, 8)}@example.test`);
+    other = await signIn(`other.${crypto.randomUUID().slice(0, 8)}@example.test`);
     // Every booking test starts from a synced profile, so each can run on its own.
     expect((await json('/clients/sync', profile(deviceRef), { Authorization: `Bearer ${token}` })).status).toBe(200);
   });

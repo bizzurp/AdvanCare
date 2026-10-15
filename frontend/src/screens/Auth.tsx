@@ -208,7 +208,7 @@ export function formatPhone(e164: string) {
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function EmailCode({ mode, onVerified }: { mode: 'sign-in' | 'register'; onVerified: (email: string, token: { accessToken: string; demo: boolean }) => void }) {
+export function EmailCode({ mode, onVerified }: { mode: 'sign-in' | 'register'; onVerified: (email: string, token: { accessToken: string; demo: boolean; role?: string }) => void }) {
   const [step, setStep] = useState<'email' | 'otp'>('email');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
@@ -352,9 +352,10 @@ export function SignIn() {
           <EmailCode
             mode="sign-in"
             onVerified={(email, r) => {
-              signIn({ email, accessToken: r.accessToken, demo: r.demo, role: 'household' });
+              const caregiver = r.role === 'CAREGIVER';
+              signIn({ email, accessToken: r.accessToken, demo: r.demo, role: caregiver ? 'caregiver' : 'household' });
               const from = (location.state as { from?: string } | null)?.from;
-              navigate(from ?? '/home', { replace: true });
+              navigate(caregiver ? '/caregiver' : (from ?? '/home'), { replace: true });
             }}
           />
         </div>

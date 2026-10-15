@@ -1,9 +1,11 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { AddCaregiverModal, ManageCaregiver } from '../components/CaregiverForms';
 import { api } from '../api';
 import { useMe } from '../auth';
 import { Icon } from '../components/Icon';
 import { Pagination, ScopeNote, StatusBadge, useUrlFilters } from '../components/ops';
-import { Badge, Button, ErrorNotice, Loading, PageHeader, useLoad } from '../components/ui';
+import { Badge, Button, ErrorNotice, Loading, Notice, PageHeader, useLoad } from '../components/ui';
 import { dateTime, day, money, TIER_LABEL, timeOnly } from '../format';
 
 const KEYS = ['q', 'municipality', 'accredited', 'available', 'badge'] as const;
@@ -15,6 +17,8 @@ export function Caregivers() {
   const navigate = useNavigate();
   const f = useUrlFilters(KEYS);
   const list = useLoad(() => api.caregivers({ ...f.values, page: String(f.page) }), [f.key]);
+  const [params] = useSearchParams();
+  const [adding, setAdding] = useState(params.get('add') === '1');
 
   return (
     <>
@@ -25,7 +29,9 @@ export function Caregivers() {
             Roster · <ScopeNote municipalities={me.municipalities} />
           </>
         }
+        actions={<Button onClick={() => setAdding(true)}>Add caregiver</Button>}
       />
+      {adding ? <AddCaregiverModal onClose={() => setAdding(false)} onAdded={(id) => navigate(`/caregivers/${id}?added=1`)} /> : null}
       <div className="filters">
         <input className="input" type="search" placeholder="Search by name" value={f.values.q} onChange={(e) => f.set('q', e.target.value)} aria-label="Search caregivers" />
         <select className="input" value={f.values.accredited} onChange={(e) => f.set('accredited', e.target.value)} aria-label="Accreditation">
@@ -115,6 +121,8 @@ export function Caregivers() {
 export function CaregiverDetail() {
   const { id = '' } = useParams();
   const detail = useLoad(() => api.caregiver(id), [id]);
+  const [params] = useSearchParams();
+  const [flash, setFlash] = useState<string | null>(params.get('added') ? 'Caregiver added. Tick “Accredited” and “Available” when they’re ready for shifts.' : null);
   if (detail.loading && !detail.data) return <Loading />;
   if (detail.error || !detail.data) return <ErrorNotice error={detail.error} />;
   const { caregiver: g, shifts, earnings } = detail.data;
@@ -172,8 +180,16 @@ export function CaregiverDetail() {
           <dt>Joined</dt>
           <dd>{dateTime(g.createdAt)}</dd>
         </dl>
-        <p className="muted small">Accreditation, availability and badge changes arrive with the next phase (actions).</p>
       </section>
+      {flash ? <Notice tone="good">{flash}</Notice> : null}
+      <ManageCaregiver
+        key={`${g.isAccredited}${g.isAvailable}${g.accountActive}${g.badges.join()}`}
+        caregiver={g}
+        onSaved={(msg) => {
+          setFlash(msg);
+          void detail.reload();
+        }}
+      />
       <section className="card">
         <h2>Shifts</h2>
         {shifts.length ? (

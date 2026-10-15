@@ -1,24 +1,48 @@
 /**
- * Fills a LOCAL database with realistic demo data (clients, caregivers, requests, payments,
- * care notes) so the admin dashboards can be developed and reviewed.
+ * Fills a database with realistic, clearly fictional demo data (clients, caregivers, requests,
+ * payments, care notes, demo Admin invites) so the console and app can be reviewed.
  *
- *   SEED_DATABASE_URL=postgres://postgres@localhost:55432/advancare_dev npm run db:seed-demo
+ *   Local:  SEED_DATABASE_URL=postgres://postgres@localhost:55432/advancare_dev npm run db:seed-demo
+ *   Neon:   npm run db:seed-demo -- --neon-demo-branch      (uses DATABASE_URL_UNPOOLED from backend/.env)
  *
- * Refuses any non-local host: fake clients must never be mixed into the real (Neon) database.
- * Every row is fictional. Re-running adds another batch.
+ * Safety: a local database is always fine. A Neon database is used only with --neon-demo-branch
+ * AND when Neon itself reports that the database's endpoint belongs to a non-default branch whose
+ * name contains "demo". Production can never be seeded. Re-running adds another batch.
+ * Demo emails use the reserved .test domain, so nothing is ever delivered to a real inbox.
  */
-import { randomInt, randomUUID } from 'node:crypto';
+import { createHash, randomBytes, randomInt, randomUUID } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import pg from 'pg';
 
-const url = process.env.SEED_DATABASE_URL;
+try {
+  process.loadEnvFile('.env');
+} catch {
+  /* shell variables only */
+}
+const neonDemo = process.argv.includes('--neon-demo-branch');
+const url = process.env.SEED_DATABASE_URL ?? (neonDemo ? process.env.DATABASE_URL_UNPOOLED : undefined);
 if (!url) {
-  console.error('Set SEED_DATABASE_URL to a local database (e.g. postgres://postgres@localhost:55432/advancare_dev).');
+  console.error('Set SEED_DATABASE_URL to a local database, or pass --neon-demo-branch to use the Neon demo branch in backend/.env.');
   process.exit(1);
 }
 const host = new URL(url).hostname;
-if (!['localhost', '127.0.0.1', '[::1]'].includes(host)) {
-  console.error(`Refusing to seed ${host}: demo data only goes into a database on this computer.`);
-  process.exit(1);
+const local = ['localhost', '127.0.0.1', '[::1]'].includes(host);
+if (!local) {
+  if (!neonDemo || !host.endsWith('.neon.tech')) {
+    console.error(`Refusing to seed ${host}: only local databases, or a Neon demo branch with --neon-demo-branch.`);
+    process.exit(1);
+  }
+  const projectId = JSON.parse(readFileSync('.neon', 'utf8')).projectId as string;
+  const endpointId = host.split('.')[0]!.replace(/-pooler$/, '');
+  const neonApi = (path: string) => JSON.parse(execFileSync('neon', ['api', path], { encoding: 'utf8' }));
+  const endpoint = (neonApi(`/projects/${projectId}/endpoints`).endpoints as { id: string; branch_id: string }[]).find((e) => e.id === endpointId);
+  const branch = endpoint && (neonApi(`/projects/${projectId}/branches`).branches as { id: string; name: string; default: boolean }[]).find((b) => b.id === endpoint.branch_id);
+  if (!branch || branch.default || !/demo/i.test(branch.name)) {
+    console.error(`Refusing to seed: ${endpointId} is ${branch ? `branch "${branch.name}"${branch.default ? ' (the default/production branch)' : ''}` : 'not an endpoint of this Neon project'}. Only a branch named like "demo" is allowed.`);
+    process.exit(1);
+  }
+  console.log(`Seeding Neon branch "${branch.name}" (${endpointId}).`);
 }
 
 const pick = <T,>(xs: readonly T[]): T => xs[randomInt(xs.length)]!;
@@ -35,7 +59,7 @@ const ABROAD = ['Dubai, UAE', 'Riyadh, KSA', 'Hong Kong', 'Singapore', 'Toronto,
 const phone = () => `09${randomInt(10, 99)}${String(randomInt(0, 9_999_999)).padStart(7, '0')}`;
 const name = () => `${pick(FIRST)} ${pick(LAST)}`;
 
-const c = new pg.Client({ connectionString: url });
+const c = new pg.Client({ connectionString: url, ssl: local ? false : true });
 await c.connect();
 await c.query('BEGIN');
 try {
@@ -44,7 +68,7 @@ try {
   const cgs: { id: string; muni: string }[] = [];
   for (let i = 0; i < 14; i++) {
     const muni = munis[i % munis.length]!;
-    const { rows: [u] } = await c.query(`insert into users (phone_number, full_name, role) values ($1,$2,'CAREGIVER') returning id`, [phone(), name()]);
+    const { rows: [u] } = await c.query(`insert into users (phone_number, email, full_name, role) values ($1,$2,$3,'CAREGIVER') returning id`, [phone(), `caregiver.${randomUUID().slice(0, 6)}@demo.advancare.test`, name()]);
     const accredited = i % 7 !== 6;
     const badges = accredited ? (i % 3 === 0 ? ['BADGE_ADL', 'BADGE_CVMC_WATCHER'] : ['BADGE_ADL']) : [];
     const { rows: [cg] } = await c.query(
@@ -123,7 +147,22 @@ try {
       }
     }
   }
+  // Two demo Admins (one per main municipality), as one-time invite links.
+  const invites: string[] = [];
+  for (const [label, muni] of [['Solana', 'Solana'], ['Tuguegarao', 'Tuguegarao City']] as const) {
+    const email = `admin.${label.toLowerCase()}.${randomUUID().slice(0, 4)}@demo.advancare.test`;
+    const { rows: [u] } = await c.query(`insert into users (email, full_name, role) values ($1,$2,'ADMIN') returning id`, [email, `Demo Admin ${label}`]);
+    await c.query(`insert into staff_credentials (user_id, email, status) values ($1,$2,'INVITED')`, [u.id, email]);
+    const token = randomBytes(32).toString('base64url');
+    const { rows: [inv] } = await c.query(
+      `insert into staff_invitations (user_id, email, role, municipalities, token_hash, expires_at) values ($1,$2,'ADMIN',$3,$4, now() + interval '72 hours') returning id`,
+      [u.id, email, [muni], createHash('sha256').update(token).digest('hex')],
+    );
+    await c.query(`insert into audit_logs (action, entity_type, entity_id, metadata) values ('invite.created','staff',$1,$2)`, [u.id, JSON.stringify({ role: 'ADMIN', municipalities: [muni], via: 'seed-demo', invitationId: inv.id })]);
+    invites.push(`  ${label} Admin (${email}):\n    ${(process.env.ADMIN_APP_URL ?? 'http://localhost:5176').replace(/\/$/, '')}/accept-invite#token=${token}`);
+  }
   await c.query('COMMIT');
+  console.log(`\nDemo Admin invites (72 h, one use each; open in a private window to stay signed in as yourself):\n${invites.join('\n')}\n`);
   console.log(`Seeded ${cgs.length} caregivers, ${clients.length} clients and ${shiftsMade} requests across ${munis.join(', ')}.`);
 } catch (err) {
   await c.query('ROLLBACK');

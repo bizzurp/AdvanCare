@@ -71,6 +71,15 @@ export const ACTION_LABEL: Record<string, string> = {
   'client.viewed': 'Opened a client record',
   'client.clinical_viewed': 'Viewed clinical notes',
   'export.downloaded': 'Downloaded an export',
+  'caregiver.created': 'Added a caregiver',
+  'caregiver.updated': 'Updated a caregiver',
+  'request.assigned': 'Assigned a caregiver',
+  'request.matching': 'Moved a request to matching',
+  'request.unassigned': 'Unassigned a caregiver',
+  'request.escalated': 'Escalated a request',
+  'request.cancelled': 'Cancelled a request',
+  'payment.recorded': 'Recorded a payment',
+  'payout.sent': 'Marked a caregiver payout sent',
 };
 
 export const actionLabel = (action: string) => ACTION_LABEL[action] ?? action;
@@ -92,6 +101,8 @@ export function metadataSummary(entry: AuditEntry): string {
   if (typeof m.via === 'string') parts.push(`via ${m.via}`);
   if (typeof m.table === 'string') parts.push(`${m.table}${typeof m.rows === 'number' ? `, ${m.rows} rows` : ''}`);
   if (typeof m.notes === 'number') parts.push(`${m.notes} note(s)`);
+  if (typeof m.amount === 'number') parts.push(`₱${m.amount}`);
+  if (typeof m.from === 'string') parts.push(`was ${m.from.toLowerCase().replace('_', ' ')}`);
   return parts.join(' · ');
 }
 

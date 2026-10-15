@@ -1,5 +1,21 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-16] - P1 Care Loop: Staff Actions, Caregiver Mode, Payments
+
+### Added
+- Staff console: add/manage caregivers; assign (ranked candidates), start matching, unassign, escalate, cancel; record payments and caregiver payouts; all audited.
+- Caregiver mode in the app: email sign-in, My shifts, clock in/out, care notes (measured vitals only), availability switch.
+- Families: care notes, caregiver name and Paid on the request; emails on assignment and cancellation.
+- Server enforces the 12-hour booking lead time. Migration `0003_staff_actions` (production + demo branch).
+- Neon `demo-advancare` branch seeded with fictional data; seed script can target only branches named like "demo".
+
+### Fixed
+- Tests could send real email once Gmail was configured (a few code emails went to made-up test addresses); tests now always run with SMTP blanked and use `.test` addresses.
+
+### Verified
+- Backend: 105 tests pass (local Postgres), builds pass for backend, app and console.
+- Browser on the demo branch: added caregiver → accredited/available → assigned to a Solana booking (ranked first) → caregiver signed in, clocked in, saved a note, clocked out → staff recorded cash and payout → family API shows Completed, Paid, 1 note.
+
 ## [2026-10-15] - App Sign-in by Email Code & Real Bookings (ADV-AUTH-001, ADV-BOOK-001, ADR-014)
 
 ### Added

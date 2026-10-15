@@ -114,20 +114,20 @@ auth.post('/auth/verify-otp', validate('json', v.strictObject({ email: Email, ot
       .returning({ id: clientLoginCodes.id });
     if (!claimed) throw wrong();
     const [existing] = await tx
-      .select({ id: users.id, isActive: users.isActive })
+      .select({ id: users.id, isActive: users.isActive, role: users.role })
       .from(users)
       .where(and(sql`lower(${users.email}) = ${email}`, sql`${users.role}::text NOT IN ('ADMIN', 'SUPER_ADMIN')`))
       .limit(1);
     if (existing && !existing.isActive) throw new ApiError(403, 'ACCOUNT_DISABLED', 'This account is turned off. Please contact AdvanCare.');
     const userId = existing?.id ?? (await tx.insert(users).values({ email, role: 'CLIENT' }).returning({ id: users.id }))[0]!.id;
     const session = await issueClientSession(tx, userId, c.req.header('User-Agent'));
-    return { ...session, user: { id: userId, email, isNew: !existing } };
+    return { ...session, user: { id: userId, email, isNew: !existing, role: existing?.role ?? 'CLIENT' } };
   });
   return c.json(result);
 });
 
 auth.get('/auth/me', requireClient, async (c) => {
-  const [me] = await c.get('db').select({ id: users.id, email: users.email, fullName: users.fullName, phoneNumber: users.phoneNumber }).from(users).where(eq(users.id, c.get('clientUserId'))).limit(1);
+  const [me] = await c.get('db').select({ id: users.id, email: users.email, fullName: users.fullName, phoneNumber: users.phoneNumber, role: users.role }).from(users).where(eq(users.id, c.get('clientUserId'))).limit(1);
   return c.json({ me });
 });
 

@@ -93,7 +93,7 @@ export function Layout() {
             );
           })}
         </nav>
-        <p className="sidebar-note">Read-only for now. Assigning caregivers and marking payments arrive in the next phase.</p>
+        <p className="sidebar-note">Assign caregivers and record payments from each request. TeleHealth, RHU, Triage, Prescriptions and Transport arrive next.</p>
       </aside>
       <div className="main-col">
         <header className="topbar">

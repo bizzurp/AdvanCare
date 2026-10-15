@@ -48,10 +48,14 @@ export interface ServiceRequest {
   serverRef?: string;
   /** First name of the assigned caregiver, from the server. */
   caregiverFirstName?: string;
+  /** Payment recorded by staff (from the server). */
+  paid?: boolean;
+  /** Number of care notes the caregiver recorded (from the server). */
+  careNotes?: number;
   isDemoRecord?: boolean;
 }
 
-export type Role = 'household' | 'coordinator';
+export type Role = 'household' | 'coordinator' | 'caregiver';
 
 export interface FamilyMember {
   id: string;

@@ -1,5 +1,64 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-15] - Staff Console Phase A: Accounts, 2FA, Audit (ADR-011/012)
+
+### Added
+- Migration `0001_staff_accounts` (applied to Neon): `SUPER_ADMIN` role, staff credentials/sessions/invitations/recovery codes/municipality assignments, append-only `audit_logs`.
+- Backend `/api/v1/admin/*`: password + TOTP sign-in with lockout and rate limit, invite → password → authenticator enrollment, cookie sessions (idle/absolute expiry, instant revocation), CSRF guard, Super Admin account management, scoped audit log. `npm run admin:bootstrap` for the first Super Admin.
+- New `admin/` app (port 5176): sign-in, accept invite, 2FA setup with QR + recovery codes, Overview, Admin accounts, account detail with drill-down links, Audit log, My account.
+- New `backend/test/staff.test.ts` and `test/admin.test.ts`; suite: 71 passed, 2 skipped (DB-variant tests).
+
+### Verified (throwaway local Postgres, browser + API)
+- Bootstrap → accept invite → enroll → sign in; invite an Admin scoped to Solana; Admin sees only their scope and own audit entries, gets 403 on account APIs and "Page not found" on Super Admin pages; replayed TOTP refused; invite links single-use; scope change, suspend (session ends on next request; correct password refused) and reactivate all audited; UPDATE/DELETE on `audit_logs` blocked on Neon.
+
+## [2026-10-15] - Native iOS & Android Apps (ADR-013)
+
+### Added
+- Capacitor 8 iOS and Android projects (`ph.advancare.app`), app icons from the heart emblem, launch screen with the full logo, status bar and splash handling, bundled Inter font, npm scripts `cap:sync`, `ios`, `android`, `assets`.
+
+### Verified
+- iOS: built with Xcode 27 and launched on the iPhone 17 simulator as its own app (own icon in the app switcher, full screen, no Safari bar).
+- Android: debug APK built with JDK 21 and launched on the Pixel 9 emulator (own launcher icon, full screen).
+
+## [2026-10-15] - Care Assistant on Gemini (ADR-010)
+
+### Added
+- Backend `POST /api/v1/assistant/chat`: Gemini 3.5 Flash-Lite with 3.1 Flash-Lite fallback, AdvanCare-only scope, live caregiver availability from Neon, server-enforced refusal/emergency/redaction, rate limit, metadata-only logs. 21 security tests (mocked Gemini).
+- Frontend assistant calls the API for general questions; emergencies and own-data questions stay on the device. Gemini settings in `backend/.env.example`.
+
+### Verified (real Gemini, dev server)
+- Correct answers for prices, plans, Tagalog, availability; refused off-topic, prompt-leak, fake-admin, other-person PhilHealth and connection-string probes; medicine-dose question redirected to Triage; stroke signs → fixed 911 text; 429 after the per-minute cap.
+
+## [2026-10-15] - Frontend Navigation Consistency & QA Pass
+
+### Changed
+- One navigation rule for every screen (`Screen`/`BottomNav` in `frontend/src/components/ui.tsx`): main tabs show the bottom nav with no Back button; pages inside a section (requests, profile, plans, settings, help, report pages, request confirmation) show the nav with their parent tab active; forms with a sticky action button, the print view and signed-out screens hide it.
+
+### Fixed
+- `api.ts` now reads backend error messages from the `{ error: { message } }` envelope (was always showing a generic error).
+- CSV export: human-readable status labels, UTF-8 BOM for Excel, CRLF, and formula-injection guard for cells starting with = + - @.
+
+### Verified
+- All 29 routes render without errors; sign-in (wrong/right OTP), caregiver booking ₱300/₱500 with 80/20 split, offline queue and reconnect, cancel request, form validation on every service form, plan enrollment, assistant, CSV export, text size, sign-out and auth redirect.
+
+## [2026-10-15] - Backend Core (ADV-CORE-001, backend/)
+
+### Added
+- `backend/` Cloudflare Workers + Hono API: request-ID, CORS and error middleware; Valibot validation.
+- Drizzle schema and first migration for users, client/family profiles, caregivers, shifts, care notes, payments, idempotency records. RESTRICT on every FK, no default vitals, DB-enforced ₱300/₱500 80/20 split.
+- Hyperdrive binding with direct SSL Neon fallback; `GET /api/v1/health`; R2 presigned uploads and file streaming.
+- Vitest suite (21 tests) running in workerd. Migration and health check also verified against a local PostgreSQL 17.
+- ADR-006 (Workers/Hyperdrive/Neon system of record, n8n async only) and ADR-007 (no cascading deletes, no default clinical values).
+
+## [2026-10-15] - Mobile App UI Implementation (frontend/)
+
+### Added
+- `frontend/` React + Vite PWA implementing all 29 handoff screens with shared components (buttons, fields, choice/service rows, badges, page header, bottom navigation, stepper, segmented control).
+- Onboarding carousel (320ms ease-out slide, Next/Back/Skip, pager dots, swipe, keyboard, reduced motion).
+- New modules: RHU services (MD, DMD, nurse, midwife), Triage & referral (RHU, district hospital, CVMC, private), public/private transport, TeleHealth with GP selection.
+- Phone OTP sign-in, 7-step registration, plan enrollment status, request tracking, settings, offline queue, CSV/PDF export.
+- ADR-009 (frontend demo-mode boundary).
+
 ## [2026-10-15] - Comprehensive Brain Architecture & Knowledge Expansion
 
 ### Added

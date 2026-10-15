@@ -38,7 +38,7 @@
 ### 1d. Care Assistant (ADR-010)
 - [x] Guarded Gemini assistant endpoint + app wiring (2026-10-15).
 - [ ] Replace the borrowed AI Studio key with an AdvanCare-owned, billing-enabled key before real client conversations; `wrangler secret put GEMINI_API_KEY --env production`.
-- [ ] After ADV-AUTH-001: implement `authenticatedUserId` so the assistant can read the user's own shift summaries.
+- [x] `authenticatedUserId` now resolves the app session (ADV-AUTH-001, 2026-10-15); the assistant can read the user's own shift summaries.
 - [ ] Keep `backend/src/assistant/knowledge.ts` in sync with price/service changes.
 
 ### 1f. Native apps (ADR-013)
@@ -48,6 +48,15 @@
 - [ ] Apple Developer + Google Play Console accounts, signing, privacy policy, store listings.
 - [ ] Native plugins as needed: camera (prescriptions), push notifications, secure storage (replaces localStorage, ADV-FE-001).
 
+### 1g. App sign-in & booking (ADR-014, 2026-10-15)
+- [x] ADV-AUTH-001: email 6-digit code sign-in, 30-day app sessions, sign-out.
+- [x] ADV-BOOK-001: `POST /api/v1/clients/sync` + `POST /api/v1/shifts/request` (idempotent) + `GET /api/v1/shifts/mine`; the app syncs the profile on registration and before each booking and refreshes statuses.
+- [x] Migration `0002_client_sign_in` applied to Neon.
+- [ ] Gmail sending: turn on 2-Step Verification on the sending Gmail, create an App Password, set `SMTP_USER` / `SMTP_PASSWORD` in `backend/.env` (and `wrangler secret put` for production). Until then codes only appear in the dev API log.
+- [ ] SMS codes later (Semaphore/Twilio) when budget allows: only the delivery in `routes/auth.ts` changes.
+- [ ] Server-side 12-hour minimum lead time (the app enforces it; the server only rejects past start times).
+- [ ] App: the request timeline shows "Shift in progress · current step" while a request is only Confirmed (pre-existing progress mapping) — review wording.
+
 ### 1e. Admin dashboard (ADR-011/012; plan: `AdvanCare/Product/Admin Dashboard & Staff Accounts Plan.md`)
 - [x] Phase A: staff accounts (invite, 2FA, sessions, lockout, scope, suspend/reactivate, 2FA reset), audit log, `admin/` shell with Overview, Admin accounts, Audit log, My account (2026-10-15).
 - [ ] Bootstrap the real first Super Admin: `cd backend && npm run admin:bootstrap -- --email <you> --name "<name>"`, then open the printed link with `advancare-backend` + `advancare-admin` running.
@@ -56,9 +65,9 @@
 - [ ] DB-backed integration tests for the role × endpoint matrix and lockout (needs a disposable Postgres/Neon branch in CI).
 - [ ] Promote an existing Admin to Super Admin (needs second-Super-Admin approval; only invites exist now).
 - [x] Phase B: Overview KPIs/charts, Requests (+ detail), Shifts board, Clients (+ detail, reason-gated clinical notes), Caregivers (+ detail), Payments, Reports/CSV exports, all municipality-scoped and audited (2026-10-15).
-- [ ] Real data: the Neon database has no clients/requests yet, so the live console is empty until ADV-AUTH-001/ADV-BOOK-001 send real bookings (use `db:seed-demo` on a local DB to review).
+- [ ] Real data: app sign-in and booking now write to Neon (2026-10-15); the console fills as families book. Use `db:seed-demo` on a local DB to review with demo data.
 - [ ] SLA deadlines and adherence on the Overview once plan tiers exist (`subscriptions`, phase D).
-- [ ] Phase C: assign/confirm/cancel/escalate, caregiver accreditation, payment marking; client `GET /shifts/mine`; remove the PWA demo coordinator dashboard.
+- [ ] Phase C: assign/confirm/cancel/escalate, caregiver accreditation, payment marking; remove the PWA demo coordinator dashboard. (`GET /shifts/mine` and the app's status refresh already exist.)
 - [ ] Phase D: `subscriptions` + LGU subsidy reconciliation, System status page, scheduled exports.
 
 ### 2. AI & n8n Workflows

@@ -62,6 +62,12 @@
 - **Decision:** `admin/` is its own React + Vite app calling `backend` at `/api/v1/admin/*`. Credentialed CORS is allowed only for `ADMIN_ORIGINS`; in development Vite proxies `/api` so the cookie is first-party. It reuses the PWA's design tokens but none of its code. Deploy as a static site on its own subdomain (optionally behind Cloudflare Access).
 - **Consequences:** No staff code or data ships inside the client apps. Two frontends to build and deploy. The PWA's demo coordinator dashboard is to be removed once phase B lands.
 
+## ADR-014: App Sign-in Codes by Email (Gmail) Instead of SMS for the Pilot
+- **Status:** Accepted (2026-10-15)
+- **Context:** ADV-AUTH-001 specified SMS one-time codes, but every SMS costs money and no SMS provider is contracted. Email is free.
+- **Decision:** Families sign in with a 6-digit code sent by email through a Gmail account (App Password, SMTP over TLS from the Worker; no third-party mail library). Codes expire in 10 minutes, work once, lock after 5 wrong tries, max 5 per email per hour, plus `CLIENT_AUTH_LIMITER` (10/min per IP and per email); only SHA-256 hashes are stored. One email = one app account. Sessions are 30-day opaque bearer tokens (hashed). The client's mobile number is still collected at registration for calls, not for sign-in. In local development without SMTP settings the code is written to the API log; production refuses to run sign-in without them.
+- **Consequences:** Households without email need a family member's or BHW's address for now; SMS can replace the delivery later without changing the flow or the database. Gmail allows ~500 emails/day per account (enough for the pilot) and codes may land in Spam, so the app says to check there.
+
 ## ADR-013: Native iOS and Android Apps via Capacitor
 - **Status:** Accepted (2026-10-15)
 - **Context:** The PWA works, but families expect an installable app from the App Store / Play Store, and native access (camera, push, secure storage, SMS-code autofill) will matter.

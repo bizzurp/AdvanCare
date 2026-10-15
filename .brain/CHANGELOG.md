@@ -1,5 +1,20 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-15] - App Sign-in by Email Code & Real Bookings (ADV-AUTH-001, ADV-BOOK-001, ADR-014)
+
+### Added
+- Email 6-digit sign-in codes through Gmail (free) instead of SMS; 30-day app sessions; sign-out.
+- Profile sync, caregiver booking (idempotent, server-set ₱300/₱500 rates) and booking status for the app; migration `0002_client_sign_in` applied to Neon.
+- App: email sign-in/registration, mobile number collected for calls, profile sent on registration and before each booking, live status with REQ- reference and caregiver first name.
+
+### Fixed
+- Bookings accept the app's timestamp start time (was rejected as invalid).
+- Stale "Not yet connected" note on caregiver booking now shows only in demo mode.
+
+### Verified
+- Backend: 96 tests pass with a local Postgres (80 without). Builds pass for backend, app and admin.
+- Browser, local database: registered by email code → profile on the server (family contact, no invented clinical values) → booked a home caregiver → appeared in the staff console as REQ-062C177F → after a simulated staff confirmation the app showed "Confirmed" and the caregiver's first name.
+
 ## [2026-10-15] - Staff Console Phase B: Operations Dashboards
 
 ### Added

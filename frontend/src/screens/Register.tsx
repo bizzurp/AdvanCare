@@ -17,10 +17,10 @@ import {
 } from '../components/ui';
 import { CONDITIONS, DEPENDENCIES, LANGUAGES, MOBILITY, MUNICIPALITIES, SCOPE_LABELS } from '../data/catalog';
 import { DEMO_BARANGAYS } from '../data/demo';
-import type { DelegationScope } from '../data/types';
-import { isDemoMode } from '../services/api';
+import type { ClientProfile, DelegationScope } from '../data/types';
+import { isDemoMode, syncClient } from '../services/api';
 import { useApp } from '../state/AppState';
-import { normalizeLocal, PhoneOtp } from './Auth';
+import { EmailCode, normalizeLocal } from './Auth';
 
 type Who = 'self' | 'dependent' | 'bhw';
 
@@ -28,6 +28,7 @@ interface RegForm {
   who: Who;
   language: string;
   fullName: string;
+  mobile: string;
   dateOfBirth: string;
   gender: string;
   philhealthId: string;
@@ -52,6 +53,7 @@ const EMPTY: RegForm = {
   who: 'self',
   language: 'English',
   fullName: '',
+  mobile: '',
   dateOfBirth: '',
   gender: '',
   philhealthId: '',
@@ -72,7 +74,7 @@ const EMPTY: RegForm = {
   consent: false,
 };
 
-const STEPS = ['Mobile number', 'About you', 'Personal details', 'Home address', 'Health background', 'Family contact', 'Privacy consent'];
+const STEPS = ['Email', 'About you', 'Personal details', 'Home address', 'Health background', 'Family contact', 'Privacy consent'];
 
 type Errors = Partial<Record<keyof RegForm, string>>;
 
@@ -80,6 +82,7 @@ function validate(step: number, f: RegForm): Errors {
   const e: Errors = {};
   if (step === 2) {
     if (f.fullName.trim().length < 2) e.fullName = 'Enter the client’s full name.';
+    if (!/^9\d{9}$/.test(normalizeLocal(f.mobile))) e.mobile = 'Enter a Philippine mobile number, like 0917 123 4567.';
     if (!f.dateOfBirth) e.dateOfBirth = 'Enter the date of birth.';
     else if (new Date(f.dateOfBirth) > new Date()) e.dateOfBirth = 'Date of birth can’t be in the future.';
     if (!f.gender) e.gender = 'Choose an option.';
@@ -108,9 +111,9 @@ export function Register() {
   const [step, setStep] = useState(session ? 1 : 0);
   const [form, setForm] = useState<RegForm>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
-  const [phone, setPhone] = useState(session?.phone ?? '');
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
+  const [synced, setSynced] = useState<'yes' | 'no' | null>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const set = (p: Partial<RegForm>) => setForm((f) => ({ ...f, ...p }));
 
@@ -131,15 +134,13 @@ export function Register() {
       return;
     }
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 500));
-    // ADV-AUTH-001 POST /api/v1/clients is specified but not deployed; the record stays on this device.
-    updateProfile({
+    const profile: ClientProfile = {
       id: `local-${Date.now()}`,
       clientCode: 'Pending',
       fullName: form.fullName.trim(),
       dateOfBirth: form.dateOfBirth,
       gender: form.gender,
-      phone,
+      phone: `+63${normalizeLocal(form.mobile)}`,
       municipality: form.municipality,
       barangay: form.barangay,
       sitio: form.sitio.trim(),
@@ -164,7 +165,19 @@ export function Register() {
             },
           ]
         : [],
-    });
+    };
+    updateProfile(profile);
+    // Copy it to the server now (bookings also re-send it, so a failure here isn't final).
+    if (!isDemoMode && session && !session.demo) {
+      try {
+        await syncClient(profile, session.accessToken);
+        setSynced('yes');
+      } catch {
+        setSynced('no');
+      }
+    } else {
+      await new Promise((r) => setTimeout(r, 300));
+    }
     setSaving(false);
     setDone(true);
   };
@@ -184,10 +197,11 @@ export function Register() {
           <h2 className="t-h1" tabIndex={-1}>
             {form.fullName.split(' ')[0]}’s record
             <br />
-            is ready on this device.
+            {synced === 'yes' ? 'is saved.' : 'is ready on this device.'}
           </h2>
           <p className="t-body t-muted">Next, choose a care plan or request a service. Your BHW can help with membership and subsidy verification.</p>
-          {isDemoMode && <DependencyNote>Client registration (POST /api/v1/clients) is not deployed yet, so this profile is saved only on this device.</DependencyNote>}
+          {synced === 'no' && <DependencyNote>We couldn’t reach AdvanCare just now. The record is saved on this phone and will be sent with your first request.</DependencyNote>}
+          {isDemoMode && <DependencyNote>Demo mode: the app isn’t connected to the AdvanCare server, so this profile is saved only on this device.</DependencyNote>}
         </div>
         <ActionBar>
           <LinkButton to="/plans">Choose a care plan</LinkButton>
@@ -214,13 +228,12 @@ export function Register() {
         {step === 0 && (
           <>
             <h2 className="t-h2" tabIndex={-1}>
-              Start with a mobile number.
+              Start with your email address.
             </h2>
-            <PhoneOtp
+            <EmailCode
               mode="register"
-              onVerified={(p, r) => {
-                setPhone(p);
-                signIn({ phone: p, accessToken: r.accessToken, demo: r.demo, role: 'household' });
+              onVerified={(email, r) => {
+                signIn({ email, accessToken: r.accessToken, demo: r.demo, role: 'household' });
                 setStep(1);
               }}
             />
@@ -247,6 +260,17 @@ export function Register() {
               {form.who === 'self' ? 'Tell us about yourself.' : 'Tell us about the client.'}
             </h2>
             <TextField label="Full name" autoComplete={form.who === 'self' ? 'name' : 'off'} value={form.fullName} onChange={(e) => set({ fullName: e.target.value })} error={errors.fullName} />
+            <TextField
+              label="Mobile number"
+              lead="+63"
+              inputMode="tel"
+              autoComplete={form.who === 'self' ? 'tel-national' : 'off'}
+              placeholder="917 123 4567"
+              value={form.mobile}
+              onChange={(e) => set({ mobile: e.target.value })}
+              error={errors.mobile}
+              hint="So the caregiver and coordinator can call. It isn’t used to sign in."
+            />
             <TextField label="Date of birth" type="date" value={form.dateOfBirth} max={new Date().toISOString().slice(0, 10)} onChange={(e) => set({ dateOfBirth: e.target.value })} error={errors.dateOfBirth} />
             <SelectField label="Gender" placeholder="Choose" options={['Female', 'Male', 'Prefer not to say']} value={form.gender} onChange={(e) => set({ gender: e.target.value })} error={errors.gender} />
             <TextField label="PhilHealth ID (optional)" inputMode="numeric" value={form.philhealthId} onChange={(e) => set({ philhealthId: e.target.value })} />

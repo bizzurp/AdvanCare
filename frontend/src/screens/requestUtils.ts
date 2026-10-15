@@ -68,8 +68,8 @@ export function useSubmitRequest() {
       idempotencyKey: uuid(),
     };
     try {
-      const res = await submitServiceRequest(req, session?.accessToken);
-      addRequest({ ...req, status: res.status, dependencyNote: res.dependencyNote });
+      const res = await submitServiceRequest(req, session?.accessToken, profile);
+      addRequest({ ...req, status: res.status, dependencyNote: res.dependencyNote, serverId: res.serverId });
       input.onDone?.();
       navigate(`/request-received/${req.id}`, { replace: false });
     } catch (e) {

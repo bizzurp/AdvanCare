@@ -42,7 +42,8 @@ assistant.post(
   validate('json', ChatRequest),
   async (c) => {
     // Per-caller limit protects the shared Gemini quota. CF-Connecting-IP is set by Cloudflare's edge.
-    const caller = authenticatedUserId(c) ?? c.req.header('CF-Connecting-IP') ?? 'local';
+    const userId = await authenticatedUserId(c);
+    const caller = userId ?? c.req.header('CF-Connecting-IP') ?? 'local';
     if (c.env.ASSISTANT_LIMITER) {
       const { success } = await c.env.ASSISTANT_LIMITER.limit({ key: `assistant:${caller}` });
       if (!success) throw new ApiError(429, 'RATE_LIMITED', 'You are sending messages too quickly. Please wait a minute and try again.');
@@ -50,7 +51,7 @@ assistant.post(
 
     const { messages } = c.req.valid('json');
     const system = buildSystemPrompt({
-      ...(await loadContext(c.env, authenticatedUserId(c))),
+      ...(await loadContext(c.env, userId)),
       today: new Date().toLocaleDateString('en-PH', { timeZone: 'Asia/Manila', dateStyle: 'full' }),
     });
     const { answer, model, fellBack } = await askGemini(c.env, system, messages);

@@ -42,6 +42,12 @@ export interface ServiceRequest {
   idempotencyKey: string;
   /** Present when the request was only stored locally. */
   dependencyNote?: string;
+  /** The server's id once the API accepted it (used to follow its status). */
+  serverId?: string;
+  /** Booking reference shown by staff (REQ-…), once known. */
+  serverRef?: string;
+  /** First name of the assigned caregiver, from the server. */
+  caregiverFirstName?: string;
   isDemoRecord?: boolean;
 }
 

@@ -30,6 +30,16 @@ export interface Bindings {
   STAFF_ENCRYPTION_KEY?: string;
   /** Staff sign-in attempts per IP and per email (wrangler.toml [[ratelimits]]). */
   ADMIN_LOGIN_LIMITER?: RateLimit;
+  /** App sign-in code requests/attempts per IP and per email (wrangler.toml [[ratelimits]]). */
+  CLIENT_AUTH_LIMITER?: RateLimit;
+  /** Outgoing email (sign-in codes). Gmail: smtp.gmail.com, 465, the address, and an App Password (secret). */
+  SMTP_HOST?: string;
+  SMTP_PORT?: string;
+  SMTP_USER?: string;
+  SMTP_PASSWORD?: string;
+  /** Defaults to SMTP_USER / "AdvanCare". */
+  MAIL_FROM?: string;
+  MAIL_FROM_NAME?: string;
 }
 
 export interface Variables {
@@ -38,6 +48,8 @@ export interface Variables {
   db: Database;
   /** Set by `requireStaff` on signed-in admin routes. */
   staff: StaffContext;
+  /** Set by `requireClient` on signed-in app routes. */
+  clientUserId: string;
 }
 
 export type AppEnv = { Bindings: Bindings; Variables: Variables };

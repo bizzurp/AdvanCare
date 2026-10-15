@@ -1,10 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { buildDemoHouseholdHistory, DEMO_PROFILE } from '../data/demo';
 import type { ClientProfile, Role, ServiceRequest } from '../data/types';
-import { submitServiceRequest } from '../services/api';
+import { appStatus, myShifts, signOutRemote, submitServiceRequest } from '../services/api';
 
 export interface Session {
-  phone: string;
+  /** How the person signed in (email code). Older sessions on a phone may carry `phone` instead. */
+  email?: string;
+  phone?: string;
   accessToken: string;
   demo: boolean;
   role: Role;
@@ -91,13 +93,42 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     const queued = stateRef.current.requests.filter((r) => r.status === 'queued').reverse();
     for (const r of queued) {
       try {
-        const res = await submitServiceRequest(r, stateRef.current.session?.accessToken);
-        if (res.status !== 'queued') updateRequest(r.id, { status: res.status, dependencyNote: res.dependencyNote });
+        const res = await submitServiceRequest(r, stateRef.current.session?.accessToken, stateRef.current.profile);
+        if (res.status !== 'queued') updateRequest(r.id, { status: res.status, dependencyNote: res.dependencyNote, serverId: res.serverId });
       } catch {
         break; // keep remaining items queued; retried on next reconnect
       }
     }
   }, [updateRequest]);
+
+  // Follow bookings the server knows about (staff confirming, caregiver starting, etc.).
+  const refreshStatuses = useCallback(async () => {
+    const session = stateRef.current.session;
+    if (!session || session.demo || !stateRef.current.requests.some((r) => r.serverId)) return;
+    try {
+      const server = new Map((await myShifts(session.accessToken)).map((s) => [s.id, s]));
+      setState((st) => ({
+        ...st,
+        requests: st.requests.map((r) => {
+          const s = r.serverId ? server.get(r.serverId) : undefined;
+          return s ? { ...r, status: appStatus(s.status), serverRef: s.ref, caregiverFirstName: s.caregiverFirstName ?? undefined } : r;
+        }),
+      }));
+    } catch {
+      /* offline or signed out: keep what's on the phone */
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshStatuses();
+    const onFocus = () => void refreshStatuses();
+    window.addEventListener('focus', onFocus);
+    const timer = setInterval(() => void refreshStatuses(), 60_000);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      clearInterval(timer);
+    };
+  }, [refreshStatuses, state.session?.accessToken]);
 
   useEffect(() => {
     const on = () => {
@@ -119,7 +150,10 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       online,
       completeOnboarding: () => setState((s) => ({ ...s, onboarded: true })),
       signIn: (session) => setState((s) => ({ ...s, session, onboarded: true })),
-      signOut: () => setState((s) => ({ ...s, session: null })),
+      signOut: () => {
+        void signOutRemote(stateRef.current.session?.accessToken);
+        setState((s) => ({ ...s, session: null }));
+      },
       setRole: (role) => setState((s) => (s.session ? { ...s, session: { ...s.session, role } } : s)),
       updateProfile: (p) => setState((s) => ({ ...s, profile: { ...s.profile, ...p } })),
       addRequest: (r) => setState((s) => ({ ...s, requests: [r, ...s.requests] })),

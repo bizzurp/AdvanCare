@@ -24,7 +24,10 @@
         "--port",
         "8787"
       ],
-      "port": 8787
+      "port": 8787,
+      "env": {
+        "PATH": "/Users/mclein/.nvm/versions/node/v26.4.0/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+      }
     },
     {
       "name": "advancare-frontend-api",

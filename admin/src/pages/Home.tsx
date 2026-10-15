@@ -68,7 +68,7 @@ export function Home() {
             <Kpi label="Waiting for a caregiver" value={o.kpis.waiting} to="/requests?status=WAITING" tone={o.kpis.waiting ? 'warn' : undefined} />
             <Kpi label="In progress now" value={o.kpis.inProgress} to="/requests?status=IN_PROGRESS" />
             <Kpi label="Escalated" value={o.kpis.escalated} to="/requests?status=ESCALATED" tone={o.kpis.escalated ? 'bad' : undefined} />
-            <Kpi label="Confirmed, not started" value={o.kpis.confirmedUpcoming} to="/requests?status=CONFIRMED" />
+            <Kpi label="New service requests" value={o.kpis.servicesNew} to="/services?status=SUBMITTED" sub={`${num(o.kpis.servicesOpen)} open in total`} tone={o.kpis.servicesNew ? 'warn' : undefined} />
           </div>
 
           <div className="kpis">

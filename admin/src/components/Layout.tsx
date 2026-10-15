@@ -19,8 +19,9 @@ const NAV: { heading?: string; items: NavItem[] }[] = [
       { to: '/', label: 'Overview', icon: 'home-angle' },
       { to: '/requests', label: 'Requests', icon: 'document-medicine' },
       { to: '/shifts', label: 'Shifts board', icon: 'calendar' },
-      { to: '/clients', label: 'Clients', icon: 'user-heart' },
-      { to: '/caregivers', label: 'Caregivers', icon: 'stethoscope' },
+      { to: '/services', label: 'Service requests', icon: 'stethoscope' },
+      { to: '/clients', label: 'Clients', icon: 'users-group-rounded' },
+      { to: '/caregivers', label: 'Caregivers', icon: 'user-heart' },
       { to: '/payments', label: 'Payments', icon: 'wallet' },
       { to: '/reports', label: 'Reports', icon: 'chart-square' },
     ],
@@ -93,7 +94,7 @@ export function Layout() {
             );
           })}
         </nav>
-        <p className="sidebar-note">Assign caregivers and record payments from each request. TeleHealth, RHU, Triage, Prescriptions and Transport arrive next.</p>
+        <p className="sidebar-note">Caregiver bookings are under Requests; TeleHealth, RHU, Triage, Prescriptions and Transport are under Service requests.</p>
       </aside>
       <div className="main-col">
         <header className="topbar">

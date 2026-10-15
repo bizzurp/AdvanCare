@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { buildDemoHouseholdHistory, DEMO_PROFILE } from '../data/demo';
 import type { ClientProfile, Role, ServiceRequest } from '../data/types';
-import { appStatus, myShifts, signOutRemote, submitServiceRequest } from '../services/api';
+import { appServiceStatus, appStatus, isServiceKind, myServiceRequests, myShifts, signOutRemote, submitServiceRequest } from '../services/api';
 
 export interface Session {
   /** How the person signed in (email code). Older sessions on a phone may carry `phone` instead. */
@@ -106,11 +106,20 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     const session = stateRef.current.session;
     if (!session || session.demo || session.role === 'caregiver' || !stateRef.current.requests.some((r) => r.serverId)) return;
     try {
-      const server = new Map((await myShifts(session.accessToken)).map((s) => [s.id, s]));
+      const [shiftList, serviceList] = await Promise.all([myShifts(session.accessToken), myServiceRequests(session.accessToken)]);
+      const shifts = new Map(shiftList.map((s) => [s.id, s]));
+      const services = new Map(serviceList.map((s) => [s.id, s]));
       setState((st) => ({
         ...st,
         requests: st.requests.map((r) => {
-          const s = r.serverId ? server.get(r.serverId) : undefined;
+          if (!r.serverId) return r;
+          if (isServiceKind(r.kind)) {
+            const v = services.get(r.serverId);
+            return v
+              ? { ...r, status: appServiceStatus(v.status), serverRef: v.ref, staffNote: v.staffNote ?? undefined, cancellationReason: v.cancellationReason ?? undefined, ...(v.scheduledAt ? { scheduledFor: v.scheduledAt } : {}) }
+              : r;
+          }
+          const s = shifts.get(r.serverId);
           return s ? { ...r, status: appStatus(s.status), serverRef: s.ref, caregiverFirstName: s.caregiverFirstName ?? undefined, paid: s.paid, careNotes: s.careNotes } : r;
         }),
       }));

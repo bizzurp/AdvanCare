@@ -2,7 +2,7 @@ import { and, asc, count, desc, eq, gte, ilike, inArray, lte, or, sql, type SQL 
 import { alias } from 'drizzle-orm/pg-core';
 import { Hono } from 'hono';
 import * as v from 'valibot';
-import { auditLogs, careNotes, caregivers, clientProfiles, payments, shifts, users } from '../../db/schema';
+import { auditLogs, careNotes, caregivers, clientProfiles, payments, serviceRequests, shifts, users } from '../../db/schema';
 import type { AppEnv } from '../../env';
 import { ApiError } from '../../lib/errors';
 import { validate } from '../../lib/validation';
@@ -33,7 +33,7 @@ adminOperations.get('/overview', validate('query', v.object({ range: v.optional(
 
   const shiftBase = () => db.select().from(shifts).innerJoin(clientProfiles, eq(clientProfiles.id, shifts.clientId)).$dynamic();
 
-  const [[k], byDay, byService, byStatus, waiting, escalated, [cg], [cl]] = await Promise.all([
+  const [[k], byDay, byService, byStatus, waiting, escalated, [cg], [cl], [svc]] = await Promise.all([
     db
       .select({
         requests: sql<number>`count(*) filter (where ${shifts.createdAt} >= ${from})::int`,
@@ -87,6 +87,14 @@ adminOperations.get('/overview', validate('query', v.object({ range: v.optional(
       .from(caregivers)
       .where(scopeCondition(staff, caregivers.municipality)),
     db.select({ registered: count() }).from(clientProfiles).where(scope),
+    db
+      .select({
+        open: sql<number>`count(*) filter (where ${serviceRequests.status} in ('SUBMITTED','IN_REVIEW','SCHEDULED'))::int`,
+        waiting: sql<number>`count(*) filter (where ${serviceRequests.status} = 'SUBMITTED')::int`,
+      })
+      .from(serviceRequests)
+      .innerJoin(clientProfiles, eq(clientProfiles.id, serviceRequests.clientId))
+      .where(scope),
   ]);
 
   const counts = new Map(byDay.map((d) => [d.day, d.n]));
@@ -117,6 +125,8 @@ adminOperations.get('/overview', validate('query', v.object({ range: v.optional(
       payouts: Number(k!.payouts),
       margin: Number(k!.margin),
       clientsRegistered: cl?.registered ?? 0,
+      servicesOpen: svc?.open ?? 0,
+      servicesNew: svc?.waiting ?? 0,
       caregivers: { total: cg?.total ?? 0, accredited: cg?.accredited ?? 0, available: cg?.available ?? 0 },
     },
     daily: series,

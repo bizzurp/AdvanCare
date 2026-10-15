@@ -17,10 +17,13 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 - ⬜ Demo Admin invites from the seed: Solana one used for testing (password set during testing, can be reset via console → Reset 2-step / new invite); Tuguegarao one unused (expires ~2026-10-18).
 
 ### P2 — Every service reaches staff
-- ⬜ `service_requests` table + API for TeleHealth, RHU services, Triage, Prescription (with uploaded photo), Transport.
-- ⬜ App sends these instead of "Saved on device"; status shown back to the family.
-- ⬜ Staff console: Service requests inbox (filter by type/status), detail, set status (in review / scheduled with date-time / completed / cancelled) + note to family.
-- ⬜ Gate `/storage/*` uploads behind sign-in and link files to their request (prescriptions).
+- ✅ `service_requests` table + API for TeleHealth, RHU services, Triage, Prescription (with uploaded photo), Transport (2026-10-16).
+- ✅ App sends these instead of "Saved on device"; status, scheduled time and the care team's note shown back; family can withdraw before scheduling (2026-10-16).
+- ✅ Staff console: Service requests inbox, detail (health requests audited on open), review / schedule (date-time + note) / complete / cancel (reason), audited file viewing; family emailed on schedule and cancel (2026-10-16).
+- ✅ Uploads need sign-in, are checked for real JPEG/PNG/PDF content, recorded with their owner and linked to the request; `/storage/*` is owner-only (2026-10-16).
+
+- ⬜ Families can cancel a sent caregiver booking only by calling the coordinator (no app endpoint yet).
+- ⬜ Demo reviewer Super Admin (`demo.reviewer@demo.advancare.test`) exists only on the demo branch (made for testing).
 
 ### P3 — Online prototype
 - 👤 Choose hosting (Cloudflare Pages recommended) and domain (optional).

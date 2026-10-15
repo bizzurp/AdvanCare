@@ -14,6 +14,7 @@ import { Payments } from './pages/Payments';
 import { Reports } from './pages/Reports';
 import { RequestDetail } from './pages/RequestDetail';
 import { Requests } from './pages/Requests';
+import { ServiceDetailPage, Services } from './pages/Services';
 import { Shifts } from './pages/Shifts';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
@@ -55,6 +56,8 @@ export function App() {
             <Route path="requests" element={<Requests />} />
             <Route path="requests/:id" element={<RequestDetail />} />
             <Route path="shifts" element={<Shifts />} />
+            <Route path="services" element={<Services />} />
+            <Route path="services/:id" element={<ServiceDetailPage />} />
             <Route path="clients" element={<Clients />} />
             <Route path="clients/:id" element={<ClientDetail />} />
             <Route path="caregivers" element={<Caregivers />} />

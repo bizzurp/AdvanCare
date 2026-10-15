@@ -52,6 +52,10 @@ export interface ServiceRequest {
   paid?: boolean;
   /** Number of care notes the caregiver recorded (from the server). */
   careNotes?: number;
+  /** Message from the care team (service requests, from the server). */
+  staffNote?: string;
+  /** Why it was cancelled (from the server). */
+  cancellationReason?: string;
   isDemoRecord?: boolean;
 }
 

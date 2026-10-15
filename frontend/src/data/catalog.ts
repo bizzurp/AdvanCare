@@ -156,12 +156,12 @@ export const SCOPE_LABELS: Record<string, { title: string; desc: string }> = {
 /** Explicit missing backend / approval dependencies, shown in the UI where they apply. */
 export const DEPENDENCIES = {
   api: 'AdvanCare API (VITE_API_BASE_URL) is not configured. Requests stay on this device and are not sent to any provider.',
-  telehealth: 'TeleHealth booking API, physician roster, and video/audio consultation provider are not yet defined.',
-  rhu: 'RHU appointment API and the pilot RHU service list (MD, DMD, nurse, midwife schedules) are not yet confirmed.',
+  telehealth: 'Your request goes to the AdvanCare care team, who arrange the consult with a doctor and confirm the time here. The doctor roster and video provider are still being set up.',
+  rhu: 'Your request goes to the care team, who confirm a schedule with the RHU and let you know here. The pilot RHU service list is still being confirmed.',
   triage:
     'Approved triage protocol is missing. AdvanCare does not assign urgency or a destination automatically; a clinician must review every assessment.',
-  transport: 'Transport booking API, operator roster, and fare rules are not yet defined. Fares are quoted by the care team.',
-  prescription: 'Prescription and DoH Yakap fulfillment API is not yet defined.',
+  transport: 'Your request goes to the care team, who confirm the vehicle, pickup time and fare here. The operator roster and fare rules are still being set up.',
+  prescription: 'Your request and photo go to the care team for review. DoH Yakap pickup or delivery is arranged by the team for now.',
   caregiver: 'Demo mode: caregiver bookings are saved on this phone only. Connect the app to the AdvanCare server to send them.',
   facilities: 'Facility directory (district hospitals, private clinics) needs a verified list for the pilot area.',
   subsidy: 'LGU subsidy verification requires a signed municipal agreement (ADR-001). Pilot billing may run 100% out-of-pocket until then.',

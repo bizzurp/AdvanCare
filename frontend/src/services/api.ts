@@ -153,6 +153,25 @@ const CONTRACTS: Partial<Record<ServiceKind, Contract>> = {
   }),
 };
 
+/** TeleHealth, RHU, Triage, Prescription and Transport go to the service-request inbox (P2). */
+const SERVICE_KINDS: ServiceKind[] = ['telehealth', 'rhu', 'triage', 'prescription', 'transport'];
+export const isServiceKind = (k: ServiceKind) => SERVICE_KINDS.includes(k);
+
+function serviceBody(req: ServiceRequest) {
+  const p = req.payload;
+  const preferredAt = (p.startTime ?? p.pickupTime ?? req.scheduledFor ?? null) as string | null;
+  const { clientId, uploadIds, attachment, ...details } = p as Record<string, unknown>;
+  return {
+    kind: req.kind,
+    clientId,
+    summary: req.summary,
+    preferredAt,
+    // What the family entered, plus the readable rows the app shows them.
+    details: { ...details, ...(attachment ? { attachmentName: (attachment as { name?: string }).name } : {}), shown: req.details.map((d) => `${d.label}: ${d.value}`) },
+    uploadIds: Array.isArray(uploadIds) ? uploadIds : [],
+  };
+}
+
 const KIND_DEPENDENCY: Record<ServiceKind, string> = {
   telehealth: DEPENDENCIES.telehealth,
   rhu: DEPENDENCIES.rhu,
@@ -175,13 +194,60 @@ export async function submitServiceRequest(req: ServiceRequest, token?: string, 
   await wait(300);
   if (isDemoMode) return { status: 'saved-demo', dependencyNote: `${DEPENDENCIES.api} ${KIND_DEPENDENCY[req.kind]}` };
   const contract = CONTRACTS[req.kind];
-  if (!contract) return { status: 'saved-demo', dependencyNote: KIND_DEPENDENCY[req.kind] };
+  if (!contract && !isServiceKind(req.kind)) return { status: 'saved-demo', dependencyNote: KIND_DEPENDENCY[req.kind] };
   if (!token) throw new ApiError('Please sign in again to send this request.', 401);
-  // Keep the server's copy of the client up to date (address, family) before booking.
+  // Keep the server's copy of the client up to date (address, family) before sending.
   if (profile) await syncClient(profile, token);
-  const { path, body } = contract(req.payload);
-  const r = await post<{ id: string }>(path, body, token, req.idempotencyKey);
+  if (contract) {
+    const { path, body } = contract(req.payload);
+    const r = await post<{ id: string }>(path, body, token, req.idempotencyKey);
+    return { status: 'submitted', serverId: r.id };
+  }
+  const r = await post<{ id: string }>('/api/v1/service-requests', serviceBody(req), token, req.idempotencyKey);
   return { status: 'submitted', serverId: r.id };
+}
+
+/** Uploads a photo/PDF (e.g. a prescription) and returns its id to attach to a request. */
+export async function uploadFile(file: File, token: string): Promise<string> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 60000);
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/uploads`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': file.type, 'X-File-Name': encodeURIComponent(file.name) },
+      body: file,
+      signal: ctrl.signal,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new ApiError((data as { error?: { message?: string } }).error?.message ?? 'The file could not be uploaded.', res.status);
+    return (data as { id: string }).id;
+  } catch (e) {
+    if (e instanceof ApiError) throw e;
+    throw new ApiError('We could not upload the file. Check your connection and try again.');
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+export type ServerServiceStatus = 'SUBMITTED' | 'IN_REVIEW' | 'SCHEDULED' | 'COMPLETED' | 'CANCELLED';
+export interface ServerServiceRequest {
+  id: string;
+  ref: string;
+  kind: string;
+  status: ServerServiceStatus;
+  scheduledAt: string | null;
+  staffNote: string | null;
+  cancellationReason: string | null;
+}
+const SERVICE_STATUS: Record<ServerServiceStatus, RequestStatus> = { SUBMITTED: 'submitted', IN_REVIEW: 'submitted', SCHEDULED: 'confirmed', COMPLETED: 'completed', CANCELLED: 'cancelled' };
+export const appServiceStatus = (s: ServerServiceStatus): RequestStatus => SERVICE_STATUS[s];
+
+export async function myServiceRequests(token: string): Promise<ServerServiceRequest[]> {
+  return (await get<{ requests: ServerServiceRequest[] }>('/api/v1/service-requests/mine', token)).requests;
+}
+
+export async function cancelServiceRequest(serverId: string, token: string): Promise<void> {
+  await post(`/api/v1/service-requests/${serverId}/cancel`, {}, token);
 }
 
 // ---------- Live status of bookings (GET /api/v1/shifts/mine) ----------

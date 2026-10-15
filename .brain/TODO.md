@@ -26,11 +26,18 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 - ⬜ Demo reviewer Super Admin (`demo.reviewer@demo.advancare.test`) exists only on the demo branch (made for testing).
 
 ### P3 — Online prototype
-- 👤 Choose hosting (Cloudflare Pages recommended) and domain (optional).
-- ⬜ Deploy API (`wrangler deploy --env production`) with secrets: DATABASE_URL, STAFF_ENCRYPTION_KEY (new), SMTP_USER/SMTP_PASSWORD, GEMINI_API_KEY, R2 keys.
-- ⬜ Deploy the families' app (web) and the staff console; set ALLOWED_ORIGINS / ADMIN_ORIGINS / ADMIN_APP_URL / VITE_API_BASE_URL; production R2 CORS.
-- 👤 Create the real Super Admin on production + a second Super Admin.
-- ⬜ Smoke test on a real phone (web) and the iOS/Android builds pointed at the online API.
+- ✅ Hosting chosen: API on Cloudflare Workers; families' app and staff console on Vercel default `*.vercel.app` domains (ADR-015). Custom domain optional.
+- ✅ Prepare production origins (web + Capacitor), console invitation URL and sender name in `backend/wrangler.toml`; existing Hyperdrive/R2/rate-limit bindings retained.
+- ✅ Add `admin/vercel.json` same-origin `/api` proxy before BrowserRouter fallback, plus security headers; console keeps `VITE_API_BASE_URL` empty.
+- ✅ Add `frontend/vercel.json` security headers, camera/geolocation permissions and `/sw.js` revalidation; HashRouter needs no SPA rewrite.
+- ✅ Write root `DEPLOY.md` owner checklist, limitations, smoke checks and rollback; document deployment in Architecture and ADR-015.
+- ✅ Verify backend tests (111 passed, 2 conditional skips on temporary local PostgreSQL), all three builds, deployment config and diff secret scan (2026-10-16).
+- 👤 Switch `backend/.env` from demo to production privately; apply every migration in `backend/drizzle/` to Neon `production` (see `DEPLOY.md`).
+- 👤 Set production secrets: STAFF_ENCRYPTION_KEY (new), SMTP_USER/SMTP_PASSWORD, GEMINI_API_KEY, R2 keys; deploy API (`wrangler deploy --env production`). No DATABASE_URL secret needed: Hyperdrive is bound.
+- 👤 Replace `REPLACE_ME` in `admin/vercel.json` with the first deployed API URL, commit and push; import both web apps into Vercel. Families set `VITE_API_BASE_URL` to the API; console leaves it empty. Confirm actual origins and redeploy API if they differ from placeholders.
+- 👤 Create the real Super Admin on production + a second via bootstrap `--additional`; optional console Deployment Protection.
+- 👤 Sync native builds with the final API URL; smoke test health, email sign-in/booking, console session after reload and the booking appearing in staff, on a real phone and iOS/Android.
+- Production bucket CORS is unnecessary for current API-mediated prescription uploads (P2); owner configuration is needed only if direct presigned browser→R2 uploads are used later.
 
 ### P4 — Polish & cleanup
 - ⬜ Remove the PWA's demo coordinator dashboard and "Coordinator" switch.
@@ -102,7 +109,7 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 ### 1e. Admin dashboard (ADR-011/012; plan: `AdvanCare/Product/Admin Dashboard & Staff Accounts Plan.md`)
 - [x] Phase A: staff accounts (invite, 2FA, sessions, lockout, scope, suspend/reactivate, 2FA reset), audit log, `admin/` shell with Overview, Admin accounts, Audit log, My account (2026-10-15).
 - [ ] Bootstrap the real first Super Admin: `cd backend && npm run admin:bootstrap -- --email <you> --name "<name>"`, then open the printed link with `advancare-backend` + `advancare-admin` running.
-- [ ] Production: `wrangler secret put STAFF_ENCRYPTION_KEY --env production` (new key, not the dev one), set `ADMIN_ORIGINS` / `ADMIN_APP_URL`, deploy `admin/` (static, own subdomain, optional Cloudflare Access), set `VITE_API_BASE_URL`.
+- [ ] Production (owner, `DEPLOY.md`): set new `STAFF_ENCRYPTION_KEY`, confirm `ADMIN_ORIGINS` / `ADMIN_APP_URL`, deploy `admin/` on Vercel with literal `/api` rewrite; keep console `VITE_API_BASE_URL` empty. Optional Vercel Deployment Protection.
 - [ ] Email provider for invite links (they're copied from the UI for now).
 - [ ] DB-backed integration tests for the role × endpoint matrix and lockout (needs a disposable Postgres/Neon branch in CI).
 - [ ] Promote an existing Admin to Super Admin (needs second-Super-Admin approval; only invites exist now).

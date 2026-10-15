@@ -104,14 +104,14 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   // Follow bookings the server knows about (staff confirming, caregiver starting, etc.).
   const refreshStatuses = useCallback(async () => {
     const session = stateRef.current.session;
-    if (!session || session.demo || !stateRef.current.requests.some((r) => r.serverId)) return;
+    if (!session || session.demo || session.role === 'caregiver' || !stateRef.current.requests.some((r) => r.serverId)) return;
     try {
       const server = new Map((await myShifts(session.accessToken)).map((s) => [s.id, s]));
       setState((st) => ({
         ...st,
         requests: st.requests.map((r) => {
           const s = r.serverId ? server.get(r.serverId) : undefined;
-          return s ? { ...r, status: appStatus(s.status), serverRef: s.ref, caregiverFirstName: s.caregiverFirstName ?? undefined } : r;
+          return s ? { ...r, status: appStatus(s.status), serverRef: s.ref, caregiverFirstName: s.caregiverFirstName ?? undefined, paid: s.paid, careNotes: s.careNotes } : r;
         }),
       }));
     } catch {

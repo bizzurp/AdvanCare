@@ -17,12 +17,28 @@ export class ApiError extends Error {
   }
 }
 
-async function post<T>(path: string, body: unknown, token?: string, idempotencyKey?: string): Promise<T> {
+async function get<T>(path: string, token: string): Promise<T> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 15000);
+  try {
+    const res = await fetch(`${API_BASE}${path}`, { headers: { Authorization: `Bearer ${token}` }, signal: ctrl.signal });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new ApiError((data as { error?: { message?: string } }).error?.message ?? 'Something went wrong. Please try again.', res.status);
+    return data as T;
+  } catch (e) {
+    if (e instanceof ApiError) throw e;
+    throw new ApiError('We could not reach AdvanCare. Check your connection and try again.');
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function post<T>(path: string, body: unknown, token?: string, idempotencyKey?: string, method: 'POST' | 'PATCH' = 'POST'): Promise<T> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 15000);
   try {
     const res = await fetch(`${API_BASE}${path}`, {
-      method: 'POST',
+      method,
       headers: {
         'Content-Type': 'application/json',
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -60,6 +76,8 @@ export async function requestOtp(email: string): Promise<void> {
 export interface AuthResult {
   accessToken: string;
   demo: boolean;
+  /** Account role on the server (CLIENT, CAREGIVER, …). */
+  role?: string;
 }
 
 export async function verifyOtp(email: string, otp: string): Promise<AuthResult> {
@@ -68,8 +86,8 @@ export async function verifyOtp(email: string, otp: string): Promise<AuthResult>
     if (otp !== DEMO_OTP) throw new ApiError('That code is incorrect. Check the email and try again.', 401);
     return { accessToken: 'demo', demo: true };
   }
-  const r = await post<{ accessToken: string }>('/api/v1/auth/verify-otp', { email, otp });
-  return { accessToken: r.accessToken, demo: false };
+  const r = await post<{ accessToken: string; user: { role: string } }>('/api/v1/auth/verify-otp', { email, otp });
+  return { accessToken: r.accessToken, demo: false, role: r.user.role };
 }
 
 export async function signOutRemote(token?: string): Promise<void> {
@@ -177,6 +195,8 @@ export interface ServerShift {
   scheduledStartTime: string;
   caregiverFirstName: string | null;
   updatedAt: string;
+  paid: boolean;
+  careNotes: number;
 }
 
 const SERVER_STATUS: Record<ServerShiftStatus, RequestStatus> = {
@@ -191,16 +211,69 @@ const SERVER_STATUS: Record<ServerShiftStatus, RequestStatus> = {
 export const appStatus = (s: ServerShiftStatus): RequestStatus => SERVER_STATUS[s];
 
 export async function myShifts(token: string): Promise<ServerShift[]> {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 15000);
-  try {
-    const res = await fetch(`${API_BASE}/api/v1/shifts/mine`, { headers: { Authorization: `Bearer ${token}` }, signal: ctrl.signal });
-    if (!res.ok) throw new ApiError('Could not refresh request status.', res.status);
-    return ((await res.json()) as { shifts: ServerShift[] }).shifts;
-  } finally {
-    clearTimeout(timer);
-  }
+  return (await get<{ shifts: ServerShift[] }>('/api/v1/shifts/mine', token)).shifts;
 }
+
+export interface CareNote {
+  id: string;
+  recordedAt: string;
+  vitals: Record<string, number> | null;
+  tasks: string[] | null;
+  notes: string | null;
+  summary: string | null;
+  caregiverFirstName: string | null;
+}
+
+/** Care notes the caregiver recorded for one of the family's bookings. */
+export async function shiftNotes(serverId: string, token: string): Promise<CareNote[]> {
+  return (await get<{ notes: CareNote[] }>(`/api/v1/shifts/${serverId}/notes`, token)).notes;
+}
+
+// ---------- Caregiver mode ----------
+export interface CaregiverMe {
+  id: string;
+  fullName: string | null;
+  email: string | null;
+  municipality: string | null;
+  barangay: string | null;
+  isAccredited: boolean;
+  isAvailable: boolean;
+  badges: string[];
+  totalShiftsCompleted: number;
+  averageRating: number | null;
+}
+
+export interface CaregiverShift {
+  id: string;
+  ref: string;
+  status: ServerShiftStatus;
+  tier: 'BGAY_HOME_300' | 'CVMC_INSTITUTIONAL_500';
+  scheduledDate: string;
+  scheduledStartTime: string;
+  locationDetails: string;
+  clockIn: string | null;
+  clockOut: string | null;
+  caregiverPayout: number;
+  payoutPaid: boolean;
+  notes: number;
+  client: {
+    name: string;
+    address: string;
+    landmark?: string | null;
+    background?: { conditions?: string[]; mobility?: string; allergies?: string } | null;
+    emergencyContact?: { name: string; relationship: string; phone: string } | null;
+  };
+}
+
+export const caregiverApi = {
+  me: (token: string) => get<{ me: CaregiverMe }>('/api/v1/caregiver/me', token).then((r) => r.me),
+  setAvailable: (token: string, isAvailable: boolean) => post<{ ok: true }>('/api/v1/caregiver/me', { isAvailable }, token, undefined, 'PATCH'),
+  shifts: (token: string) => get<{ shifts: CaregiverShift[] }>('/api/v1/caregiver/shifts', token).then((r) => r.shifts),
+  clockIn: (token: string, id: string) => post<{ ok: true }>(`/api/v1/caregiver/shifts/${id}/clock-in`, {}, token),
+  clockOut: (token: string, id: string) => post<{ ok: true }>(`/api/v1/caregiver/shifts/${id}/clock-out`, {}, token),
+  addNote: (token: string, id: string, note: { vitals?: Record<string, number>; tasks: string[]; notes: string; familySummary?: string }) =>
+    post<{ id: string }>(`/api/v1/caregiver/shifts/${id}/notes`, note, token),
+};
 
 // ---------- Care Assistant (backend /api/v1/assistant/chat) ----------
 export interface AssistantTurn {

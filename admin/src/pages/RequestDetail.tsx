@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api, type ShiftStatus } from '../api';
 import { Icon } from '../components/Icon';
 import { PaymentBadge, StatusBadge } from '../components/ops';
+import { RequestActions } from '../components/RequestActions';
 import { Badge, ErrorNotice, Loading, Notice, PageHeader, useLoad } from '../components/ui';
 import { actionLabel, clock, dateTime, day, METHOD_LABEL, money, personName, relative, TIER_LABEL } from '../format';
 
@@ -11,6 +13,7 @@ const FLOW_LABEL: Record<string, string> = { REQUESTED: 'Requested', MATCHING: '
 export function RequestDetail() {
   const { id = '' } = useParams();
   const detail = useLoad(() => api.request(id), [id]);
+  const [flash, setFlash] = useState<string | null>(null);
   if (detail.loading && !detail.data) return <Loading />;
   if (detail.error || !detail.data) return <ErrorNotice error={detail.error} />;
   const { request: r, client, requestedBy, caregiver, payments, history } = detail.data;
@@ -32,7 +35,19 @@ export function RequestDetail() {
         }
         subtitle={`${TIER_LABEL[r.tier]} · requested ${dateTime(r.createdAt)}`}
       />
-      {r.status === 'ESCALATED' ? <Notice tone="bad" title="Escalated">This request needs a coordinator. Assigning caregivers from the console arrives in the next phase.</Notice> : null}
+      {flash ? <Notice tone="good">{flash}</Notice> : null}
+      {r.status === 'ESCALATED' ? (
+        <Notice tone="bad" title="Escalated">
+          {r.escalationReason ?? 'This request needs a coordinator.'}
+        </Notice>
+      ) : null}
+      <RequestActions
+        detail={detail.data}
+        onChanged={(message) => {
+          setFlash(message);
+          void detail.reload();
+        }}
+      />
       {r.status === 'CANCELLED' ? (
         <Notice tone="info" title="Cancelled">
           {dateTime(r.cancelledAt)}
@@ -143,6 +158,17 @@ export function RequestDetail() {
             <b>{money(r.platformMargin)}</b>
           </div>
         </div>
+        <p className="small">
+          Caregiver payout:{' '}
+          {r.payoutPaidAt ? (
+            <>
+              <Badge tone="good">Sent</Badge> {dateTime(r.payoutPaidAt)}
+              {r.payoutReference ? ` · ref ${r.payoutReference}` : ''}
+            </>
+          ) : (
+            <span className="muted">{r.status === 'COMPLETED' ? 'Not sent yet' : 'After the shift is completed'}</span>
+          )}
+        </p>
         {payments.length ? (
           <div className="table-wrap">
             <table className="table table-compact">

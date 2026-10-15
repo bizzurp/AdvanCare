@@ -201,6 +201,12 @@ export const shifts = pgTable(
     clockOut: timestamp('clock_out', { withTimezone: true }),
     cancelledAt: timestamp('cancelled_at', { withTimezone: true }),
     cancellationReason: text('cancellation_reason'),
+    /** Why staff escalated the request (shown to coordinators, not to the family). */
+    escalationReason: text('escalation_reason'),
+    /** Caregiver payout (₱240 / ₱400) sent: when, how (e.g. GCash reference) and by whom. */
+    payoutPaidAt: timestamp('payout_paid_at', { withTimezone: true }),
+    payoutReference: varchar('payout_reference', { length: 120 }),
+    payoutMarkedByUserId: uuid('payout_marked_by_user_id').references(() => users.id, restrict),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

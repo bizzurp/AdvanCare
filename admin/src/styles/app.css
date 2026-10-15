@@ -1409,3 +1409,18 @@ a.barlist-row:hover .barlist-fill {
   margin-top: var(--s8);
   margin-bottom: calc(var(--s8) * -1);
 }
+
+/* ---------- Staff actions (P1) ---------- */
+.candidate {
+  align-items: flex-start !important;
+}
+.reason-bad {
+  color: var(--red) !important;
+}
+.reason-warn {
+  color: var(--gold) !important;
+}
+.toggles {
+  display: grid;
+  gap: var(--s8);
+}

@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
-import { ActionBar, Banner, Button, DependencyNote, DetailRow, LinkButton, PageHeader, Screen, Segmented, StatusBadge, TextField } from '../components/ui';
+import { ActionBar, Badge, Banner, Button, DependencyNote, DetailRow, LinkButton, PageHeader, Screen, Segmented, StatusBadge, TextField } from '../components/ui';
 import { serviceIcon, serviceTitle } from '../data/catalog';
 import type { RequestStatus, ServiceKind, ServiceRequest } from '../data/types';
-import { submitServiceRequest } from '../services/api';
+import { shiftNotes, submitServiceRequest, type CareNote } from '../services/api';
 import { useApp } from '../state/AppState';
 import { formatWhen } from './requestUtils';
 
@@ -179,7 +179,13 @@ export function RequestDetail() {
             {r.serverRef ? ` · ${r.serverRef}` : ''}
           </p>
           {r.caregiverFirstName ? <p className="t-body">Caregiver: {r.caregiverFirstName}</p> : null}
+          {r.paid ? (
+            <p className="row gap-8 t-body">
+              <Badge tone="success">Paid</Badge>
+            </p>
+          ) : null}
         </div>
+        {r.serverId && session && !session.demo && (r.careNotes ?? 0) > 0 ? <CareNotes serverId={r.serverId} token={session.accessToken} /> : null}
 
         {r.status === 'cancelled' ? (
           <Banner tone="info" icon="check-circle">
@@ -297,5 +303,48 @@ export function RequestDetail() {
         </ActionBar>
       )}
     </Screen>
+  );
+}
+
+const VITAL_LABEL: Record<string, string> = { bpSystolic: 'BP', pulse: 'Pulse', tempC: 'Temp', spo2: 'SpO₂', glucoseMgDl: 'Blood sugar' };
+
+/** What the caregiver recorded during the shift (from the server; only for the family's own bookings). */
+function CareNotes({ serverId, token }: { serverId: string; token: string }) {
+  const [notes, setNotes] = useState<CareNote[] | null>(null);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    shiftNotes(serverId, token)
+      .then(setNotes)
+      .catch(() => setError('Could not load care notes right now.'));
+  }, [serverId, token]);
+  if (error) return <Banner tone="warn">{error}</Banner>;
+  if (!notes) return null;
+  return (
+    <section className="stack gap-12" aria-labelledby="notes-h">
+      <h3 className="t-section" id="notes-h">
+        Care notes
+      </h3>
+      {notes.map((n) => {
+        const v = n.vitals ?? {};
+        const vitals = [
+          v.bpSystolic && v.bpDiastolic ? `BP ${v.bpSystolic}/${v.bpDiastolic}` : null,
+          ...Object.entries(v)
+            .filter(([k]) => k !== 'bpSystolic' && k !== 'bpDiastolic')
+            .map(([k, val]) => `${VITAL_LABEL[k] ?? k} ${val}${k === 'tempC' ? '°C' : k === 'spo2' ? '%' : ''}`),
+        ].filter(Boolean);
+        return (
+          <article key={n.id} className="card stack gap-8">
+            <p className="t-caption t-muted">
+              {formatWhen(n.recordedAt)}
+              {n.caregiverFirstName ? ` · ${n.caregiverFirstName}` : ''}
+            </p>
+            {n.summary ? <p className="t-body t-medium">{n.summary}</p> : null}
+            {vitals.length ? <p className="t-body">{vitals.join(' · ')}</p> : null}
+            {n.tasks?.length ? <p className="t-body t-muted">Done: {n.tasks.join(', ')}</p> : null}
+            {n.notes ? <p className="t-body">{n.notes}</p> : null}
+          </article>
+        );
+      })}
+    </section>
   );
 }

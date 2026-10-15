@@ -6,6 +6,7 @@ import { requestId } from './middleware/request-id';
 import { admin } from './routes/admin';
 import { assistant } from './routes/assistant';
 import { auth } from './routes/auth';
+import { caregiverApp } from './routes/caregiver';
 import { clients } from './routes/clients';
 import { health } from './routes/health';
 import { appShifts } from './routes/shifts';
@@ -25,6 +26,7 @@ v1.route('/', assistant);
 v1.route('/', auth);
 v1.route('/', clients);
 v1.route('/', appShifts);
+v1.route('/', caregiverApp);
 v1.route('/admin', admin);
 app.route('/api/v1', v1);
 

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Icon, type IconName } from '../components/Icon';
 import { Brand, LinkButton, PageHeader, Screen, SectionHeading, ServiceRow, StatusBadge } from '../components/ui';
 import { PLANS, serviceIcon, serviceTitle, SERVICES } from '../data/catalog';
@@ -14,7 +14,8 @@ function greeting() {
 // ---------------- 03 / Home ----------------
 export function Home() {
   const navigate = useNavigate();
-  const { profile, requests } = useApp();
+  const { profile, requests, session } = useApp();
+  if (session?.role === 'caregiver') return <Navigate to="/caregiver" replace />;
   const active = requests.filter((r) => !['completed', 'cancelled'].includes(r.status)).slice(0, 3);
   const plan = PLANS.find((p) => p.id === profile.planId);
   const tiles: { label: string; icon: IconName; to: string }[] = [

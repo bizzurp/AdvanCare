@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { CaregiverHome, CaregiverShiftScreen } from './screens/CaregiverMode';
 import { HashRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { useApp } from './state/AppState';
 import { Help, Onboarding, SignIn, Welcome } from './screens/Auth';
@@ -40,7 +41,7 @@ function RequireAuth() {
 
 function Entry() {
   const { session, onboarded } = useApp();
-  return <Navigate to={session ? '/home' : onboarded ? '/sign-in' : '/welcome'} replace />;
+  return <Navigate to={session ? (session.role === 'caregiver' ? '/caregiver' : '/home') : onboarded ? '/sign-in' : '/welcome'} replace />;
 }
 
 export default function App() {
@@ -57,6 +58,8 @@ export default function App() {
         <Route path="/help" element={<Help />} />
         <Route element={<RequireAuth />}>
           <Route path="/home" element={<Home />} />
+          <Route path="/caregiver" element={<CaregiverHome />} />
+          <Route path="/caregiver/shift/:id" element={<CaregiverShiftScreen />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/telehealth" element={<TeleHealth />} />
           <Route path="/services/telehealth/doctors" element={<ChooseDoctor />} />

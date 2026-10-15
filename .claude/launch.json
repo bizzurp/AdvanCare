@@ -1,0 +1,59 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "advancare-frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "frontend",
+        "run",
+        "dev"
+      ],
+      "port": 5174
+    },
+    {
+      "name": "advancare-backend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "backend",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "8787"
+      ],
+      "port": 8787
+    },
+    {
+      "name": "advancare-frontend-api",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "frontend",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5175",
+        "--strictPort"
+      ],
+      "env": {
+        "VITE_API_BASE_URL": "http://localhost:8787"
+      },
+      "port": 5175
+    },
+    {
+      "name": "advancare-admin",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "admin",
+        "run",
+        "dev"
+      ],
+      "port": 5176
+    }
+  ]
+}

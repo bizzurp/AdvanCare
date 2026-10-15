@@ -1,0 +1,7 @@
+# macOS
+.DS_Store
+
+# Local env files (secrets and personal notes) — commit only *.example templates
+.env
+.env.*
+!.env.example

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AdvanCare</string>
+    <string name="title_activity_main">AdvanCare</string>
+    <string name="package_name">ph.advancare.app</string>
+    <string name="custom_url_scheme">ph.advancare.app</string>
+</resources>

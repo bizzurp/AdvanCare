@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 // In development the API is proxied, so the staff session cookie is first-party to the
-// admin origin. Deployed, set VITE_API_BASE_URL to the API origin (same site, CORS with credentials).
+// admin origin. On Vercel, vercel.json proxies /api; keep VITE_API_BASE_URL empty there too.
 export default defineConfig({
   plugins: [react()],
   server: {

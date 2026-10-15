@@ -1,5 +1,19 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-16] - P3: Online Prototype Configuration (Owner Deployment Pending)
+
+### Added / changed
+- Vercel configuration for the families' app and staff console: security headers, camera/geolocation policy for families, service worker revalidation, and a console `/api` rewrite before the BrowserRouter fallback. The API destination is deliberately `REPLACE_ME` until the owner's first Worker deploy; console API base stays empty.
+- Worker production vars for the expected Vercel origins, Capacitor origins, console invitation URL and `AdvanCare` sender name; existing production bindings retained. Corrected the admin Vite deployment comment.
+- Root `DEPLOY.md`: numbered owner checklist for login, production migrations, secrets, API deployment, literal proxy URL replacement, Vercel imports/origin confirmation, two Super Admins, optional protection, native sync, smoke checks and rollback. Records proxy-IP rate-limit and production-only console limitations; the second Super Admin uses existing bootstrap `--additional`.
+- Architecture deployment section, ADR-015 and P3 roadmap updated. No app features, auth logic, schema or existing tests changed.
+
+### Verified locally
+- `npm test` in `backend/`: 111 passed, 2 conditional skips, across 11 files against temporary local PostgreSQL 17 with all five existing migrations applied. Temporary database stopped and removed; no Neon writes or real email.
+- `npm run build` passed in `backend/`, `admin/` and `frontend/` (includes TypeScript checks; backend bundles with Wrangler dry-run). Dotenv loading into Wrangler disabled for verification so local secrets are not printed or bundled.
+- Parsed both Vercel JSON files and Wrangler TOML; checked exact headers, rewrite order, service worker cache rule, production vars and retained bindings. Reviewed the diff for secrets.
+- No login, secret upload, production migration, push or deployment performed. Online smoke tests remain owner-run.
+
 ## [2026-10-16] - P2: Every Service Reaches Staff
 
 ### Added

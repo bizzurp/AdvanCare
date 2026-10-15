@@ -6,6 +6,12 @@ for (const [path, svg] of Object.entries(sources)) icons[path.split('/').pop()!.
 
 export type IconName =
   | 'alt-arrow-left'
+  | 'calendar'
+  | 'chart-square'
+  | 'document-medicine'
+  | 'stethoscope'
+  | 'user-heart'
+  | 'wallet'
   | 'alt-arrow-right'
   | 'check-circle'
   | 'document-text'

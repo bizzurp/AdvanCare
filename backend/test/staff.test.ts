@@ -164,3 +164,42 @@ describe('account rules', () => {
     expect(approvalProblem('b', { role: 'ADMIN', invitedByUserId: 'a', approvedByUserId: null })).toMatch(/Only Super Admin/);
   });
 });
+
+describe('scope helpers', () => {
+  it('builds no condition for Super Admins and an empty one for Admins without municipalities', async () => {
+    const { scopeCondition, inScope } = await import('../src/staff/scope');
+    const { clientProfiles } = await import('../src/db/schema');
+    expect(scopeCondition({ municipalities: 'ALL' }, clientProfiles.municipality)).toBeUndefined();
+    expect(scopeCondition({ municipalities: [] }, clientProfiles.municipality)).toBeDefined();
+    expect(inScope({ municipalities: ['Solana'] }, 'Solana')).toBe(true);
+    expect(inScope({ municipalities: ['Solana'] }, 'Baggao')).toBe(false);
+    expect(inScope({ municipalities: ['Solana'] }, null)).toBe(false);
+    expect(inScope({ municipalities: 'ALL' }, null)).toBe(true);
+  });
+
+  it('masks phones and shortens names for ledgers', async () => {
+    const { maskPhone, shortName, requestRef } = await import('../src/staff/scope');
+    expect(maskPhone('09171234567')).toBe('0917•••4567');
+    expect(maskPhone('+63 917 123 4567')).toBe('+639•••4567');
+    expect(maskPhone(null)).toBeNull();
+    expect(shortName('Juan Dela Cruz')).toBe('Juan C.');
+    expect(shortName('Maria')).toBe('Maria');
+    expect(requestRef('1a2b3c4d-0000-0000-0000-000000000000')).toBe('REQ-1A2B3C4D');
+  });
+
+  it('computes Asia/Manila day boundaries', async () => {
+    const { manilaDayStart, manilaDate } = await import('../src/staff/scope');
+    const now = Date.parse('2026-10-15T17:30:00Z'); // 01:30 on 16 Oct in Manila
+    expect(manilaDayStart(0, now).toISOString()).toBe('2026-10-15T16:00:00.000Z');
+    expect(manilaDayStart(-1, now).toISOString()).toBe('2026-10-14T16:00:00.000Z');
+    expect(manilaDate(new Date(now))).toBe('2026-10-16');
+  });
+
+  it('writes Excel-safe CSV', async () => {
+    const { toCsv } = await import('../src/staff/scope');
+    const csv = toCsv(['A', 'B'], [['=HYPERLINK("x")', 'a,b'], [null, 'line\nbreak']]);
+    expect(csv.startsWith('﻿A,B\r\n')).toBe(true);
+    expect(csv).toContain(`"'=HYPERLINK(""x"")","a,b"`);
+    expect(csv).toContain(',"line\nbreak"');
+  });
+});

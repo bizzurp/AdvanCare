@@ -153,5 +153,8 @@ function RecordLink({ entry, people, canOpen }: { entry: AuditEntry; people: Acc
     return canOpen ? <Link to={`/admins/${entry.entityId}`}>{label}</Link> : <span>{label}</span>;
   }
   if (entry.entityType === 'staff_session') return <span className="muted">Session</span>;
+  if (entry.entityType === 'client') return <Link to={`/clients/${entry.entityId}`}>Client record</Link>;
+  if (entry.entityType === 'shift') return <Link to={`/requests/${entry.entityId}`}>Request</Link>;
+  if (entry.entityType === 'export') return <span>Export: {entry.entityId}</span>;
   return <span className="muted">{entry.entityType}</span>;
 }

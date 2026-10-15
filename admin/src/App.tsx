@@ -7,6 +7,14 @@ import { Account } from './pages/Account';
 import { AdminDetail } from './pages/AdminDetail';
 import { Admins } from './pages/Admins';
 import { Audit } from './pages/Audit';
+import { CaregiverDetail, Caregivers } from './pages/Caregivers';
+import { ClientDetail } from './pages/ClientDetail';
+import { Clients } from './pages/Clients';
+import { Payments } from './pages/Payments';
+import { Reports } from './pages/Reports';
+import { RequestDetail } from './pages/RequestDetail';
+import { Requests } from './pages/Requests';
+import { Shifts } from './pages/Shifts';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 
@@ -44,6 +52,15 @@ export function App() {
             }
           >
             <Route index element={<Home />} />
+            <Route path="requests" element={<Requests />} />
+            <Route path="requests/:id" element={<RequestDetail />} />
+            <Route path="shifts" element={<Shifts />} />
+            <Route path="clients" element={<Clients />} />
+            <Route path="clients/:id" element={<ClientDetail />} />
+            <Route path="caregivers" element={<Caregivers />} />
+            <Route path="caregivers/:id" element={<CaregiverDetail />} />
+            <Route path="payments" element={<Payments />} />
+            <Route path="reports" element={<Reports />} />
             <Route path="admins" element={<RequireSession superOnly><Admins /></RequireSession>} />
             <Route path="admins/:id" element={<RequireSession superOnly><AdminDetail /></RequireSession>} />
             <Route path="audit" element={<Audit />} />

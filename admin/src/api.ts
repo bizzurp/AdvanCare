@@ -70,6 +70,195 @@ export interface Session {
   current: boolean;
 }
 
+export type ShiftStatus = 'REQUESTED' | 'MATCHING' | 'CONFIRMED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'ESCALATED';
+export type ShiftTier = 'BGAY_HOME_300' | 'CVMC_INSTITUTIONAL_500';
+export type PaymentStatus = 'PENDING' | 'SUCCEEDED' | 'FAILED' | 'REFUNDED';
+export type PaymentMethod = 'GCASH' | 'MAYA' | 'CASH' | 'BANK_TRANSFER';
+export interface Ref {
+  id: string;
+  name: string;
+}
+export interface Paged {
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export interface RequestRow {
+  id: string;
+  ref: string;
+  createdAt: string;
+  status: ShiftStatus;
+  tier: ShiftTier;
+  scheduledDate: string;
+  scheduledStartTime: string;
+  grossRate: number;
+  client: Ref;
+  barangay: string;
+  municipality: string;
+  caregiver: Ref | null;
+}
+
+export interface AlertRow {
+  id: string;
+  ref: string;
+  createdAt: string;
+  updatedAt: string;
+  status: ShiftStatus;
+  tier: ShiftTier;
+  scheduledDate: string;
+  scheduledStartTime: string;
+  client: Ref;
+  barangay: string;
+  municipality: string;
+}
+
+export interface Overview {
+  range: number;
+  from: string;
+  kpis: {
+    requests: number;
+    requestsToday: number;
+    waiting: number;
+    inProgress: number;
+    escalated: number;
+    confirmedUpcoming: number;
+    completed: number;
+    cancelled: number;
+    revenue: number;
+    payouts: number;
+    margin: number;
+    clientsServed: number;
+    clientsRegistered: number;
+    caregivers: { total: number; accredited: number; available: number };
+  };
+  daily: { day: string; requests: number }[];
+  byService: { tier: ShiftTier; requests: number }[];
+  byStatus: { status: ShiftStatus; requests: number }[];
+  alerts: { waiting: AlertRow[]; escalated: AlertRow[] };
+}
+
+export interface RequestDetail {
+  request: {
+    id: string;
+    ref: string;
+    status: ShiftStatus;
+    tier: ShiftTier;
+    createdAt: string;
+    updatedAt: string;
+    scheduledDate: string;
+    scheduledStartTime: string;
+    durationHours: number;
+    locationDetails: string;
+    grossRate: number;
+    caregiverPayout: number;
+    platformMargin: number;
+    clockIn: string | null;
+    clockOut: string | null;
+    cancelledAt: string | null;
+    cancellationReason: string | null;
+    careNotes: number;
+  };
+  client: { id: string; name: string; sitio: string | null; barangay: string; municipality: string; landmarkNotes: string | null };
+  requestedBy: { name: string | null; role: string; phone: string | null };
+  caregiver: { id: string; name: string; badges: string[]; isAccredited: boolean } | null;
+  payments: PaymentLite[];
+  history: AuditEntry[];
+}
+
+export interface PaymentLite {
+  id: string;
+  ref: string;
+  amount: number;
+  method: PaymentMethod;
+  status: PaymentStatus;
+  providerReference: string | null;
+  paidAt: string | null;
+  createdAt: string;
+}
+
+export interface ShiftCard {
+  id: string;
+  ref: string;
+  status: ShiftStatus;
+  tier: ShiftTier;
+  scheduledStartTime: string;
+  clockIn: string | null;
+  clockOut: string | null;
+  client: Ref;
+  barangay: string;
+  municipality: string;
+  caregiver: Ref | null;
+}
+
+export interface ClientRow {
+  id: string;
+  fullName: string;
+  sitio: string | null;
+  barangay: string;
+  municipality: string;
+  createdAt: string;
+  phone: string | null;
+  openRequests: number;
+  totalRequests: number;
+  lastRequestAt: string | null;
+}
+
+export interface ClientDetail {
+  client: {
+    id: string;
+    fullName: string;
+    age: number | null;
+    gender: string | null;
+    sitio: string | null;
+    barangay: string;
+    municipality: string;
+    landmarkNotes: string | null;
+    createdAt: string;
+    idsOnFile: { philhealth: boolean; yakap: boolean; pwd: boolean; senior: boolean };
+    hasClinicalBaseline: boolean;
+  };
+  account: { fullName: string | null; role: string; phone: string | null } | null;
+  family: { id: string; name: string; relationship: string; phone: string | null; isEmergencyContact: boolean; isRemoteSponsor: boolean; location: string | null; notificationChannel: string; hasAccount: boolean }[];
+  requests: { id: string; ref: string; createdAt: string; status: ShiftStatus; tier: ShiftTier; scheduledDate: string; grossRate: number; caregiver: Ref | null }[];
+  summary: { totalRequests: number; openRequests: number; completed: number; spent: number };
+}
+
+export interface ClinicalRecord {
+  clinicalBaseline: unknown;
+  careNotes: { id: string; shiftId: string; ref: string; recordedAt: string; vitalsRecorded: unknown; tasksCompleted: unknown; rawCaregiverNotes: string | null; familySummary: string | null; caregiverName: string | null }[];
+}
+
+export interface CaregiverRow {
+  id: string;
+  fullName: string | null;
+  phone: string | null;
+  barangay: string | null;
+  municipality: string | null;
+  isAccredited: boolean;
+  isAvailable: boolean;
+  badges: string[];
+  averageRating: number | null;
+  totalShiftsCompleted: number;
+  activeShifts: number;
+}
+
+export interface CaregiverDetail {
+  caregiver: CaregiverRow & { sitio: string | null; accountActive: boolean; createdAt: string };
+  shifts: { id: string; ref: string; status: ShiftStatus; tier: ShiftTier; scheduledDate: string; clockIn: string | null; clockOut: string | null; caregiverPayout: number; barangay: string; client: Ref }[];
+  earnings: { completedShifts: number; payouts: number; upcoming: number };
+}
+
+export interface PaymentRow extends PaymentLite {
+  request: { id: string; ref: string; tier: ShiftTier; status: ShiftStatus };
+  split: { gross: number; caregiver: number; platform: number };
+  client: Ref;
+  municipality: string;
+  caregiver: Ref | null;
+}
+
+export type ExportTable = 'requests' | 'payouts' | 'payments';
+
 export type SignInStep = { next: 'mfa' | 'enroll'; challenge: string };
 
 export class ApiError extends Error {
@@ -112,6 +301,11 @@ async function request<T>(method: 'GET' | 'POST' | 'PATCH', path: string, body?:
   return data as T;
 }
 
+function query(filters: Record<string, string | undefined>): string {
+  const params = new URLSearchParams(Object.entries(filters).filter((e): e is [string, string] => !!e[1]));
+  return params.size ? `?${params}` : '';
+}
+
 export const api = {
   // Sign-in
   login: (email: string, password: string) => request<SignInStep>('POST', '/auth/login', { email, password }),
@@ -148,9 +342,41 @@ export const api = {
   unlock: (id: string) => request<{ account: Account }>('POST', `/accounts/${id}/unlock`),
   revokeSessions: (id: string) => request<{ ended: number; account: Account }>('POST', `/accounts/${id}/sessions/revoke`),
 
-  // Audit
-  audit: (filters: Record<string, string | undefined>) => {
-    const params = new URLSearchParams(Object.entries(filters).filter((e): e is [string, string] => !!e[1]));
-    return request<{ entries: AuditEntry[]; nextCursor: string | null; scope: 'all' | 'own' }>('GET', `/audit${params.size ? `?${params}` : ''}`);
+  // Operations (phase B) — always limited to the signed-in person's municipalities.
+  overview: (range: string) => request<Overview>('GET', `/overview?range=${range}`),
+  requests: (filters: Record<string, string | undefined>) => request<Paged & { requests: RequestRow[] }>('GET', `/requests${query(filters)}`),
+  request: (id: string) => request<RequestDetail>('GET', `/requests/${id}`),
+  shifts: (date: string) => request<{ date: string; shifts: ShiftCard[] }>('GET', `/shifts?date=${date}`),
+  clients: (filters: Record<string, string | undefined>) => request<Paged & { clients: ClientRow[] }>('GET', `/clients${query(filters)}`),
+  client: (id: string) => request<ClientDetail>('GET', `/clients/${id}`),
+  clinicalAccess: (id: string, reason: string) => request<ClinicalRecord>('POST', `/clients/${id}/clinical-access`, { reason }),
+  caregivers: (filters: Record<string, string | undefined>) => request<Paged & { caregivers: CaregiverRow[] }>('GET', `/caregivers${query(filters)}`),
+  caregiver: (id: string) => request<CaregiverDetail>('GET', `/caregivers/${id}`),
+  payments: (filters: Record<string, string | undefined>) =>
+    request<Paged & { payments: PaymentRow[]; totals: { succeeded: number; pending: number; pendingCount: number; failedCount: number } }>('GET', `/payments${query(filters)}`),
+  /** Downloads a CSV (the server audits every export) and returns the file name. */
+  exportCsv: async (table: ExportTable, filters: Record<string, string | undefined>) => {
+    let res: Response;
+    try {
+      res = await fetch(`${BASE}/exports/${table}${query(filters)}`, { credentials: 'include', headers: { 'X-AdvanCare-Staff': '1' } });
+    } catch {
+      throw new ApiError(0, 'NETWORK', 'Can’t reach the AdvanCare server. Check your connection and try again.');
+    }
+    if (!res.ok) {
+      const err = (await res.json().catch(() => null))?.error ?? {};
+      if (res.status === 401) onUnauthenticated?.();
+      throw new ApiError(res.status, err.code ?? 'HTTP_ERROR', err.message ?? 'The export failed.', {}, err.requestId);
+    }
+    const filename = /filename="([^"]+)"/.exec(res.headers.get('Content-Disposition') ?? '')?.[1] ?? `advancare-${table}.csv`;
+    const url = URL.createObjectURL(await res.blob());
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    return filename;
   },
+
+  // Audit
+  audit: (filters: Record<string, string | undefined>) => request<{ entries: AuditEntry[]; nextCursor: string | null; scope: 'all' | 'own' }>('GET', `/audit${query(filters)}`),
 };

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "AdvanCare/Project Context v2.md",
+                "file": "AdvanCare/Implementation Plan.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Project Context v2"
+              "title": "Implementation Plan"
             }
           }
         ]
@@ -187,9 +187,9 @@
   },
   "active": "4a3070bf4c41526c",
   "lastOpenFiles": [
+    "AdvanCare/Project Context.md",
     "AdvanCare/Cover Page.jpg",
     "AdvanCare/AdvanCare.jpg",
-    "AdvanCare/Project Context.md",
     "AdvanCare/Project Context v2.md",
     "AdvanCare/MedCore_CagHaxx.pdf",
     "AdvanCare/Fishbone Diagram.png",

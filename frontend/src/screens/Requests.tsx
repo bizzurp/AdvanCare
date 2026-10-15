@@ -4,7 +4,7 @@ import { Icon } from '../components/Icon';
 import { ActionBar, Badge, Banner, Button, DependencyNote, DetailRow, LinkButton, PageHeader, Screen, Segmented, StatusBadge, TextField } from '../components/ui';
 import { serviceIcon, serviceTitle } from '../data/catalog';
 import type { RequestStatus, ServiceKind, ServiceRequest } from '../data/types';
-import { shiftNotes, submitServiceRequest, type CareNote } from '../services/api';
+import { ApiError, cancelServiceRequest, isServiceKind, shiftNotes, submitServiceRequest, type CareNote } from '../services/api';
 import { useApp } from '../state/AppState';
 import { formatWhen } from './requestUtils';
 
@@ -151,11 +151,17 @@ export function RequestDetail() {
   const [when, setWhen] = useState('');
   const [whenErr, setWhenErr] = useState('');
   const [retrying, setRetrying] = useState(false);
+  const [cancelError, setCancelError] = useState('');
   if (!r) return <Navigate to="/requests" replace />;
 
   const p = progress(r.status);
   const steps = STEPS[r.kind];
   const canChange = ['saved-demo', 'queued', 'submitted'].includes(r.status) && !r.isDemoRecord;
+  // Once the server has it, staff own the schedule: services can still be withdrawn here,
+  // a sent caregiver booking is changed by calling the coordinator.
+  const onServer = !!r.serverId && !!session && !session.demo;
+  const canReschedule = canChange && !onServer;
+  const canCancel = canChange && (!onServer || isServiceKind(r.kind));
 
   const retry = async (req: ServiceRequest) => {
     setRetrying(true);
@@ -179,6 +185,11 @@ export function RequestDetail() {
             {r.serverRef ? ` · ${r.serverRef}` : ''}
           </p>
           {r.caregiverFirstName ? <p className="t-body">Caregiver: {r.caregiverFirstName}</p> : null}
+          {r.staffNote ? (
+            <Banner icon="chat-round-dots">
+              <strong>From your care team:</strong> {r.staffNote}
+            </Banner>
+          ) : null}
           {r.paid ? (
             <p className="row gap-8 t-body">
               <Badge tone="success">Paid</Badge>
@@ -189,7 +200,7 @@ export function RequestDetail() {
 
         {r.status === 'cancelled' ? (
           <Banner tone="info" icon="check-circle">
-            This request was cancelled.
+            This request was cancelled.{r.cancellationReason ? ` ${r.cancellationReason}` : ''}
           </Banner>
         ) : (
           <section aria-labelledby="st">
@@ -268,16 +279,22 @@ export function RequestDetail() {
               Send now
             </Button>
           )}
-          {canChange && !confirmCancel && (
-            <div className="grid-2">
-              <Button variant="secondary" onClick={() => setRescheduling((v) => !v)}>
-                Reschedule
-              </Button>
-              <Button variant="danger" onClick={() => setConfirmCancel(true)}>
-                Cancel request
-              </Button>
+          {(canReschedule || canCancel) && !confirmCancel && (
+            <div className={canReschedule && canCancel ? 'grid-2' : undefined}>
+              {canReschedule && (
+                <Button variant="secondary" onClick={() => setRescheduling((v) => !v)}>
+                  Reschedule
+                </Button>
+              )}
+              {canCancel && (
+                <Button variant="danger" onClick={() => setConfirmCancel(true)}>
+                  Cancel request
+                </Button>
+              )}
             </div>
           )}
+          {onServer && !canCancel && r.status !== 'in-progress' && <p className="t-caption t-muted">To change or cancel this booking, call your care coordinator.</p>}
+          {cancelError && <Banner tone="error">{cancelError}</Banner>}
           {confirmCancel && (
             <div className="card stack gap-12" role="alertdialog" aria-labelledby="cc">
               <p className="t-medium" id="cc">
@@ -289,7 +306,17 @@ export function RequestDetail() {
                 </Button>
                 <Button
                   variant="danger"
-                  onClick={() => {
+                  onClick={async () => {
+                    setCancelError('');
+                    if (onServer && r.serverId && session) {
+                      try {
+                        await cancelServiceRequest(r.serverId, session.accessToken);
+                      } catch (e) {
+                        setCancelError(e instanceof ApiError ? e.message : 'Could not cancel. Try again.');
+                        setConfirmCancel(false);
+                        return;
+                      }
+                    }
                     updateRequest(r.id, { status: 'cancelled' });
                     setConfirmCancel(false);
                     navigate(`/requests/${r.id}`, { replace: true });

@@ -19,6 +19,7 @@ import {
 } from '../components/ui';
 import { DEPENDENCIES, FACILITY_LEVELS, RHU_PROVIDER_TYPES, RHU_SERVICES, RHU_VISIT_MODES, type FacilityLevel, type RhuProviderType } from '../data/catalog';
 import { DEMO_GPS, DEMO_RHUS, DEMO_SLOTS, DEMO_TAKEN } from '../data/demo';
+import { isDemoMode } from '../services/api';
 import { useApp, useDraft } from '../state/AppState';
 import { combine, formatDay, toDateInput, useSubmitRequest } from './requestUtils';
 
@@ -121,7 +122,7 @@ export function TeleHealth() {
             <Icon name="shield-check" size={16} /> {formatDay(d.date)} · {d.time} · {d.mode}
           </p>
         )}
-        <DependencyNote>{DEPENDENCIES.telehealth}</DependencyNote>
+        <DependencyNote title={isDemoMode ? undefined : 'How this works'}>{isDemoMode ? DEPENDENCIES.api : DEPENDENCIES.telehealth}</DependencyNote>
         <Link to="/services/triage" className="link-btn">
           Not sure which service you need? Get assessed first
         </Link>
@@ -275,7 +276,7 @@ export function RhuServices() {
         <TimePicker label="Preferred time" slots={['Morning', 'Afternoon']} value={d.window} onChange={(w) => set({ window: w })} error={errors.window} />
         <TextArea label="Notes for the RHU team (optional)" placeholder="Symptoms, last visit, or questions" value={d.notes} onChange={(e) => set({ notes: e.target.value })} />
         <p className="t-caption t-muted">The RHU confirms the exact schedule. RHU fees, if any, are set by the health unit.</p>
-        <DependencyNote>{DEPENDENCIES.rhu}</DependencyNote>
+        <DependencyNote title={isDemoMode ? undefined : 'How this works'}>{isDemoMode ? DEPENDENCIES.api : DEPENDENCIES.rhu}</DependencyNote>
         {error && <Banner tone="error">{error}</Banner>}
       </div>
       <ActionBar>

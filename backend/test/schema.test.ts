@@ -17,12 +17,14 @@ describe('schema invariants (ADR-007)', () => {
       'family_profiles',
       'idempotency_records',
       'payments',
+      'service_requests',
       'shifts',
       'staff_credentials',
       'staff_invitations',
       'staff_municipality_assignments',
       'staff_recovery_codes',
       'staff_sessions',
+      'uploads',
       'users',
     ]);
   });

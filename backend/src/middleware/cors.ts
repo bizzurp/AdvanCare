@@ -31,7 +31,7 @@ export const corsMiddleware = createMiddleware<AppEnv>((c, next) => {
     origin: (origin) =>
       allowed.includes(origin) || (c.env.ENVIRONMENT === 'development' && LOCAL_DEV_ORIGIN.test(origin)) ? origin : null,
     allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key', REQUEST_ID_HEADER],
+    allowHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key', 'X-File-Name', REQUEST_ID_HEADER],
     exposeHeaders: [REQUEST_ID_HEADER],
     maxAge: 600,
   })(c, next);

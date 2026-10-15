@@ -80,6 +80,12 @@ export const ACTION_LABEL: Record<string, string> = {
   'request.cancelled': 'Cancelled a request',
   'payment.recorded': 'Recorded a payment',
   'payout.sent': 'Marked a caregiver payout sent',
+  'service_request.viewed': 'Opened a health service request',
+  'service_request.file_viewed': 'Opened an attached file',
+  'service_request.in_review': 'Started reviewing a service request',
+  'service_request.scheduled': 'Scheduled a service request',
+  'service_request.completed': 'Completed a service request',
+  'service_request.cancelled': 'Cancelled a service request',
 };
 
 export const actionLabel = (action: string) => ACTION_LABEL[action] ?? action;
@@ -168,3 +174,13 @@ export function waitedFor(iso: string): string {
 export function todayManila(offsetDays = 0): string {
   return new Date(Date.now() + 8 * 3600_000 + offsetDays * 86400_000).toISOString().slice(0, 10);
 }
+
+export const SERVICE_KIND_LABEL: Record<string, string> = { telehealth: 'TeleHealth', rhu: 'RHU service', triage: 'Triage & referral', prescription: 'Prescription', transport: 'Transport' };
+
+export const SERVICE_STATUS: Record<string, { label: string; tone: Tone }> = {
+  SUBMITTED: { label: 'New', tone: 'warn' },
+  IN_REVIEW: { label: 'In review', tone: 'info' },
+  SCHEDULED: { label: 'Scheduled', tone: 'deep' },
+  COMPLETED: { label: 'Completed', tone: 'good' },
+  CANCELLED: { label: 'Cancelled', tone: 'neutral' },
+};

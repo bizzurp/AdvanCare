@@ -1,5 +1,21 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-16] - P2: Every Service Reaches Staff
+
+### Added
+- TeleHealth, RHU, Triage, Prescription and Transport requests are saved on the server (no longer only on the phone); prescription photos are uploaded and checked.
+- Staff console "Service requests": inbox, detail, review / schedule with a note / complete / cancel, audited file viewing; overview tile for new requests.
+- Families see the status, scheduled time and the care team's note, and can withdraw a request before it is scheduled. Migration `0004_service_requests` (production + demo branch).
+
+### Changed / fixed
+- File storage now requires sign-in and is owner-only; uploads are recorded with their owner.
+- CORS allowed the `X-File-Name` header (photo uploads were blocked by the browser).
+- Stored files are returned whole instead of streamed (fixed a hanging test run).
+
+### Verified
+- Backend 111 tests pass (local Postgres), 72 without it; all three builds pass.
+- Browser on the demo branch: registered a family → sent a prescription refill with a photo → it appeared in the staff inbox with the file → scheduled for 17 Oct 2:00 PM with a pickup note → the family app showed Confirmed, SVC reference, the note and the time; the photo downloaded intact for staff.
+
 ## [2026-10-16] - P1 Care Loop: Staff Actions, Caregiver Mode, Payments
 
 ### Added

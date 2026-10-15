@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
-import { AttachmentPicker, type AttachmentMeta } from '../components/Scheduling';
+import { AttachmentPicker, attachmentFiles, type AttachmentMeta } from '../components/Scheduling';
 import {
   ActionBar,
   Banner,
@@ -19,7 +19,7 @@ import {
   TextArea,
   TextField,
 } from '../components/ui';
-import { isDemoMode } from '../services/api';
+import { ApiError, isDemoMode, uploadFile } from '../services/api';
 import { DEPENDENCIES, peso, SHIFT_RATES, VEHICLES, type VehicleCategory } from '../data/catalog';
 import { DEMO_FACILITIES, DEMO_GPS } from '../data/demo';
 import { useApp, useDraft } from '../state/AppState';
@@ -116,6 +116,9 @@ export function Prescription() {
 export function PrescriptionReview() {
   const [d, , clear] = useDraft<RxDraft>(RX_KEY, rxInit);
   const { submit, submitting, error } = useSubmitRequest();
+  const { session } = useApp();
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
   const doc = DEMO_GPS.find((g) => g.id === d.doctorId)!;
   return (
     <Screen>
@@ -131,14 +134,30 @@ export function PrescriptionReview() {
         <p className="row gap-8 t-caption t-muted">
           <Icon name="shield-check" size={16} /> Your doctor will review the request.
         </p>
-        {d.attachment && <DependencyNote title="Upload">Attachment upload (R2 presigned URL, ADV-CORE-001) is not deployed; only the file name is saved.</DependencyNote>}
-        <DependencyNote>{DEPENDENCIES.prescription}</DependencyNote>
+        {d.attachment && isDemoMode && <DependencyNote title="Upload">Demo mode: only the file name is saved; the photo isn’t sent.</DependencyNote>}
+        <DependencyNote title={isDemoMode ? undefined : 'How this works'}>{isDemoMode ? DEPENDENCIES.api : DEPENDENCIES.prescription}</DependencyNote>
+        {uploadError && <Banner tone="error">{uploadError}</Banner>}
         {error && <Banner tone="error">{error}</Banner>}
       </div>
       <ActionBar>
         <Button
-          loading={submitting}
-          onClick={() =>
+          loading={submitting || uploading}
+          onClick={async () => {
+            // Connected: upload the photo first, then attach it to the request by id.
+            let uploadIds: string[] = [];
+            const file = attachmentFiles.get(RX_KEY);
+            if (!isDemoMode && file && session && !session.demo) {
+              setUploading(true);
+              setUploadError('');
+              try {
+                uploadIds = [await uploadFile(file, session.accessToken)];
+              } catch (e) {
+                setUploadError(e instanceof ApiError ? e.message : 'The photo could not be uploaded.');
+                return;
+              } finally {
+                setUploading(false);
+              }
+            }
             void submit({
               kind: 'prescription',
               summary: `${d.type === 'refill' ? 'Refill' : 'New prescription'} · ${doc.name}`,
@@ -149,10 +168,10 @@ export function PrescriptionReview() {
                 { label: 'Attachment', value: d.attachment?.name ?? 'None', icon: 'document-text' },
                 { label: 'Fulfillment', value: d.fulfillment === 'pickup' ? 'Pickup at barangay health center' : 'Home delivery', icon: 'medical-kit' },
               ],
-              payload: { ...d },
+              payload: { ...d, uploadIds },
               onDone: clear,
-            })
-          }
+            });
+          }}
         >
           Submit request
         </Button>
@@ -281,7 +300,7 @@ export function Transport() {
         <p className="row gap-8 t-caption t-muted">
           <Icon name="shield-check" size={16} /> For scheduled trips. Not for emergencies. Fare is confirmed by the care team before the trip.
         </p>
-        <DependencyNote>{DEPENDENCIES.transport}</DependencyNote>
+        <DependencyNote title={isDemoMode ? undefined : 'How this works'}>{isDemoMode ? DEPENDENCIES.api : DEPENDENCIES.transport}</DependencyNote>
         {error && <Banner tone="error">{error}</Banner>}
       </div>
       <ActionBar>

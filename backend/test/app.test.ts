@@ -1,6 +1,8 @@
 import { env } from 'cloudflare:workers';
 import { SELF } from 'cloudflare:test';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
+import { uploads } from '../src/db/schema';
+import { appUser, withDb } from './helpers';
 
 const BASE = 'https://api.test/api/v1';
 
@@ -31,12 +33,13 @@ describe('middleware', () => {
         headers: {
           Origin: origin,
           'Access-Control-Request-Method': 'POST',
-          'Access-Control-Request-Headers': 'content-type,idempotency-key',
+          'Access-Control-Request-Headers': 'content-type,idempotency-key,x-file-name',
         },
       });
     const ok = await preflight('http://localhost:5174');
     expect(ok.headers.get('Access-Control-Allow-Origin')).toBe('http://localhost:5174');
     expect(ok.headers.get('Access-Control-Allow-Headers')?.toLowerCase()).toContain('idempotency-key');
+    expect(ok.headers.get('Access-Control-Allow-Headers')?.toLowerCase()).toContain('x-file-name');
 
     const denied = await preflight('https://evil.example');
     expect(denied.headers.get('Access-Control-Allow-Origin')).toBeNull();
@@ -64,11 +67,23 @@ describe('GET /health', () => {
   });
 });
 
-describe('POST /storage/upload-url', () => {
+describe('storage requires sign-in', () => {
+  it('refuses anonymous uploads and downloads', async () => {
+    const upload = await SELF.fetch(`${BASE}/storage/upload-url`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contentType: 'image/png', contentLength: 10 }) });
+    const download = await SELF.fetch(`${BASE}/storage/file/uploads/2026/10/${crypto.randomUUID()}.png`);
+    for (const res of [upload, download]) expect(res.status).toBe(env.TEST_HAS_DATABASE === 'true' ? 401 : 503);
+  });
+});
+
+describe.runIf(env.TEST_DB_DISPOSABLE === 'true')('POST /storage/upload-url (signed in)', () => {
+  let token = '';
+  beforeAll(async () => {
+    token = (await appUser()).token;
+  });
   const request = (body: unknown) =>
     SELF.fetch(`${BASE}/storage/upload-url`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(body),
     });
 
@@ -113,23 +128,24 @@ describe('POST /storage/upload-url', () => {
   });
 });
 
-describe('GET /storage/file/:key', () => {
-  it('streams a stored object with no-store caching', async () => {
+describe.runIf(env.TEST_DB_DISPOSABLE === 'true')('GET /storage/file/:key (owner only)', () => {
+  it('streams the owner’s file with no-store caching, and 404s for everyone else', async () => {
+    const owner = await appUser();
+    const other = await appUser();
     const key = `uploads/2026/10/${crypto.randomUUID()}.png`;
     await env.UPLOADS.put(key, new Uint8Array([137, 80, 78, 71]), { httpMetadata: { contentType: 'image/png' } });
+    await withDb((db) => db.insert(uploads).values({ objectKey: key, ownerUserId: owner.id, contentType: 'image/png', sizeBytes: 4 }));
 
-    const res = await SELF.fetch(`${BASE}/storage/file/${key}`);
+    const res = await SELF.fetch(`${BASE}/storage/file/${key}`, { headers: { Authorization: `Bearer ${owner.token}` } });
     expect(res.status).toBe(200);
     expect(res.headers.get('Content-Type')).toBe('image/png');
     expect(res.headers.get('Cache-Control')).toBe('private, no-store');
     expect(res.headers.get('X-Content-Type-Options')).toBe('nosniff');
     expect(new Uint8Array(await res.arrayBuffer())).toEqual(new Uint8Array([137, 80, 78, 71]));
-  });
 
-  it('404s for missing objects and keys outside the upload namespace', async () => {
-    for (const key of [`uploads/2026/10/${crypto.randomUUID()}.png`, 'secrets/config.json', 'uploads/2026/10/x.png']) {
-      const res = await SELF.fetch(`${BASE}/storage/file/${key}`);
-      expect(res.status).toBe(404);
+    expect((await SELF.fetch(`${BASE}/storage/file/${key}`, { headers: { Authorization: `Bearer ${other.token}` } })).status).toBe(404);
+    for (const bad of [`uploads/2026/10/${crypto.randomUUID()}.png`, 'secrets/config.json', 'uploads/2026/10/x.png']) {
+      expect((await SELF.fetch(`${BASE}/storage/file/${bad}`, { headers: { Authorization: `Bearer ${owner.token}` } })).status).toBe(404);
     }
   });
 });

@@ -1,10 +1,14 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { and, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import * as v from 'valibot';
+import { uploads } from '../db/schema';
 import type { AppEnv, Bindings } from '../env';
 import { ApiError } from '../lib/errors';
 import { validate } from '../lib/validation';
+import { requireClient } from '../middleware/auth';
+import { withDb } from '../middleware/staff';
 
 const MB = 1024 * 1024;
 export const UPLOAD_URL_EXPIRY_SECONDS = 15 * 60;
@@ -17,7 +21,7 @@ export const UPLOAD_TYPES = {
 } as const;
 type UploadType = keyof typeof UPLOAD_TYPES;
 
-const UPLOAD_KEY = /^uploads\/\d{4}\/\d{2}\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(jpg|png|pdf)$/;
+export const UPLOAD_KEY = /^uploads\/\d{4}\/\d{2}\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(jpg|png|pdf)$/;
 
 export const UploadUrlRequest = v.pipe(
   v.strictObject({
@@ -34,6 +38,8 @@ export const UploadUrlRequest = v.pipe(
 );
 
 export const storage = new Hono<AppEnv>();
+// Signed-in app users only; every stored file is recorded with its owner (ADV-AUTH-001).
+storage.use('/storage/*', withDb, requireClient);
 
 /**
  * Presigned R2 PUT. The signature covers Content-Type and Content-Length, so the
@@ -45,6 +51,7 @@ storage.post('/storage/upload-url', validate('json', UploadUrlRequest), async (c
   const now = new Date();
   const key = `uploads/${now.getUTCFullYear()}/${String(now.getUTCMonth() + 1).padStart(2, '0')}/${crypto.randomUUID()}.${UPLOAD_TYPES[contentType].ext}`;
 
+  await c.get('db').insert(uploads).values({ objectKey: key, ownerUserId: c.get('clientUserId'), contentType, sizeBytes: contentLength });
   const uploadUrl = await getSignedUrl(
     client,
     new PutObjectCommand({ Bucket: c.env.R2_BUCKET_NAME, Key: key, ContentType: contentType, ContentLength: contentLength }),
@@ -63,10 +70,12 @@ storage.post('/storage/upload-url', validate('json', UploadUrlRequest), async (c
   );
 });
 
-// TODO(ADV-AUTH-001): gate both storage routes on an authenticated session and record ownership.
+/** Owner-only download. Staff open files through the audited admin routes instead. */
 storage.get('/storage/file/:key{.+}', async (c) => {
   const key = c.req.param('key');
   if (!UPLOAD_KEY.test(key)) throw new ApiError(404, 'FILE_NOT_FOUND', 'File not found.');
+  const [owned] = await c.get('db').select({ id: uploads.id }).from(uploads).where(and(eq(uploads.objectKey, key), eq(uploads.ownerUserId, c.get('clientUserId')))).limit(1);
+  if (!owned) throw new ApiError(404, 'FILE_NOT_FOUND', 'File not found.');
 
   const object = await c.env.UPLOADS.get(key);
   if (!object) throw new ApiError(404, 'FILE_NOT_FOUND', 'File not found.');
@@ -79,7 +88,9 @@ storage.get('/storage/file/:key{.+}', async (c) => {
   headers.set('Cache-Control', 'private, no-store');
   headers.set('X-Content-Type-Options', 'nosniff');
   headers.set('Content-Disposition', 'inline');
-  return new Response(object.body, { headers });
+  // Files are small (≤ 10 MB): send them whole rather than streamed, so the request (and its
+  // database connection) finish cleanly.
+  return new Response(await object.arrayBuffer(), { headers });
 });
 
 function s3Client(env: Bindings): S3Client {

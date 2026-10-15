@@ -130,6 +130,8 @@ export interface Overview {
     margin: number;
     clientsServed: number;
     clientsRegistered: number;
+    servicesOpen: number;
+    servicesNew: number;
     caregivers: { total: number; accredited: number; available: number };
   };
   daily: { day: string; requests: number }[];
@@ -261,6 +263,46 @@ export interface PaymentRow extends PaymentLite {
 }
 
 export type ExportTable = 'requests' | 'payouts' | 'payments';
+
+export type ServiceKind = 'telehealth' | 'rhu' | 'triage' | 'prescription' | 'transport';
+export type ServiceStatus = 'SUBMITTED' | 'IN_REVIEW' | 'SCHEDULED' | 'COMPLETED' | 'CANCELLED';
+
+export interface ServiceRow {
+  id: string;
+  ref: string;
+  kind: ServiceKind;
+  status: ServiceStatus;
+  createdAt: string;
+  preferredAt: string | null;
+  scheduledAt: string | null;
+  summary: string | null;
+  barangay: string;
+  municipality: string;
+  files: number;
+  client: Ref;
+}
+
+export interface ServiceDetail {
+  request: {
+    id: string;
+    ref: string;
+    kind: ServiceKind;
+    kindLabel: string;
+    status: ServiceStatus;
+    createdAt: string;
+    updatedAt: string;
+    preferredAt: string | null;
+    scheduledAt: string | null;
+    details: Record<string, unknown>;
+    staffNote: string | null;
+    cancellationReason: string | null;
+    handledBy: string | null;
+  };
+  client: { id: string; name: string; address: string; landmark: string | null };
+  requestedBy: { name: string | null; role: string; phone: string | null; email: string | null };
+  files: { id: string; fileName: string | null; contentType: string; sizeBytes: number; createdAt: string }[];
+  history: AuditEntry[];
+}
 
 export type Badge = 'BADGE_ADL' | 'BADGE_CVMC_WATCHER';
 
@@ -411,6 +453,18 @@ export const api = {
   requestAction: (requestId: string, action: RequestAction) => request<{ ok: true; familyEmail?: string }>('POST', `/requests/${requestId}/status`, action),
   recordPayment: (requestId: string, input: { method: PaymentMethod; providerReference?: string }) => request<{ id: string }>('POST', `/requests/${requestId}/payments`, input),
   markPayout: (requestId: string, reference?: string) => request<{ ok: true }>('POST', `/requests/${requestId}/payout`, { reference: reference || undefined }),
+
+  // Other services (P2)
+  services: (filters: Record<string, string | undefined>) => request<Paged & { requests: ServiceRow[] }>('GET', `/service-requests${query(filters)}`),
+  service: (id: string) => request<ServiceDetail>('GET', `/service-requests/${id}`),
+  serviceStatus: (id: string, change: { status: Exclude<ServiceStatus, 'SUBMITTED'>; scheduledAt?: string; note?: string; reason?: string }) =>
+    request<{ ok: true; familyEmail?: string }>('POST', `/service-requests/${id}/status`, change),
+  /** Staff open attached files through the audited route (cookie auth), as a blob URL. */
+  serviceFileUrl: async (id: string, fileId: string) => {
+    const res = await fetch(`${BASE}/service-requests/${id}/files/${fileId}`, { credentials: 'include', headers: { 'X-AdvanCare-Staff': '1' } });
+    if (!res.ok) throw new ApiError(res.status, 'FILE_ERROR', res.status === 404 ? 'File not found.' : 'Could not open the file.');
+    return URL.createObjectURL(await res.blob());
+  },
 
   // Audit
   audit: (filters: Record<string, string | undefined>) => request<{ entries: AuditEntry[]; nextCursor: string | null; scope: 'all' | 'own' }>('GET', `/audit${query(filters)}`),

@@ -486,3 +486,65 @@ export const clientSessions = pgTable(
   },
   (t) => [index('client_sessions_user_idx').on(t.userId)],
 );
+
+// ---------- Other services (P2) ----------
+//
+// TeleHealth, RHU services, Triage, Prescriptions and Transport: one record per request with the
+// service-specific details as JSON. Staff move them along and can leave a note the family sees.
+// No urgency or clinical routing is computed (triage is collected for clinician review only).
+
+export const SERVICE_KINDS = ['telehealth', 'rhu', 'triage', 'prescription', 'transport'] as const;
+export const SERVICE_STATUSES = ['SUBMITTED', 'IN_REVIEW', 'SCHEDULED', 'COMPLETED', 'CANCELLED'] as const;
+
+export const serviceRequests = pgTable(
+  'service_requests',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    clientId: uuid('client_id')
+      .notNull()
+      .references(() => clientProfiles.id, restrict),
+    requestedByUserId: uuid('requested_by_user_id')
+      .notNull()
+      .references(() => users.id, restrict),
+    kind: varchar('kind', { length: 20 }).notNull(),
+    status: varchar('status', { length: 20 }).notNull().default('SUBMITTED'),
+    /** When the family would like it (consult time, pickup time…), if the service has one. */
+    preferredAt: timestamp('preferred_at', { withTimezone: true }),
+    /** When staff scheduled it (required for SCHEDULED). */
+    scheduledAt: timestamp('scheduled_at', { withTimezone: true }),
+    /** What the family entered for this service, as sent by the app. */
+    details: jsonb('details').notNull(),
+    /** Message from staff to the family (shown in the app). */
+    staffNote: text('staff_note'),
+    cancellationReason: text('cancellation_reason'),
+    handledByUserId: uuid('handled_by_user_id').references(() => users.id, restrict),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    index('service_requests_client_idx').on(t.clientId),
+    index('service_requests_status_created_idx').on(t.status, t.createdAt),
+    check('service_requests_kind', sql`${t.kind} IN ('telehealth', 'rhu', 'triage', 'prescription', 'transport')`),
+    check('service_requests_status', sql`${t.status} IN ('SUBMITTED', 'IN_REVIEW', 'SCHEDULED', 'COMPLETED', 'CANCELLED')`),
+    check('service_requests_scheduled_has_time', sql`${t.status} <> 'SCHEDULED' OR ${t.scheduledAt} IS NOT NULL`),
+  ],
+);
+
+/** Files families upload (prescription photos). Stored in R2; this row records who owns each one. */
+export const uploads = pgTable(
+  'uploads',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    objectKey: varchar('object_key', { length: 120 }).notNull().unique(),
+    ownerUserId: uuid('owner_user_id')
+      .notNull()
+      .references(() => users.id, restrict),
+    contentType: varchar('content_type', { length: 50 }).notNull(),
+    sizeBytes: integer('size_bytes').notNull(),
+    fileName: varchar('file_name', { length: 255 }),
+    /** Set when the file is attached to a request. */
+    serviceRequestId: uuid('service_request_id').references(() => serviceRequests.id, restrict),
+    createdAt: createdAt(),
+  },
+  (t) => [index('uploads_owner_idx').on(t.ownerUserId), index('uploads_service_request_idx').on(t.serviceRequestId)],
+);

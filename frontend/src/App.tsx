@@ -5,7 +5,7 @@ import { useApp } from './state/AppState';
 import { Help, Onboarding, SignIn, Welcome } from './screens/Auth';
 import { Register } from './screens/Register';
 import { Home, More, Plans, Services } from './screens/Main';
-import { EditProfile, FamilyMemberScreen, PlanEnroll, Profile, Settings } from './screens/Account';
+import { AccountDetails, EditProfile, FamilyMemberScreen, PlanEnroll, Profile, Settings } from './screens/Account';
 import { ChooseDoctor, RhuServices, TeleHealth, Triage } from './screens/Modules';
 import { CaregiverRequest, EditVisit, Prescription, PrescriptionReview, Transport } from './screens/Care';
 import { RequestDetail, RequestReceived, RequestsList } from './screens/Requests';
@@ -89,6 +89,7 @@ export default function App() {
           <Route path="/plans" element={<Plans />} />
           <Route path="/plans/:planId" element={<PlanEnroll />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/account" element={<AccountDetails />} />
         </Route>
         <Route path="*" element={<Entry />} />
       </Routes>

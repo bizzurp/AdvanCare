@@ -1,5 +1,15 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-16] - App finished: no demo mode, editable profile/account, connected bookings
+
+### Changed
+- Families' app has no demo mode: it always calls the API (`VITE_API_BASE_URL`, else `http://localhost:8787` in dev and the hosted Worker in builds). Removed the demo code `999123`, "Demo"/"Sample" tags, demo controls and the coordinator role switch. Sample data is kept unlabelled: starter client Maria Santos, doctor roster, RHUs, facilities, barangays and two past records. Old on-phone "saved-demo" requests are re-queued and sent; offline-preview sessions must sign in again.
+- Backend: `GET /clients/mine` (saved clients + family; the app loads them after sign-in), `PATCH /auth/me` (account name, mobile), `PATCH /service-requests/:id` (time/details until scheduled), `GET /service-requests/telehealth/taken` + 409 `SLOT_TAKEN` on double-booking a doctor, `PATCH /shifts/:id` + `POST /shifts/:id/cancel` (until a caregiver is assigned). No migration.
+- App: Edit profile covers every field (DOB, gender, PhilHealth, conditions, mobility, allergies, address, language) and syncs to the server; family changes sync; new Account details screen (More → Account details); requests can be rescheduled, given a note for the care team, or cancelled while unconfirmed; TeleHealth greys out booked slots; Care assistant always uses the AI endpoint (with session), falling back to shortcuts only if unreachable.
+
+### Verified
+- Backend typecheck + tests (72 passed, DB tests skipped without local Postgres); frontend build. Against the Neon demo branch via the running API and app: profile edit persisted, account edit, TeleHealth booking from the app, booked slot greyed out, double-book refused, note + reschedule saved, shift move/cancel, AI assistant answer. Test bookings cancelled and the QA session revoked (QA user `qa.family@demo.advancare.test` remains on the demo branch). Hosted Worker/Pages not redeployed.
+
 ## [2026-10-16] - P3: Online Prototype Deployed
 
 ### Deployed / changed

@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 import { Hono } from 'hono';
 import * as v from 'valibot';
 import { clientProfiles, familyProfiles } from '../db/schema';
@@ -103,4 +103,38 @@ clients.post('/clients/sync', validate('json', ClientSync), async (c) => {
   });
   if (!clientId) throw new ApiError(500, 'INTERNAL_ERROR', 'Could not save the profile.');
   return c.json({ clientId });
+});
+
+/** The account's saved clients (newest first) with their family, so any phone can load and edit them. */
+clients.get('/clients/mine', async (c) => {
+  const db = c.get('db');
+  const rows = await db
+    .select()
+    .from(clientProfiles)
+    .where(eq(clientProfiles.userId, c.get('clientUserId')))
+    .orderBy(desc(clientProfiles.updatedAt))
+    .limit(10);
+  const family = rows.length ? await db.select().from(familyProfiles).where(inArray(familyProfiles.clientId, rows.map((r) => r.id))) : [];
+  return c.json({
+    clients: rows.map((r) => {
+      const clinical = (r.clinicalBaseline ?? {}) as { conditions?: string[]; mobility?: string; allergies?: string };
+      return {
+        id: r.id,
+        deviceRef: r.deviceRef,
+        fullName: r.fullName,
+        dateOfBirth: r.dateOfBirth,
+        gender: r.gender,
+        municipality: r.municipality,
+        barangay: r.barangay,
+        sitio: r.sitio,
+        landmarkNotes: r.landmarkNotes,
+        philhealthId: r.philhealthId,
+        clinical: { conditions: clinical.conditions ?? [], mobility: clinical.mobility ?? null, allergies: clinical.allergies ?? null },
+        family: family
+          .filter((f) => f.clientId === r.id)
+          .map((f) => ({ id: f.id, name: f.relativeName, relationship: f.relationship, phone: f.phoneNumber, isPrimary: f.isEmergencyContact, isRemoteSponsor: f.isRemoteSponsor, location: f.locationCityCountry })),
+        updatedAt: r.updatedAt,
+      };
+    }),
+  });
 });

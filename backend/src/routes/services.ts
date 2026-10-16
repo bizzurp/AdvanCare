@@ -80,6 +80,48 @@ const ServiceRequestBody = v.strictObject({
   uploadIds: v.optional(v.pipe(v.array(v.pipe(v.string(), v.uuid())), v.maxLength(3)), []),
 });
 
+/** Open TeleHealth bookings already holding this doctor's slot (cancelled ones free it again). */
+async function slotTaken(db: AppEnv['Variables']['db'], doctorId: string, at: Date, exceptId?: string) {
+  const [hit] = await db
+    .select({ id: serviceRequests.id })
+    .from(serviceRequests)
+    .where(
+      and(
+        eq(serviceRequests.kind, 'telehealth'),
+        sql`${serviceRequests.details}->>'doctorId' = ${doctorId}`,
+        sql`coalesce(${serviceRequests.scheduledAt}, ${serviceRequests.preferredAt}) = ${at.toISOString()}::timestamptz`,
+        sql`${serviceRequests.status} <> 'CANCELLED'`,
+        exceptId ? sql`${serviceRequests.id} <> ${exceptId}` : undefined,
+      ),
+    )
+    .limit(1);
+  return !!hit;
+}
+
+const DOCTOR_ID = v.pipe(v.string(), v.regex(/^[A-Za-z0-9_-]{1,40}$/));
+
+/** Times already booked for a doctor on one day (Asia/Manila), so the app can grey them out. */
+appServices.get(
+  '/service-requests/telehealth/taken',
+  validate('query', v.object({ doctorId: DOCTOR_ID, date: v.pipe(v.string(), v.isoDate()) })),
+  async (c) => {
+    const { doctorId, date } = c.req.valid('query');
+    const rows = await c
+      .get('db')
+      .select({ at: sql<string>`coalesce(${serviceRequests.scheduledAt}, ${serviceRequests.preferredAt})` })
+      .from(serviceRequests)
+      .where(
+        and(
+          eq(serviceRequests.kind, 'telehealth'),
+          sql`${serviceRequests.details}->>'doctorId' = ${doctorId}`,
+          sql`${serviceRequests.status} <> 'CANCELLED'`,
+          sql`(coalesce(${serviceRequests.scheduledAt}, ${serviceRequests.preferredAt}) at time zone 'Asia/Manila')::date = ${date}::date`,
+        ),
+      );
+    return c.json({ taken: rows.map((r) => new Date(r.at).toISOString()) });
+  },
+);
+
 appServices.post('/service-requests', validate('json', ServiceRequestBody), async (c) => {
   const db = c.get('db');
   const userId = c.get('clientUserId');
@@ -106,6 +148,10 @@ appServices.post('/service-requests', validate('json', ServiceRequestBody), asyn
     .where(and(eq(clientProfiles.userId, userId), UUID.test(body.clientId) ? or(eq(clientProfiles.id, body.clientId), eq(clientProfiles.deviceRef, body.clientId)) : eq(clientProfiles.deviceRef, body.clientId)))
     .limit(1);
   if (!client) throw new ApiError(404, 'CLIENT_NOT_FOUND', 'We couldn’t find this client’s profile. Open the profile, save it, and try again.');
+
+  if (body.kind === 'telehealth' && body.preferredAt && typeof body.details.doctorId === 'string' && (await slotTaken(db, body.details.doctorId, new Date(body.preferredAt)))) {
+    throw new ApiError(409, 'SLOT_TAKEN', 'That time was just booked by someone else. Choose another time.');
+  }
 
   if (body.uploadIds.length) {
     const mine = await db
@@ -150,6 +196,7 @@ appServices.get('/service-requests/mine', async (c) => {
       id: serviceRequests.id,
       kind: serviceRequests.kind,
       status: serviceRequests.status,
+      preferredAt: serviceRequests.preferredAt,
       scheduledAt: serviceRequests.scheduledAt,
       staffNote: serviceRequests.staffNote,
       cancellationReason: serviceRequests.cancellationReason,
@@ -177,4 +224,34 @@ appServices.post('/service-requests/:id/cancel', validate('param', v.object({ id
   if (!['SUBMITTED', 'IN_REVIEW'].includes(row.status)) throw new ApiError(409, 'NOT_ALLOWED', 'This request is already scheduled or closed. Contact your care team to change it.');
   await db.update(serviceRequests).set({ status: 'CANCELLED', cancellationReason: 'Cancelled by the family' }).where(eq(serviceRequests.id, row.id));
   return c.json({ ok: true });
+});
+
+const ServiceChange = v.strictObject({
+  preferredAt: v.optional(v.nullable(v.pipe(v.string(), v.isoTimestamp('Invalid date and time.')))),
+  summary: v.optional(v.pipe(v.string(), v.trim(), v.minLength(2), v.maxLength(200))),
+  /** Replaces what the family entered (the summary is kept alongside). */
+  details: v.optional(v.pipe(v.record(v.string(), v.unknown()), v.check((d) => JSON.stringify(d).length <= MAX_DETAILS_BYTES, 'Too much detail in one request.'))),
+});
+
+/** Families change their own request (time, details) until staff schedule it. */
+appServices.patch('/service-requests/:id', validate('param', v.object({ id: v.pipe(v.string(), v.uuid()) })), validate('json', ServiceChange), async (c) => {
+  const db = c.get('db');
+  const body = c.req.valid('json');
+  const [row] = await db
+    .select({ id: serviceRequests.id, status: serviceRequests.status, kind: serviceRequests.kind, details: serviceRequests.details, preferredAt: serviceRequests.preferredAt })
+    .from(serviceRequests)
+    .innerJoin(clientProfiles, eq(clientProfiles.id, serviceRequests.clientId))
+    .where(and(eq(serviceRequests.id, c.req.valid('param').id), eq(clientProfiles.userId, c.get('clientUserId'))))
+    .limit(1);
+  if (!row) throw new ApiError(404, 'NOT_FOUND', 'Request not found.');
+  if (!['SUBMITTED', 'IN_REVIEW'].includes(row.status)) throw new ApiError(409, 'NOT_ALLOWED', 'This request is already scheduled or closed. Contact your care team to change it.');
+  const before = row.details as Record<string, unknown>;
+  const details: Record<string, unknown> = { ...(body.details ?? before), summary: body.summary ?? before.summary };
+  const preferredAt = body.preferredAt === undefined ? row.preferredAt : body.preferredAt ? new Date(body.preferredAt) : null;
+  if (preferredAt && preferredAt.getTime() < Date.now()) throw new ApiError(422, 'VALIDATION_FAILED', 'Choose a future date and time.');
+  if (row.kind === 'telehealth' && preferredAt && typeof details.doctorId === 'string' && (await slotTaken(db, details.doctorId, preferredAt, row.id))) {
+    throw new ApiError(409, 'SLOT_TAKEN', 'That time is already booked. Choose another time.');
+  }
+  await db.update(serviceRequests).set({ details, preferredAt }).where(eq(serviceRequests.id, row.id));
+  return c.json({ ok: true, preferredAt });
 });

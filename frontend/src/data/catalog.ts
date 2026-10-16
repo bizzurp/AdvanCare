@@ -155,19 +155,17 @@ export const SCOPE_LABELS: Record<string, { title: string; desc: string }> = {
 
 /** Explicit missing backend / approval dependencies, shown in the UI where they apply. */
 export const DEPENDENCIES = {
-  api: 'AdvanCare API (VITE_API_BASE_URL) is not configured. Requests stay on this device and are not sent to any provider.',
-  telehealth: 'Your request goes to the AdvanCare care team, who arrange the consult with a doctor and confirm the time here. The doctor roster and video provider are still being set up.',
-  rhu: 'Your request goes to the care team, who confirm a schedule with the RHU and let you know here. The pilot RHU service list is still being confirmed.',
+  telehealth: 'Your booking goes to the AdvanCare care team, who confirm the consult with the doctor and send the call details here. You can change or cancel it until it is confirmed.',
+  rhu: 'Your request goes to the care team, who confirm a schedule with the RHU and let you know here.',
   triage:
     'Approved triage protocol is missing. AdvanCare does not assign urgency or a destination automatically; a clinician must review every assessment.',
-  transport: 'Your request goes to the care team, who confirm the vehicle, pickup time and fare here. The operator roster and fare rules are still being set up.',
+  transport: 'Your request goes to the care team, who confirm the vehicle, pickup time and fare here.',
   prescription: 'Your request and photo go to the care team for review. DoH Yakap pickup or delivery is arranged by the team for now.',
-  caregiver: 'Demo mode: caregiver bookings are saved on this phone only. Connect the app to the AdvanCare server to send them.',
+  caregiver: 'Your booking goes to the care team, who assign an accredited caregiver and confirm here. You can change or cancel it until a caregiver is assigned.',
   facilities: 'Facility directory (district hospitals, private clinics) needs a verified list for the pilot area.',
   subsidy: 'LGU subsidy verification requires a signed municipal agreement (ADR-001). Pilot billing may run 100% out-of-pocket until then.',
   payments: 'Payment gateway is not integrated. No payment is collected in the app.',
-  assistant: 'The care assistant is not connected to an AI service. It only opens sections of this app.',
-  sms: 'Sign-in codes are sent by email for now; SMS codes will come later. Demo sign-in accepts code 999123.',
+  sms: 'Sign-in codes are sent by email for now; SMS codes will come later.',
   localization: 'Tagalog, Ilocano, and Ybanag translations are not yet available; the app shows English.',
-  storage: 'Encrypted offline storage (Dexie + WebCrypto) is not yet implemented; demo data is stored unencrypted in this browser.',
+  storage: 'Encrypted offline storage (Dexie + WebCrypto) is not yet implemented; app data is stored unencrypted in this browser.',
 } as const;

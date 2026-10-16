@@ -1,5 +1,8 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-16] - Sign-in code resend
+- Bug: testers stopped getting new codes after ~5 requests; the server allowed 5 codes per email per hour (each new code also cancels the previous one). Raised `MAX_CODES_PER_HOUR` to 10 with a clearer message; the app now confirms "New code sent at … Only the code in the newest email works." API (bf2f581a…) and Pages `advancare-app` redeployed.
+
 ## [2026-10-16] - Android hardware Back button
 - Bug: the native Android app closed on every press of the phone's Back button (no Capacitor App plugin). Added `@capacitor/app` and `HardwareBack` in `frontend/src/App.tsx`: Back goes to the previous screen, main tabs return to Home, and only Home / caregiver home / welcome / sign-in close the app. Verified on the Pixel 9 emulator (register → Back → sign-in; Back on sign-in closes). Phones need a new APK build to get it.
 

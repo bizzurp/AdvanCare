@@ -16,7 +16,8 @@ import { sha256Hex, timingSafeEqualString } from '../staff/crypto';
  */
 export const CODE_TTL_MS = 10 * 60 * 1000;
 export const MAX_CODE_ATTEMPTS = 5;
-export const MAX_CODES_PER_HOUR = 5;
+/** Per email per hour. Each code still allows only 5 tries and expires in 10 minutes. */
+export const MAX_CODES_PER_HOUR = 10;
 
 const Email = v.pipe(v.string(), v.trim(), v.toLowerCase(), v.email('Enter a valid email address.'), v.maxLength(255));
 const Code = v.pipe(v.string(), v.trim(), v.regex(/^\d{6}$/, 'Enter the 6-digit code.'));
@@ -54,7 +55,7 @@ auth.post('/auth/request-otp', validate('json', v.strictObject({ email: Email })
     .from(clientLoginCodes)
     .where(and(eq(clientLoginCodes.email, email), gt(clientLoginCodes.createdAt, new Date(Date.now() - 3600_000))));
   if ((recent?.n ?? 0) >= MAX_CODES_PER_HOUR) {
-    throw new ApiError(429, 'TOO_MANY_CODES', 'You’ve asked for several codes already. Use the newest email, or try again in an hour.');
+    throw new ApiError(429, 'TOO_MANY_CODES', 'You’ve asked for many codes in the last hour. Use the code in the newest email, or try again later.');
   }
   const code = generateCode();
   const now = new Date();

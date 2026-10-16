@@ -31,6 +31,7 @@ export type IconName =
   | 'heart-pulse'
   | 'home-angle'
   | 'hospital'
+  | 'jeepney'
   | 'map-point-hospital'
   | 'map-point'
   | 'medical-kit'

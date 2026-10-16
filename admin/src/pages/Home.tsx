@@ -1,13 +1,14 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { api, type Account, type AlertRow, type AuditEntry } from '../api';
+import { api, type Account, type AlertRow, type AuditEntry, type ServiceRow } from '../api';
 import { useMe } from '../auth';
 import { BarList, ColumnChart } from '../components/charts';
 import { Icon } from '../components/Icon';
 import { MunicipalityFilter, CAGAYAN_MUNICIPALITIES } from '../components/MunicipalityFilter';
 import { ScopeNote, StatusBadge } from '../components/ops';
 import { Badge, Button, ErrorNotice, Loading, Notice, PageHeader, useLoad } from '../components/ui';
-import { actionLabel, clock, day, isFailureAction, money, num, personName, relative, scopeLabel, TIER_LABEL, todayManila, waitedFor } from '../format';
+import { actionLabel, clock, day, dateTime, isFailureAction, money, num, personName, relative, scopeLabel, TIER_LABEL, todayManila, waitedFor } from '../format';
+import { AssignProviderModal } from './Services';
 
 function greeting(): string {
   const hour = Number(new Date().toLocaleString('en-PH', { timeZone: 'Asia/Manila', hour: 'numeric', hour12: false }));
@@ -61,6 +62,15 @@ export function Home() {
   );
   const activity = useLoad(() => api.audit({}), []);
   const accounts = useLoad(() => (isSuper ? api.accounts().then((r) => r.accounts) : Promise.resolve([] as Account[])), [isSuper]);
+  const [assignModalId, setAssignModalId] = useState<string | null>(null);
+  const telehealthQueue = useLoad(
+    () => (isSuper ? api.services({ kind: 'telehealth', status: 'OPEN', page: '1' }) : Promise.resolve(null)),
+    [isSuper],
+  );
+  const assignDetail = useLoad(
+    () => (assignModalId ? api.service(assignModalId) : Promise.resolve(null)),
+    [assignModalId],
+  );
   const o = overview.data;
   const from = todayManila(-(Number(range) - 1));
 
@@ -189,11 +199,11 @@ export function Home() {
               <div>
                 <h2>Current data by municipality</h2>
                 <p className="muted small">
-                  Operational figures across {o.byMunicipality.length} {o.byMunicipality.length === 1 ? 'municipality' : 'municipalities'}.
+                  Operational figures across {(o.byMunicipality ?? []).length} {(o.byMunicipality ?? []).length === 1 ? 'municipality' : 'municipalities'}.
                 </p>
               </div>
             </div>
-            {o.byMunicipality.length === 0 ? (
+            {(o.byMunicipality ?? []).length === 0 ? (
               <p className="muted">No municipalities selected or available in your current scope.</p>
             ) : (
               <div className="table-wrap">
@@ -211,7 +221,7 @@ export function Home() {
                     </tr>
                   </thead>
                   <tbody>
-                    {o.byMunicipality.map((m) => (
+                    {(o.byMunicipality ?? []).map((m) => (
                       <tr key={m.municipality}>
                         <td>
                           <Link
@@ -302,6 +312,15 @@ export function Home() {
         </div>
       )}
 
+      {isSuper ? (
+        <TelehealthQueueSection
+          queue={telehealthQueue.data}
+          loading={telehealthQueue.loading}
+          error={telehealthQueue.error}
+          onAssign={(id) => setAssignModalId(id)}
+        />
+      ) : null}
+
       {isSuper ? <StaffSummary accounts={accounts.data} loading={accounts.loading} error={accounts.error} /> : null}
 
       <section className="card">
@@ -313,6 +332,18 @@ export function Home() {
         </div>
         {activity.loading ? <Loading /> : activity.error ? <ErrorNotice error={activity.error} /> : <ActivityList entries={activity.data?.entries.slice(0, 8) ?? []} />}
       </section>
+
+      {assignModalId && assignDetail.data ? (
+        <AssignProviderModal
+          detail={assignDetail.data}
+          onClose={() => setAssignModalId(null)}
+          onDone={() => {
+            setAssignModalId(null);
+            void telehealthQueue.reload();
+            void overview.reload();
+          }}
+        />
+      ) : null}
     </>
   );
 }
@@ -392,6 +423,105 @@ function StaffSummary({ accounts, loading, error }: { accounts: Account[] | null
           </ul>
         </section>
       ) : null}
+    </>
+  );
+}
+
+function TelehealthQueueSection({
+  queue,
+  loading,
+  error,
+  onAssign,
+}: {
+  queue: { requests: ServiceRow[]; total: number } | null;
+  loading: boolean;
+  error: unknown;
+  onAssign: (requestId: string) => void;
+}) {
+  if (loading && !queue) return <Loading label="Loading telehealth queue…" />;
+  if (error) return <ErrorNotice error={error} />;
+  const list = queue?.requests ?? [];
+  const unassigned = list.filter((r) => !r.assignedProvider);
+
+  return (
+    <>
+      <div className="card-head mt16">
+        <div>
+          <h2 className="section-title">Telehealth assignment queue</h2>
+          <p className="muted small">
+            Province-wide teleconsultation requests requiring doctor assignment (Super Admin).
+          </p>
+        </div>
+        <Link to="/telehealth" className="link-arrow">
+          Manage Doctors Roster <Icon name="alt-arrow-right" size={16} />
+        </Link>
+      </div>
+
+      <div className="kpis">
+        <div className="kpi">
+          <span className="kpi-label">Open teleconsults</span>
+          <span className="kpi-value">{list.length}</span>
+          <span className="kpi-sub">Across all LGUs</span>
+        </div>
+        <div className={`kpi ${unassigned.length ? 'kpi-warn' : ''}`}>
+          <span className="kpi-label">Waiting for a doctor</span>
+          <span className="kpi-value">{unassigned.length}</span>
+          <span className="kpi-sub">Needs assignment</span>
+        </div>
+        <div className="kpi">
+          <span className="kpi-label">Assigned / Scheduled</span>
+          <span className="kpi-value">{list.length - unassigned.length}</span>
+          <span className="kpi-sub">Doctor linked</span>
+        </div>
+      </div>
+
+      <section className="card mb20">
+        {!list.length ? (
+          <p className="muted">No open telehealth requests right now. Every teleconsultation request is assigned or completed.</p>
+        ) : (
+          <div className="table-wrap">
+            <table className="table table-compact">
+              <thead>
+                <tr>
+                  <th>Request</th>
+                  <th>Client</th>
+                  <th>Municipality</th>
+                  <th>Preferred Time</th>
+                  <th>Assigned Doctor</th>
+                  <th aria-label="Action" />
+                </tr>
+              </thead>
+              <tbody>
+                {list.map((r) => (
+                  <tr key={r.id}>
+                    <td>
+                      <Link to={`/services/${r.id}`} className="strong-link">
+                        {r.ref}
+                      </Link>
+                      <span className="cell-sub">{r.status}</span>
+                    </td>
+                    <td>{r.client.name}</td>
+                    <td>{r.municipality}</td>
+                    <td>{r.preferredAt ? dateTime(r.preferredAt) : 'As soon as possible'}</td>
+                    <td>
+                      {r.assignedProvider ? (
+                        <Badge tone="good">Dr. {r.assignedProvider.fullName}</Badge>
+                      ) : (
+                        <Badge tone="warn">Unassigned</Badge>
+                      )}
+                    </td>
+                    <td>
+                      <Button variant={r.assignedProvider ? 'secondary' : 'primary'} onClick={() => onAssign(r.id)}>
+                        {r.assignedProvider ? 'Change doctor' : 'Assign doctor'}
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
     </>
   );
 }

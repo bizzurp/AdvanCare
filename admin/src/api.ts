@@ -279,6 +279,83 @@ export type ExportTable = 'requests' | 'payouts' | 'payments';
 export type ServiceKind = 'telehealth' | 'rhu' | 'triage' | 'prescription' | 'transport';
 export type ServiceStatus = 'SUBMITTED' | 'IN_REVIEW' | 'SCHEDULED' | 'COMPLETED' | 'CANCELLED';
 
+export type ProviderType = 'DOCTOR' | 'TRANSPORT_DRIVER';
+
+export interface ProviderRow {
+  id: string;
+  userId: string;
+  fullName: string;
+  phone: string | null;
+  email: string | null;
+  type: ProviderType;
+  municipality: string;
+  barangay: string | null;
+  specialty: string | null;
+  licenseNumber: string | null;
+  vehicleType: string | null;
+  plateNumber: string | null;
+  isAvailable: boolean;
+  isAccredited: boolean;
+  isActive: boolean;
+  activeRequests: number;
+  totalRequests: number;
+}
+
+export interface ProviderCandidate {
+  id: string;
+  fullName: string | null;
+  phone: string | null;
+  type: ProviderType;
+  municipality: string | null;
+  barangay: string | null;
+  specialty: string | null;
+  licenseNumber: string | null;
+  vehicleType: string | null;
+  plateNumber: string | null;
+  eligible: boolean;
+  current: boolean;
+  warnings: string[];
+  blockers: string[];
+}
+
+export interface ProviderDetail {
+  provider: {
+    id: string;
+    userId: string;
+    fullName: string;
+    phone: string | null;
+    email: string | null;
+    type: ProviderType;
+    municipality: string;
+    barangay: string | null;
+    specialty: string | null;
+    licenseNumber: string | null;
+    vehicleType: string | null;
+    plateNumber: string | null;
+    isAvailable: boolean;
+    isAccredited: boolean;
+    accountActive: boolean;
+    createdAt: string;
+  };
+  requests: {
+    id: string;
+    ref: string;
+    kind: ServiceKind;
+    status: ServiceStatus;
+    createdAt: string;
+    scheduledAt: string | null;
+    preferredAt: string | null;
+    client: Ref;
+    municipality: string;
+    barangay: string | null;
+  }[];
+  stats: {
+    completedCount: number;
+    activeCount: number;
+    totalCount: number;
+  };
+}
+
 export interface ServiceRow {
   id: string;
   ref: string;
@@ -292,6 +369,7 @@ export interface ServiceRow {
   municipality: string;
   files: number;
   client: Ref;
+  assignedProvider?: { id: string; fullName: string; type: ProviderType } | null;
 }
 
 export interface ServiceDetail {
@@ -309,7 +387,19 @@ export interface ServiceDetail {
     staffNote: string | null;
     cancellationReason: string | null;
     handledBy: string | null;
+    assignedProviderId?: string | null;
   };
+  assignedProvider?: {
+    id: string;
+    fullName: string;
+    type: ProviderType;
+    specialty: string | null;
+    licenseNumber: string | null;
+    vehicleType: string | null;
+    plateNumber: string | null;
+    phone: string | null;
+    municipality: string;
+  } | null;
   client: { id: string; name: string; address: string; landmark: string | null };
   requestedBy: { name: string | null; role: string; phone: string | null; email: string | null };
   files: { id: string; fileName: string | null; contentType: string; sizeBytes: number; createdAt: string }[];
@@ -477,12 +567,23 @@ export const api = {
   service: (id: string) => request<ServiceDetail>('GET', `/service-requests/${id}`),
   serviceStatus: (id: string, change: { status: Exclude<ServiceStatus, 'SUBMITTED'>; scheduledAt?: string; note?: string; reason?: string }) =>
     request<{ ok: true; familyEmail?: string }>('POST', `/service-requests/${id}/status`, change),
+  serviceCandidates: (serviceRequestId: string) => request<{ candidates: ProviderCandidate[] }>('GET', `/service-requests/${serviceRequestId}/candidates`),
+  assignService: (serviceRequestId: string, input: { providerId: string; scheduledAt?: string; note?: string }) =>
+    request<{ ok: true; familyEmail?: string }>('POST', `/service-requests/${serviceRequestId}/assign`, input),
   /** Staff open attached files through the audited route (cookie auth), as a blob URL. */
   serviceFileUrl: async (id: string, fileId: string) => {
     const res = await fetch(`${BASE}/service-requests/${id}/files/${fileId}`, { credentials: 'include', headers: { 'X-AdvanCare-Staff': '1' } });
     if (!res.ok) throw new ApiError(res.status, 'FILE_ERROR', res.status === 404 ? 'File not found.' : 'Could not open the file.');
     return URL.createObjectURL(await res.blob());
   },
+
+  // Providers (Doctors & Transport Drivers)
+  providers: (filters: Record<string, string | undefined>) => request<Paged & { providers: ProviderRow[] }>('GET', `/providers${query(filters)}`),
+  provider: (id: string) => request<ProviderDetail>('GET', `/providers/${id}`),
+  createProvider: (input: { fullName: string; email: string; phone: string; type: ProviderType; municipality: string; barangay?: string; specialty?: string; licenseNumber?: string; vehicleType?: string; plateNumber?: string; isAvailable?: boolean; isAccredited?: boolean }) =>
+    request<{ id: string }>('POST', '/providers', input),
+  updateProvider: (id: string, change: { isAvailable?: boolean; isAccredited?: boolean; active?: boolean; specialty?: string; licenseNumber?: string; vehicleType?: string; plateNumber?: string; municipality?: string; barangay?: string }) =>
+    request<{ ok: true }>('PATCH', `/providers/${id}`, change),
 
   // Audit
   audit: (filters: Record<string, string | undefined>) => request<{ entries: AuditEntry[]; nextCursor: string | null; scope: 'all' | 'own' }>('GET', `/audit${query(filters)}`),

@@ -1,9 +1,9 @@
-import { and, count, desc, eq, ilike, inArray, or, sql, type SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray, or, sql, type SQL } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { Hono, type Context } from 'hono';
 import * as v from 'valibot';
 import { audit } from '../../audit';
-import { auditLogs, clientProfiles, SERVICE_KINDS, SERVICE_STATUSES, serviceRequests, uploads, users } from '../../db/schema';
+import { auditLogs, clientProfiles, providers, SERVICE_KINDS, SERVICE_STATUSES, serviceRequests, uploads, users } from '../../db/schema';
 import type { AppEnv } from '../../env';
 import { ApiError } from '../../lib/errors';
 import { notifyFamily } from '../../lib/notify';
@@ -16,6 +16,8 @@ import { PAGE_SIZE } from './operations';
 const IdParam = v.object({ id: v.pipe(v.string(), v.uuid()) });
 const requester = alias(users, 'requester');
 const handler = alias(users, 'handler');
+const assignedProv = alias(providers, 'assigned_prov');
+const assignedUser = alias(users, 'assigned_user');
 
 const KIND_LABEL: Record<string, string> = { telehealth: 'TeleHealth consult', rhu: 'RHU service', triage: 'Triage & referral', prescription: 'Prescription', transport: 'Transport' };
 
@@ -64,9 +66,14 @@ adminServices.get(
           barangay: clientProfiles.barangay,
           municipality: clientProfiles.municipality,
           files: sql<number>`(select count(*)::int from ${uploads} where ${uploads.serviceRequestId} = ${serviceRequests.id})`,
+          assignedProviderId: assignedProv.id,
+          assignedProviderName: assignedUser.fullName,
+          assignedProviderType: assignedProv.type,
         })
         .from(serviceRequests)
         .innerJoin(clientProfiles, eq(clientProfiles.id, serviceRequests.clientId))
+        .leftJoin(assignedProv, eq(assignedProv.id, serviceRequests.assignedProviderId))
+        .leftJoin(assignedUser, eq(assignedUser.id, assignedProv.userId))
         .where(where)
         .orderBy(desc(serviceRequests.createdAt))
         .limit(PAGE_SIZE)
@@ -74,7 +81,12 @@ adminServices.get(
       db.select({ n: count() }).from(serviceRequests).innerJoin(clientProfiles, eq(clientProfiles.id, serviceRequests.clientId)).where(where),
     ]);
     return c.json({
-      requests: rows.map(({ clientName, clientId, ...r }) => ({ ...r, ref: serviceRef(r.id), client: { id: clientId, name: shortName(clientName) } })),
+      requests: rows.map(({ clientName, clientId, assignedProviderId, assignedProviderName, assignedProviderType, ...r }) => ({
+        ...r,
+        ref: serviceRef(r.id),
+        client: { id: clientId, name: shortName(clientName) },
+        assignedProvider: assignedProviderId ? { id: assignedProviderId, fullName: assignedProviderName, type: assignedProviderType } : null,
+      })),
       total: total?.n ?? 0,
       page: f.page,
       pageSize: PAGE_SIZE,
@@ -85,11 +97,30 @@ adminServices.get(
 async function loadService(c: Context<AppEnv>, id: string) {
   const [row] = await c
     .get('db')
-    .select({ sr: serviceRequests, client: clientProfiles, familyEmail: requester.email, familyName: requester.fullName, familyPhone: requester.phoneNumber, familyRole: requester.role, handlerName: handler.fullName })
+    .select({
+      sr: serviceRequests,
+      client: clientProfiles,
+      familyEmail: requester.email,
+      familyName: requester.fullName,
+      familyPhone: requester.phoneNumber,
+      familyRole: requester.role,
+      handlerName: handler.fullName,
+      providerId: assignedProv.id,
+      providerFullName: assignedUser.fullName,
+      providerType: assignedProv.type,
+      providerSpecialty: assignedProv.specialty,
+      providerLicenseNumber: assignedProv.licenseNumber,
+      providerVehicleType: assignedProv.vehicleType,
+      providerPlateNumber: assignedProv.plateNumber,
+      providerPhone: assignedUser.phoneNumber,
+      providerMunicipality: assignedProv.municipality,
+    })
     .from(serviceRequests)
     .innerJoin(clientProfiles, eq(clientProfiles.id, serviceRequests.clientId))
     .innerJoin(requester, eq(requester.id, serviceRequests.requestedByUserId))
     .leftJoin(handler, eq(handler.id, serviceRequests.handledByUserId))
+    .leftJoin(assignedProv, eq(assignedProv.id, serviceRequests.assignedProviderId))
+    .leftJoin(assignedUser, eq(assignedUser.id, assignedProv.userId))
     .where(eq(serviceRequests.id, id))
     .limit(1);
   if (!row) throw new ApiError(404, 'NOT_FOUND', 'Request not found.');
@@ -130,13 +161,193 @@ adminServices.get('/service-requests/:id', validate('param', IdParam), async (c)
       staffNote: row.sr.staffNote,
       cancellationReason: row.sr.cancellationReason,
       handledBy: row.handlerName,
+      assignedProviderId: row.providerId,
     },
+    assignedProvider: row.providerId
+      ? {
+          id: row.providerId,
+          fullName: row.providerFullName,
+          type: row.providerType,
+          specialty: row.providerSpecialty,
+          licenseNumber: row.providerLicenseNumber,
+          vehicleType: row.providerVehicleType,
+          plateNumber: row.providerPlateNumber,
+          phone: maskPhone(row.providerPhone),
+          municipality: row.providerMunicipality,
+        }
+      : null,
     client: { id: cl.id, name: cl.fullName, address: [cl.sitio, `Brgy. ${cl.barangay}`, cl.municipality].filter(Boolean).join(', '), landmark: cl.landmarkNotes },
     requestedBy: { name: row.familyName, role: row.familyRole, phone: maskPhone(row.familyPhone), email: row.familyEmail },
     files,
     history: history.map((h) => ({ ...h, actor: h.actor?.id ? h.actor : null })),
   });
 });
+
+/** Candidate doctors or drivers eligible to be assigned to this service request. */
+adminServices.get('/service-requests/:id/candidates', validate('param', IdParam), async (c) => {
+  const db = c.get('db');
+  const staff = c.get('staff');
+  const row = await loadService(c, c.req.valid('param').id);
+  const kind = row.sr.kind;
+  if (kind === 'telehealth' && staff.role !== 'SUPER_ADMIN') {
+    throw new ApiError(403, 'FORBIDDEN', 'Only Super Admins can view and assign telehealth doctor candidates.');
+  }
+  const targetType = kind === 'telehealth' ? 'DOCTOR' : kind === 'transport' ? 'TRANSPORT_DRIVER' : null;
+  if (!targetType) return c.json({ candidates: [] });
+
+  const provUser = alias(users, 'prov_user');
+  const candidates = await db
+    .select({
+      id: providers.id,
+      fullName: provUser.fullName,
+      phone: provUser.phoneNumber,
+      type: providers.type,
+      municipality: providers.municipality,
+      barangay: providers.barangay,
+      specialty: providers.specialty,
+      licenseNumber: providers.licenseNumber,
+      vehicleType: providers.vehicleType,
+      plateNumber: providers.plateNumber,
+      isAvailable: providers.isAvailable,
+      isAccredited: providers.isAccredited,
+      isActive: provUser.isActive,
+    })
+    .from(providers)
+    .innerJoin(provUser, eq(provUser.id, providers.userId))
+    .where(
+      and(
+        eq(providers.type, targetType),
+        scopeCondition(staff, providers.municipality),
+      ),
+    )
+    .orderBy(asc(provUser.fullName));
+
+  return c.json({
+    candidates: candidates.map((p) => {
+      const blockers: string[] = [];
+      if (!p.isAvailable) blockers.push('Marked as not available');
+      if (!p.isAccredited) blockers.push('Not accredited');
+      if (!p.isActive) blockers.push('Account deactivated');
+      const sameMunicipality = p.municipality.toLowerCase() === row.client.municipality.toLowerCase();
+      const warnings: string[] = [];
+      if (p.type === 'TRANSPORT_DRIVER' && !sameMunicipality) {
+        warnings.push(`Based in ${p.municipality} (client is in ${row.client.municipality})`);
+      }
+      return {
+        id: p.id,
+        fullName: p.fullName,
+        phone: maskPhone(p.phone),
+        type: p.type,
+        municipality: p.municipality,
+        barangay: p.barangay,
+        specialty: p.specialty,
+        licenseNumber: p.licenseNumber,
+        vehicleType: p.vehicleType,
+        plateNumber: p.plateNumber,
+        eligible: blockers.length === 0,
+        current: p.id === row.sr.assignedProviderId,
+        warnings,
+        blockers,
+      };
+    }),
+  });
+});
+
+/** Assign a doctor or driver to a service request. */
+adminServices.post(
+  '/service-requests/:id/assign',
+  validate('param', IdParam),
+  validate(
+    'json',
+    v.strictObject({
+      providerId: v.pipe(v.string(), v.uuid()),
+      scheduledAt: v.optional(v.pipe(v.string(), v.isoTimestamp('Choose a valid date and time.'))),
+      note: v.optional(v.pipe(v.string(), v.trim(), v.maxLength(500))),
+    }),
+  ),
+  async (c) => {
+    const db = c.get('db');
+    const staff = c.get('staff');
+    const row = await loadService(c, c.req.valid('param').id);
+    const body = c.req.valid('json');
+
+    const provUser = alias(users, 'prov_user');
+    const [provider] = await db
+      .select({
+        id: providers.id,
+        fullName: provUser.fullName,
+        type: providers.type,
+        municipality: providers.municipality,
+        specialty: providers.specialty,
+        vehicleType: providers.vehicleType,
+        plateNumber: providers.plateNumber,
+      })
+      .from(providers)
+      .innerJoin(provUser, eq(provUser.id, providers.userId))
+      .where(eq(providers.id, body.providerId))
+      .limit(1);
+
+    if (!provider) throw new ApiError(404, 'NOT_FOUND', 'Provider not found.');
+    assertInScope(staff, provider.municipality, 'Provider');
+
+    if (row.sr.kind === 'telehealth' && staff.role !== 'SUPER_ADMIN') {
+      throw new ApiError(403, 'FORBIDDEN', 'Only Super Admins can assign doctors to telehealth requests.');
+    }
+
+    const expectedType = row.sr.kind === 'telehealth' ? 'DOCTOR' : row.sr.kind === 'transport' ? 'TRANSPORT_DRIVER' : null;
+    if (expectedType && provider.type !== expectedType) {
+      throw new ApiError(422, 'VALIDATION_FAILED', `This request requires a ${expectedType === 'DOCTOR' ? 'doctor' : 'transport driver'}.`);
+    }
+
+    const scheduledAt = body.scheduledAt ? new Date(body.scheduledAt) : row.sr.scheduledAt ?? new Date();
+
+    await db.transaction(async (tx) => {
+      await tx
+        .update(serviceRequests)
+        .set({
+          assignedProviderId: provider.id,
+          status: 'SCHEDULED',
+          scheduledAt,
+          handledByUserId: staff.userId,
+          ...(body.note !== undefined ? { staffNote: body.note || null } : {}),
+        })
+        .where(eq(serviceRequests.id, row.sr.id));
+
+      await audit(c, tx, {
+        action: 'service_request.assigned',
+        entityType: 'service_request',
+        entityId: row.sr.id,
+        municipality: row.client.municipality,
+        metadata: {
+          providerId: provider.id,
+          providerType: provider.type,
+          previousProviderId: row.sr.assignedProviderId,
+          scheduledAt: scheduledAt.toISOString(),
+        },
+      });
+    });
+
+    const ref = serviceRef(row.sr.id);
+    const label = KIND_LABEL[row.sr.kind] ?? 'request';
+    const when = scheduledAt.toLocaleString('en-PH', { timeZone: 'Asia/Manila', dateStyle: 'medium', timeStyle: 'short' });
+    const providerDesc =
+      provider.type === 'DOCTOR'
+        ? `Dr. ${provider.fullName}${provider.specialty ? ` (${provider.specialty})` : ''}`
+        : `${provider.fullName}${provider.vehicleType ? ` · ${provider.vehicleType}` : ''}${provider.plateNumber ? ` (${provider.plateNumber})` : ''}`;
+
+    let familyEmail: string | undefined;
+    familyEmail = await notifyFamily(c.env, c.get('requestId'), row.familyEmail, {
+      subject: `${label} scheduled with ${provider.fullName} (${ref})`,
+      lines: [
+        `Your ${label.toLowerCase()} is scheduled for ${when}.`,
+        `Assigned ${provider.type === 'DOCTOR' ? 'Doctor' : 'Driver'}: ${providerDesc}`,
+        ...(body.note ? [`Note from your care team: ${body.note}`] : []),
+      ],
+    });
+
+    return c.json({ ok: true, ...(familyEmail ? { familyEmail } : {}) });
+  },
+);
 
 adminServices.post(
   '/service-requests/:id/status',
@@ -156,8 +367,12 @@ adminServices.post(
     const body = c.req.valid('json');
     const problem = serviceTransitionProblem(row.sr.status as ServiceStatus, body.status);
     if (problem) throw new ApiError(409, 'NOT_ALLOWED', problem);
-    if (body.status === 'SCHEDULED' && !body.scheduledAt) throw new ApiError(422, 'VALIDATION_FAILED', 'Choose the date and time.', { nested: { scheduledAt: ['Choose the date and time.'] } });
-    if (body.status === 'CANCELLED' && (body.reason ?? '').length < 5) throw new ApiError(422, 'VALIDATION_FAILED', 'Give a short reason the family will see.', { nested: { reason: ['Give a short reason (at least 5 characters).'] } });
+    if (body.status === 'SCHEDULED' && !body.scheduledAt && !row.sr.scheduledAt) {
+      throw new ApiError(422, 'VALIDATION_FAILED', 'Choose the date and time.', { nested: { scheduledAt: ['Choose the date and time.'] } });
+    }
+    if (body.status === 'CANCELLED' && (body.reason ?? '').length < 5) {
+      throw new ApiError(422, 'VALIDATION_FAILED', 'Give a short reason the family will see.', { nested: { reason: ['Give a short reason (at least 5 characters).'] } });
+    }
     const scheduledAt = body.scheduledAt ? new Date(body.scheduledAt) : undefined;
     await db.transaction(async (tx) => {
       await tx
@@ -180,13 +395,13 @@ adminServices.post(
     });
     const ref = serviceRef(row.sr.id);
     const label = KIND_LABEL[row.sr.kind] ?? 'request';
-    const when = scheduledAt?.toLocaleString('en-PH', { timeZone: 'Asia/Manila', dateStyle: 'medium', timeStyle: 'short' });
+    const when = (scheduledAt ?? (row.sr.scheduledAt ? new Date(row.sr.scheduledAt) : null))?.toLocaleString('en-PH', { timeZone: 'Asia/Manila', dateStyle: 'medium', timeStyle: 'short' });
     let familyEmail: string | undefined;
     if (body.status === 'SCHEDULED' || body.status === 'CANCELLED') {
       familyEmail = await notifyFamily(c.env, c.get('requestId'), row.familyEmail, {
         subject: body.status === 'SCHEDULED' ? `${label} scheduled (${ref})` : `${label} cancelled (${ref})`,
         lines: [
-          body.status === 'SCHEDULED' ? `Your ${label.toLowerCase()} is scheduled for ${when}.` : `Your ${label.toLowerCase()} (${ref}) was cancelled. Reason: ${body.reason}`,
+          body.status === 'SCHEDULED' ? `Your ${label.toLowerCase()} is scheduled for ${when ?? 'the scheduled time'}.` : `Your ${label.toLowerCase()} (${ref}) was cancelled. Reason: ${body.reason}`,
           ...(body.note ? [`Note from your care team: ${body.note}`] : []),
         ],
       });

@@ -143,10 +143,14 @@ export function MunicipalityFilter({
     if (!container) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (container && !container.contains(e.target as Node)) {
-        setOpen(false);
-        setSearch('');
+      const target = e.target as Node | null;
+      if (!target || !container) return;
+      const path = e.composedPath ? e.composedPath() : [];
+      if (container.contains(target) || path.includes(container)) {
+        return;
       }
+      setOpen(false);
+      setSearch('');
     };
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -155,20 +159,12 @@ export function MunicipalityFilter({
         triggerRef.current?.focus();
       }
     };
-    const handleFocusOut = (e: FocusEvent) => {
-      if (container && !container.contains(e.relatedTarget as Node)) {
-        setOpen(false);
-        setSearch('');
-      }
-    };
 
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleKeyDown);
-    container.addEventListener('focusout', handleFocusOut);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleKeyDown);
-      container.removeEventListener('focusout', handleFocusOut);
     };
   }, [open]);
 
@@ -261,16 +257,39 @@ export function MunicipalityFilter({
       </button>
 
       {open ? (
-        <div className="muni-filter-popover" role="dialog" aria-label="Filter municipalities and districts">
+        <div
+          className="muni-filter-popover"
+          role="dialog"
+          aria-label="Filter municipalities and districts"
+          onMouseDown={(e) => e.stopPropagation()}
+        >
           <div className="muni-filter-header">
             <span className="muni-filter-title">Filter by Location</span>
             <div className="muni-filter-actions">
-              <Button variant="quiet" className="btn-sm" onClick={handleSelectAll}>
+              <Button
+                variant="quiet"
+                className="btn-sm"
+                onClick={handleSelectAll}
+                onMouseDown={(e) => e.preventDefault()}
+              >
                 {isSearching ? 'Select Matching' : 'Select All'}
               </Button>
-              <Button variant="quiet" className="btn-sm" onClick={handleClearAll}>
+              <Button
+                variant="quiet"
+                className="btn-sm"
+                onClick={handleClearAll}
+                onMouseDown={(e) => e.preventDefault()}
+              >
                 {isSearching ? 'Clear Matching' : 'Clear All'}
               </Button>
+              <button
+                type="button"
+                className="icon-close muni-close-btn"
+                onClick={() => setOpen(false)}
+                aria-label="Close location filter"
+              >
+                ×
+              </button>
             </div>
           </div>
 
@@ -283,7 +302,6 @@ export function MunicipalityFilter({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               aria-label="Search municipalities"
-              autoFocus
             />
           </div>
 
@@ -319,7 +337,11 @@ export function MunicipalityFilter({
                       <button
                         type="button"
                         className="muni-district-toggle"
-                        onClick={() => toggleCollapse(district)}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleCollapse(district);
+                        }}
                         aria-expanded={!isCollapsed}
                         aria-label={`${isCollapsed ? 'Expand' : 'Collapse'} ${district}`}
                       >

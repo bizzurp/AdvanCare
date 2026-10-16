@@ -264,6 +264,14 @@ export interface ServerServiceRequest {
   scheduledAt: string | null;
   staffNote: string | null;
   cancellationReason: string | null;
+  assignedProvider?: {
+    id: string;
+    type: 'DOCTOR' | 'TRANSPORT_DRIVER';
+    fullName: string;
+    specialty?: string | null;
+    vehicleType?: string | null;
+    plateNumber?: string | null;
+  } | null;
 }
 const SERVICE_STATUS: Record<ServerServiceStatus, RequestStatus> = { SUBMITTED: 'submitted', IN_REVIEW: 'submitted', SCHEDULED: 'confirmed', COMPLETED: 'completed', CANCELLED: 'cancelled' };
 export const appServiceStatus = (s: ServerServiceStatus): RequestStatus => SERVICE_STATUS[s];

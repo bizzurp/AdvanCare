@@ -1,5 +1,43 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-17] - Centralize Telehealth Assignment in Super Admin Dashboard
+- **Role Isolation**: Removed per-municipality TeleHealth doctor assignment from the regular staff admin dashboard and centralized it under the Super Admin dashboard.
+- **Operations & Navigation**:
+  - Regular staff sidebar in `Operations` now features **Transport Drivers** (`/drivers`), focused purely on municipality transport operators and vehicles.
+  - Super Admin `Administration` menu gains **Telehealth Doctors** (`/telehealth`, `superOnly: true`), providing provincial roster management and onboarding.
+- **Super Admin Dashboard (`Home.tsx`)**:
+  - Added real-time **Telehealth assignment queue** displaying open teleconsultation requests across all 29 LGUs with KPI counters (open, waiting for doctor, assigned).
+  - Integrated direct "Assign Doctor" action launching candidate physician selector modal with family notification note.
+- **Backend Access Control**:
+  - Restricted doctor candidate matching and assignment (`GET/POST /service-requests/:id/candidates`, `POST /service-requests/:id/assign`) for `telehealth` to `SUPER_ADMIN`.
+  - Restricted `DOCTOR` provider creation, updates, and profile viewing to `SUPER_ADMIN`.
+  - Eliminated cross-municipality assignment warnings for teleconsultants since teleconsultation operates remotely across all LGUs.
+
+## [2026-10-16] - Multi-provider Support: Doctors & Transport Drivers
+- **Schema & Migrations (`0005_magical_pandemic.sql`, `0006_confused_scalphunter.sql`)**:
+  - Added `'DOCTOR'` and `'TRANSPORT_DRIVER'` to `user_role` pgEnum and to the `users_app_email_uq` index predicate.
+  - Added `provider_type` pgEnum (`DOCTOR`, `TRANSPORT_DRIVER`).
+  - Created `providers` table: `id`, `user_id` (FK RESTRICT to `users`), `type`, `municipality`, `barangay`, `specialty`, `license_number` (PRC), `vehicle_type`, `plate_number`, `is_available`, `is_accredited`, `created_at`, `updated_at`.
+  - Added `assigned_provider_id` to `service_requests` table (FK RESTRICT to `providers`, indexed).
+- **Backend API (`backend/src/routes/admin/`)**:
+  - `GET /api/v1/admin/providers`: Scoped list with type, municipality, availability filters, masked phone numbers, active/completed counts.
+  - `POST /api/v1/admin/providers`: Transactional creation of `users` + `providers`, role assignment, Philippine phone normalization, scope checks, and `provider.created` audit log.
+  - `GET /api/v1/admin/providers/:id`: Provider profile, past assignments, and metrics.
+  - `PATCH /api/v1/admin/providers/:id`: Update availability, accreditation, credentials, or active status with `provider.updated` audit log.
+  - `GET /api/v1/admin/service-requests/:id/candidates`: Ranks and filters candidate providers (Doctors for `telehealth`, Transport Drivers for `transport`) in staff scope with blockers and warnings.
+  - `POST /api/v1/admin/service-requests/:id/assign`: Assigns provider to request, sets status to `SCHEDULED`, logs `service_request.assigned` audit entry, and notifies family via email.
+  - `GET /api/v1/service-requests/mine`: Exposes `assignedProvider` details to authenticated family clients.
+- **Admin Console UI (`admin/`)**:
+  - Added "Doctors & Drivers" section to sidebar navigation and mounted `/providers` and `/providers/:id` routes.
+  - Created `Providers` roster page with toggle tabs for Doctors (PRC license, specialty) and Drivers (vehicle type, plate number), status filters, and search.
+  - Built `AddDoctorModal`, `AddDriverModal`, and `ManageProvider` modal components.
+  - Created `ProviderDetail` page with KPIs, contact/license info, status controls, and past assignment history.
+  - Enhanced `Services` page with "Assign Doctor" / "Assign Driver" actions, candidate selector modal with blockers/warnings, and assigned provider display in tables and detail cards.
+- **Client Mobile PWA (`frontend/`)**:
+  - Added `assignedProvider` typing to `ServiceRequest` / `ServerServiceRequest`.
+  - Mapped assigned provider details in `AppState.tsx`.
+  - Displayed assigned Doctor or Transport Driver card with credentials/vehicle details on the Request detail screen.
+
 ## [2026-10-16] - Multi-select Municipality & District scoping for Super Admin dashboard
 - Added Cagayan 3 legislative districts mapping (29 LGUs) and `getDistrict` helper in `backend/src/staff/municipalities.ts`.
 - Extended `GET /overview?municipalities=...` with Super Admin filtering vs. regular Admin intersection scoping, input validation with `isKnownMunicipality`, and per-municipality operational breakdown (`byMunicipality`).

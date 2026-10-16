@@ -22,6 +22,7 @@ const NAV: { heading?: string; items: NavItem[] }[] = [
       { to: '/services', label: 'Service requests', icon: 'stethoscope' },
       { to: '/clients', label: 'Clients', icon: 'users-group-rounded' },
       { to: '/caregivers', label: 'Caregivers', icon: 'user-heart' },
+      { to: '/drivers', label: 'Transport Drivers', icon: 'users-group-rounded' },
       { to: '/payments', label: 'Payments', icon: 'wallet' },
       { to: '/reports', label: 'Reports', icon: 'chart-square' },
     ],
@@ -30,6 +31,7 @@ const NAV: { heading?: string; items: NavItem[] }[] = [
     heading: 'Administration',
     items: [
       { to: '/admins', label: 'Admin accounts', icon: 'users-group-rounded', superOnly: true },
+      { to: '/telehealth', label: 'Telehealth Doctors', icon: 'stethoscope', superOnly: true },
       { to: '/audit', label: 'Audit log', icon: 'document-text' },
     ],
   },

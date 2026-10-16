@@ -56,6 +56,15 @@ export interface ServiceRequest {
   staffNote?: string;
   /** Why it was cancelled (from the server). */
   cancellationReason?: string;
+  /** Assigned doctor or transport driver, from the server. */
+  assignedProvider?: {
+    id: string;
+    type: 'DOCTOR' | 'TRANSPORT_DRIVER';
+    fullName: string;
+    specialty?: string | null;
+    vehicleType?: string | null;
+    plateNumber?: string | null;
+  } | null;
   isDemoRecord?: boolean;
 }
 

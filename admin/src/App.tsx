@@ -10,12 +10,15 @@ import { Audit } from './pages/Audit';
 import { CaregiverDetail, Caregivers } from './pages/Caregivers';
 import { ClientDetail } from './pages/ClientDetail';
 import { Clients } from './pages/Clients';
+import { Drivers } from './pages/Drivers';
 import { Payments } from './pages/Payments';
+import { ProviderDetail } from './pages/ProviderDetail';
 import { Reports } from './pages/Reports';
 import { RequestDetail } from './pages/RequestDetail';
 import { Requests } from './pages/Requests';
 import { ServiceDetailPage, Services } from './pages/Services';
 import { Shifts } from './pages/Shifts';
+import { TelehealthDoctors } from './pages/TelehealthDoctors';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 
@@ -62,6 +65,10 @@ export function App() {
             <Route path="clients/:id" element={<ClientDetail />} />
             <Route path="caregivers" element={<Caregivers />} />
             <Route path="caregivers/:id" element={<CaregiverDetail />} />
+            <Route path="drivers" element={<Drivers />} />
+            <Route path="providers" element={<Navigate to="/drivers" replace />} />
+            <Route path="providers/:id" element={<ProviderDetail />} />
+            <Route path="telehealth" element={<RequireSession superOnly><TelehealthDoctors /></RequireSession>} />
             <Route path="payments" element={<Payments />} />
             <Route path="reports" element={<Reports />} />
             <Route path="admins" element={<RequireSession superOnly><Admins /></RequireSession>} />

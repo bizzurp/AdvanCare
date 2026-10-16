@@ -127,7 +127,16 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
           if (isServiceKind(r.kind)) {
             const v = services.get(r.serverId);
             return v
-              ? { ...r, status: appServiceStatus(v.status), ...(v.preferredAt && !v.scheduledAt ? { scheduledFor: v.preferredAt } : {}), serverRef: v.ref, staffNote: v.staffNote ?? undefined, cancellationReason: v.cancellationReason ?? undefined, ...(v.scheduledAt ? { scheduledFor: v.scheduledAt } : {}) }
+              ? {
+                  ...r,
+                  status: appServiceStatus(v.status),
+                  ...(v.preferredAt && !v.scheduledAt ? { scheduledFor: v.preferredAt } : {}),
+                  serverRef: v.ref,
+                  staffNote: v.staffNote ?? undefined,
+                  cancellationReason: v.cancellationReason ?? undefined,
+                  ...(v.scheduledAt ? { scheduledFor: v.scheduledAt } : {}),
+                  assignedProvider: v.assignedProvider ?? undefined,
+                }
               : r;
           }
           const s = shifts.get(r.serverId);

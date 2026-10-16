@@ -5,4 +5,4 @@ License: https://creativecommons.org/licenses/by/4.0/
 
 SVGs retain currentColor. Use 24px icons, typically 1.5px strokes, with visible labels.
 
-`car.svg` is an AdvanCare-drawn icon in the Solar Linear style (1.5px stroke, currentColor); it is not part of the Solar set.
+`car.svg` and `tricycle.svg` are AdvanCare-drawn icons in the Solar Linear style (1.5px stroke, currentColor); they are not part of the Solar set.

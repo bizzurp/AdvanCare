@@ -9,12 +9,12 @@ The live sites use the **Neon demo branch**: 39 fictional clients, 15 caregivers
 
 **Accounts (4).** One Gmail inbox is enough: mail to `yourname+anything@gmail.com` arrives in `yourname@gmail.com`. Every account needs a different address.
 
-| # | Account | Email | Made by |
-|---|---|---|---|
-| 1 | Super Admin | `aciertonicols.advancare@gmail.com` | already exists |
-| 2 | Municipality Admin | `yourname+admin@gmail.com` | Super Admin invites (part A) |
-| 3 | Caregiver | `yourname+caregiver@gmail.com` | staff add in the console (part A) |
-| 4 | Family | `yourname+family@gmail.com` | you, in the app (app guide, part B) |
+| # | Account            | Email                               | Made by                             |
+| - | ------------------ | ----------------------------------- | ----------------------------------- |
+| 1 | Super Admin        | `aciertonicols.advancare@gmail.com` | already exists                      |
+| 2 | Municipality Admin | `yourname+admin@gmail.com`          | Super Admin invites (part A)        |
+| 3 | Caregiver          | `yourname+caregiver@gmail.com`      | staff add in the console (part A)   |
+| 4 | Family             | `yourname+family@gmail.com`         | you, in the app (app guide, part B) |
 
 **Have ready:** an authenticator app on a phone (Google Authenticator, Microsoft Authenticator or Authy) for the staff accounts, and a photo of any paper for the prescription test.
 
@@ -89,13 +89,13 @@ The fictional demo people (`…@demo.advancare.test`) can't sign in; they only f
 
 ## E. Emails you should receive
 
-| When | Who gets it |
-|---|---|
-| Sign-in / sign-up | the person signing in (6-digit code) |
-| Staff assign a caregiver | family |
-| Staff cancel a caregiver booking | family |
-| Staff schedule a service request | family |
-| Staff cancel a service request | family |
+| When                             | Who gets it                          |
+| -------------------------------- | ------------------------------------ |
+| Sign-in / sign-up                | the person signing in (6-digit code) |
+| Staff assign a caregiver         | family                               |
+| Staff cancel a caregiver booking | family                               |
+| Staff schedule a service request | family                               |
+| Staff cancel a service request   | family                               |
 
 Sender: `advancare.noreply@gmail.com`. Check Spam/Promotions.
 

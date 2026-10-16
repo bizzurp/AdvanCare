@@ -9,12 +9,12 @@ The live sites use the **Neon demo branch**: 39 fictional clients, 15 caregivers
 
 **Accounts (4).** One Gmail inbox is enough: mail to `yourname+anything@gmail.com` arrives in `yourname@gmail.com`. Every account needs a different address.
 
-| # | Account | Email | Made by |
-|---|---|---|---|
-| 1 | Super Admin | `aciertonicols.advancare@gmail.com` | already exists |
-| 2 | Municipality Admin | `yourname+admin@gmail.com` | Super Admin invites (dashboard guide, part A) |
-| 3 | Caregiver | `yourname+caregiver@gmail.com` | staff add in the console (dashboard guide, part A) |
-| 4 | Family | `yourname+family@gmail.com` | you, in the app (part B below) |
+| # | Account            | Email                               | Made by                                            |
+| - | ------------------ | ----------------------------------- | -------------------------------------------------- |
+| 1 | Super Admin        | `aciertonicols.advancare@gmail.com` | already exists                                     |
+| 2 | Municipality Admin | `yourname+admin@gmail.com`          | Super Admin invites (dashboard guide, part A)      |
+| 3 | Caregiver          | `yourname+caregiver@gmail.com`      | staff add in the console (dashboard guide, part A) |
+| 4 | Family             | `yourname+family@gmail.com`         | you, in the app (part B below)                     |
 
 **Have ready:** an authenticator app on a phone (Google Authenticator, Microsoft Authenticator or Authy) for the staff accounts, and a photo of any paper for the prescription test.
 
@@ -58,15 +58,33 @@ The fictional demo people (`…@demo.advancare.test`) can't sign in; they only f
 ### B5. Services (Services tab — 7 services)
 Each ends on **"Your request is on its way."** → **View request status**, and appears in the console.
 
-| Service | What to do | Console page |
-|---|---|---|
-| **TeleHealth** | Day + time (taken times greyed out), **Change doctor** (3 doctors), reason, Video/Audio/Chat, note → **Book consultation** | Service requests |
-| **RHU services** | Provider (Physician, Dentist, Nurse, Midwife) → service → health unit → Visit the RHU / Home visit → day + time → **Request RHU appointment** | Service requests |
-| **Triage & referral** | Main concern, when it started, who is reporting, vitals only if measured, optional photo, preferred facility, transport needed → **Send for clinician review** | Service requests ("For clinician review") |
-| **Medical prescription** | Refill or New, doctor, consultation date, medicines, **add a photo/PDF**, pickup or delivery → **Review request** → **Submit request** | Service requests (file under **Attached files**) |
-| **Non-emergency transport** | Pickup, destination, date & time, Public/Private vehicle, escort, return trip, notes → **Book transport** | Service requests |
-| **Home-based caregiver ₱300** | **Edit visit details** (location, date, start ≥12 h ahead, notes) → **Save visit details** → care needed → **Request caregiver** | Requests ("Waiting for a caregiver") |
-| **CVMC caregiver ₱500** | Same, plus ward and bed → **Request caregiver** | Requests |
+1. **TeleHealth**
+   - **Do:** Day + time (taken times greyed out), **Change doctor** (3 doctors), reason, Video/Audio/Chat, note → **Book consultation**
+   - **Shows up in the console:** Service requests
+
+2. **RHU services**
+   - **Do:** Provider (Physician, Dentist, Nurse, Midwife) → service → health unit → Visit the RHU / Home visit → day + time → **Request RHU appointment**
+   - **Shows up in the console:** Service requests
+
+3. **Triage & referral**
+   - **Do:** Main concern, when it started, who is reporting, vitals only if measured, optional photo, preferred facility, transport needed → **Send for clinician review**
+   - **Shows up in the console:** Service requests ("For clinician review")
+
+4. **Medical prescription**
+   - **Do:** Refill or New, doctor, consultation date, medicines, **add a photo/PDF**, pickup or delivery → **Review request** → **Submit request**
+   - **Shows up in the console:** Service requests (file under **Attached files**)
+
+5. **Non-emergency transport**
+   - **Do:** Pickup, destination, date & time, Public/Private vehicle, escort, return trip, notes → **Book transport**
+   - **Shows up in the console:** Service requests
+
+6. **Home-based caregiver ₱300**
+   - **Do:** **Edit visit details** (location, date, start ≥12 h ahead, notes) → **Save visit details** → care needed → **Request caregiver**
+   - **Shows up in the console:** Requests ("Waiting for a caregiver")
+
+7. **CVMC caregiver ₱500**
+   - **Do:** Same, plus ward and bed → **Request caregiver**
+   - **Shows up in the console:** Requests
 
 Extra checks:
 - **Double-booking:** a second family account picks the same doctor, day and time → that time is greyed out.
@@ -108,13 +126,14 @@ Extra checks:
 
 ## E. Emails you should receive
 
-| When | Who gets it |
-|---|---|
-| Sign-in / sign-up | the person signing in (6-digit code) |
-| Staff assign a caregiver | family |
-| Staff cancel a caregiver booking | family |
-| Staff schedule a service request | family |
-| Staff cancel a service request | family |
+
+| When                             | Who gets it                          |
+| -------------------------------- | ------------------------------------ |
+| Sign-in / sign-up                | the person signing in (6-digit code) |
+| Staff assign a caregiver         | family                               |
+| Staff cancel a caregiver booking | family                               |
+| Staff schedule a service request | family                               |
+| Staff cancel a service request   | family                               |
 
 Sender: `advancare.noreply@gmail.com`. Check Spam/Promotions.
 

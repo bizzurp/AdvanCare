@@ -50,9 +50,12 @@ vars = { ENVIRONMENT = "production", ALLOWED_ORIGINS = "https://advancare-app.pa
 
 # Hyperdrive "advancare-neon": Neon direct (unpooled) URL, query caching disabled so
 # clinical and shift data are never served stale.
+# Prototype phase: the live API uses the Neon demo branch ("advancare-neon-demo") so reviewers see
+# the fictional demo data. For real use switch back to the production branch config:
+#   id = "11c3b46c749a4eb8acbe2b7c7df8d5da"   # "advancare-neon" (production branch)
 [[env.production.hyperdrive]]
 binding = "HYPERDRIVE"
-id = "11c3b46c749a4eb8acbe2b7c7df8d5da"
+id = "953cafd868c14f8d8e9cf8611581ec2e"
 
 [[env.production.ratelimits]]
 name = "ASSISTANT_LIMITER"

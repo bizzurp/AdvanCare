@@ -1,5 +1,7 @@
 # AdvanCare deployment runbook
 
+> **Current live data (2026-10-16):** the API uses the Neon **demo branch** through Hyperdrive `advancare-neon-demo`, so the live sites show fictional demo data. To serve the real production database, set `[[env.production.hyperdrive]] id` in `backend/wrangler.toml` back to `11c3b46c749a4eb8acbe2b7c7df8d5da` and redeploy the API. Test accounts and scripts: `TESTING.md`.
+
 The online prototype uses Cloudflare Workers for the API and Cloudflare Pages Direct Upload for both web apps. App stores and native releases are deferred.
 
 | Component | Production URL | Configuration |

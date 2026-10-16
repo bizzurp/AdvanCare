@@ -6,6 +6,7 @@ import { auditLogs, careNotes, caregivers, clientProfiles, payments, serviceRequ
 import type { AppEnv } from '../../env';
 import { ApiError } from '../../lib/errors';
 import { validate } from '../../lib/validation';
+import { CAGAYAN_MUNICIPALITIES, getDistrict, isKnownMunicipality } from '../../staff/municipalities';
 import { assertInScope, manilaDate, manilaDayStart, maskPhone, paymentRef, requestRef, scopeCondition, shortName } from '../../staff/scope';
 
 export const SHIFT_STATUSES = ['REQUESTED', 'MATCHING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'ESCALATED'] as const;
@@ -22,18 +23,45 @@ export const adminOperations = new Hono<AppEnv>();
 
 // ---------- Overview ----------
 
-adminOperations.get('/overview', validate('query', v.object({ range: v.optional(v.picklist(['7', '30', '90']), '30') })), async (c) => {
+const OverviewQuery = v.object({
+  range: v.optional(v.picklist(['7', '30', '90']), '30'),
+  municipalities: v.optional(v.union([v.string(), v.array(v.string())])),
+});
+
+adminOperations.get('/overview', validate('query', OverviewQuery), async (c) => {
   const db = c.get('db');
   const staff = c.get('staff');
-  const days = Number(c.req.valid('query').range);
+  const query = c.req.valid('query');
+  const days = Number(query.range);
   const from = manilaDayStart(-(days - 1));
   const today = manilaDayStart(0);
-  const scope = scopeCondition(staff, clientProfiles.municipality);
+
+  let effectiveMunicipalities: string[] | 'ALL';
+  if (query.municipalities !== undefined) {
+    const raw = Array.isArray(query.municipalities) ? query.municipalities : [query.municipalities];
+    const requested = raw
+      .flatMap((p) => p.split(','))
+      .map((s) => s.trim())
+      .filter((m) => Boolean(m) && isKnownMunicipality(m));
+
+    if (staff.role === 'SUPER_ADMIN' || staff.municipalities === 'ALL') {
+      effectiveMunicipalities = requested;
+    } else {
+      effectiveMunicipalities = staff.municipalities.filter((m) => requested.includes(m));
+    }
+  } else {
+    effectiveMunicipalities = staff.municipalities === 'ALL' || staff.role === 'SUPER_ADMIN' ? 'ALL' : staff.municipalities;
+  }
+
+  const shiftScope = scopeCondition({ municipalities: effectiveMunicipalities }, clientProfiles.municipality);
+  const caregiverScope = scopeCondition({ municipalities: effectiveMunicipalities }, caregivers.municipality);
+  const clientScope = scopeCondition({ municipalities: effectiveMunicipalities }, clientProfiles.municipality);
+  const serviceScope = scopeCondition({ municipalities: effectiveMunicipalities }, clientProfiles.municipality);
   const completedAt = sql`coalesce(${shifts.clockOut}, ${shifts.updatedAt})`;
 
   const shiftBase = () => db.select().from(shifts).innerJoin(clientProfiles, eq(clientProfiles.id, shifts.clientId)).$dynamic();
 
-  const [[k], byDay, byService, byStatus, waiting, escalated, [cg], [cl], [svc]] = await Promise.all([
+  const [[k], byDay, byService, byStatus, waiting, escalated, [cg], [cl], [svc], shiftMuniData, cgMuniData] = await Promise.all([
     db
       .select({
         requests: sql<number>`count(*) filter (where ${shifts.createdAt} >= ${from})::int`,
@@ -51,31 +79,31 @@ adminOperations.get('/overview', validate('query', v.object({ range: v.optional(
       })
       .from(shifts)
       .innerJoin(clientProfiles, eq(clientProfiles.id, shifts.clientId))
-      .where(scope),
+      .where(shiftScope),
     db
       .select({ day: sql<string>`to_char(${shifts.createdAt} at time zone 'Asia/Manila', 'YYYY-MM-DD')`, n: count() })
       .from(shifts)
       .innerJoin(clientProfiles, eq(clientProfiles.id, shifts.clientId))
-      .where(and(scope, gte(shifts.createdAt, from)))
+      .where(and(shiftScope, gte(shifts.createdAt, from)))
       .groupBy(sql`1`),
     db
       .select({ tier: shifts.shiftTier, n: count() })
       .from(shifts)
       .innerJoin(clientProfiles, eq(clientProfiles.id, shifts.clientId))
-      .where(and(scope, gte(shifts.createdAt, from)))
+      .where(and(shiftScope, gte(shifts.createdAt, from)))
       .groupBy(shifts.shiftTier),
     db
       .select({ status: shifts.status, n: count() })
       .from(shifts)
       .innerJoin(clientProfiles, eq(clientProfiles.id, shifts.clientId))
-      .where(and(scope, gte(shifts.createdAt, from)))
+      .where(and(shiftScope, gte(shifts.createdAt, from)))
       .groupBy(shifts.status),
     shiftBase()
-      .where(and(scope, inArray(shifts.status, [...WAITING])))
+      .where(and(shiftScope, inArray(shifts.status, [...WAITING])))
       .orderBy(asc(shifts.createdAt))
       .limit(8),
     shiftBase()
-      .where(and(scope, eq(shifts.status, 'ESCALATED')))
+      .where(and(shiftScope, eq(shifts.status, 'ESCALATED')))
       .orderBy(asc(shifts.updatedAt))
       .limit(8),
     db
@@ -85,8 +113,8 @@ adminOperations.get('/overview', validate('query', v.object({ range: v.optional(
         available: sql<number>`count(*) filter (where ${caregivers.isAccredited} and ${caregivers.isAvailable})::int`,
       })
       .from(caregivers)
-      .where(scopeCondition(staff, caregivers.municipality)),
-    db.select({ registered: count() }).from(clientProfiles).where(scope),
+      .where(caregiverScope),
+    db.select({ registered: count() }).from(clientProfiles).where(clientScope),
     db
       .select({
         open: sql<number>`count(*) filter (where ${serviceRequests.status} in ('SUBMITTED','IN_REVIEW','SCHEDULED'))::int`,
@@ -94,7 +122,28 @@ adminOperations.get('/overview', validate('query', v.object({ range: v.optional(
       })
       .from(serviceRequests)
       .innerJoin(clientProfiles, eq(clientProfiles.id, serviceRequests.clientId))
-      .where(scope),
+      .where(serviceScope),
+    db
+      .select({
+        municipality: clientProfiles.municipality,
+        requests: sql<number>`count(*) filter (where ${shifts.createdAt} >= ${from})::int`,
+        waiting: sql<number>`count(*) filter (where ${shifts.status} in ('REQUESTED','MATCHING'))::int`,
+        inProgress: sql<number>`count(*) filter (where ${shifts.status} = 'IN_PROGRESS')::int`,
+        completed: sql<number>`count(*) filter (where ${shifts.status} = 'COMPLETED' and ${completedAt} >= ${from})::int`,
+        revenue: sql<string>`coalesce(sum(${shifts.grossRate}) filter (where ${shifts.status} = 'COMPLETED' and ${completedAt} >= ${from}), 0)`,
+      })
+      .from(shifts)
+      .innerJoin(clientProfiles, eq(clientProfiles.id, shifts.clientId))
+      .where(shiftScope)
+      .groupBy(clientProfiles.municipality),
+    db
+      .select({
+        municipality: caregivers.municipality,
+        available: sql<number>`count(*) filter (where ${caregivers.isAccredited} and ${caregivers.isAvailable})::int`,
+      })
+      .from(caregivers)
+      .where(caregiverScope)
+      .groupBy(caregivers.municipality),
   ]);
 
   const counts = new Map(byDay.map((d) => [d.day, d.n]));
@@ -116,6 +165,28 @@ adminOperations.get('/overview', validate('query', v.object({ range: v.optional(
     municipality: r.client_profiles.municipality,
   });
 
+  const shiftMuniMap = new Map(shiftMuniData.map((r) => [r.municipality, r]));
+  const cgMuniMap = new Map(cgMuniData.map((r) => [r.municipality, r.available]));
+
+  const targetMunicipalities =
+    effectiveMunicipalities === 'ALL'
+      ? CAGAYAN_MUNICIPALITIES
+      : CAGAYAN_MUNICIPALITIES.filter((m) => effectiveMunicipalities.includes(m));
+
+  const byMunicipality = targetMunicipalities.map((municipality) => {
+    const s = shiftMuniMap.get(municipality);
+    return {
+      municipality,
+      district: getDistrict(municipality),
+      requests: s?.requests ?? 0,
+      waiting: s?.waiting ?? 0,
+      inProgress: s?.inProgress ?? 0,
+      completed: s?.completed ?? 0,
+      availableCaregivers: cgMuniMap.get(municipality) ?? 0,
+      revenue: Number(s?.revenue ?? 0),
+    };
+  });
+
   return c.json({
     range: days,
     from,
@@ -132,6 +203,7 @@ adminOperations.get('/overview', validate('query', v.object({ range: v.optional(
     daily: series,
     byService: SHIFT_TIERS.map((tier) => ({ tier, requests: byService.find((s) => s.tier === tier)?.n ?? 0 })),
     byStatus: SHIFT_STATUSES.map((status) => ({ status, requests: byStatus.find((s) => s.status === status)?.n ?? 0 })),
+    byMunicipality,
     alerts: { waiting: waiting.map(alertRow), escalated: escalated.map(alertRow) },
   });
 });

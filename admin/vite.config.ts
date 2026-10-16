@@ -6,6 +6,7 @@ import react from '@vitejs/plugin-react';
 // keep VITE_API_BASE_URL empty so the production cookie also stays first-party.
 export default defineConfig({
   plugins: [react()],
+  css: { postcss: {} },
   server: {
     port: 5176,
     strictPort: true,

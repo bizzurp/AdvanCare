@@ -18,6 +18,7 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 
 ### P2 — Every service reaches staff
 - ✅ `service_requests` table + API for TeleHealth, RHU services, Triage, Prescription (with uploaded photo), Transport (2026-10-16).
+- ✅ Multi-provider support: doctors & transport drivers roster, candidate ranking, and assignment to TeleHealth & Transport requests with family notifications (2026-10-16).
 - ✅ App sends these instead of "Saved on device"; status, scheduled time and the care team's note shown back; family can withdraw before scheduling (2026-10-16).
 - ✅ Staff console: Service requests inbox, detail (health requests audited on open), review / schedule (date-time + note) / complete / cancel (reason), audited file viewing; family emailed on schedule and cancel (2026-10-16).
 - ✅ Uploads need sign-in, are checked for real JPEG/PNG/PDF content, recorded with their owner and linked to the request; `/storage/*` is owner-only (2026-10-16).

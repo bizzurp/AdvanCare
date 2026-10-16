@@ -1,8 +1,9 @@
 import { and, desc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/pg-core';
 import { Hono } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 import * as v from 'valibot';
-import { clientProfiles, idempotencyRecords, SERVICE_KINDS, serviceRequests, uploads } from '../db/schema';
+import { clientProfiles, idempotencyRecords, providers, SERVICE_KINDS, serviceRequests, uploads, users } from '../db/schema';
 import type { AppEnv } from '../env';
 import { ApiError } from '../lib/errors';
 import { validate } from '../lib/validation';
@@ -188,6 +189,8 @@ appServices.post('/service-requests', validate('json', ServiceRequestBody), asyn
   }
 });
 
+const providerUser = alias(users, 'provider_user');
+
 /** The family's own service requests, with staff's status, schedule and note. */
 appServices.get('/service-requests/mine', async (c) => {
   const rows = await c
@@ -202,13 +205,36 @@ appServices.get('/service-requests/mine', async (c) => {
       cancellationReason: serviceRequests.cancellationReason,
       updatedAt: serviceRequests.updatedAt,
       files: sql<number>`(select count(*)::int from ${uploads} where ${uploads.serviceRequestId} = ${serviceRequests.id})`,
+      assignedProviderId: providers.id,
+      assignedProviderType: providers.type,
+      assignedProviderName: providerUser.fullName,
+      assignedProviderSpecialty: providers.specialty,
+      assignedProviderVehicle: providers.vehicleType,
+      assignedProviderPlate: providers.plateNumber,
     })
     .from(serviceRequests)
     .innerJoin(clientProfiles, eq(clientProfiles.id, serviceRequests.clientId))
+    .leftJoin(providers, eq(providers.id, serviceRequests.assignedProviderId))
+    .leftJoin(providerUser, eq(providerUser.id, providers.userId))
     .where(eq(clientProfiles.userId, c.get('clientUserId')))
     .orderBy(desc(serviceRequests.createdAt))
     .limit(100);
-  return c.json({ requests: rows.map((r) => ({ ...r, ref: serviceRef(r.id) })) });
+  return c.json({
+    requests: rows.map(({ assignedProviderId, assignedProviderType, assignedProviderName, assignedProviderSpecialty, assignedProviderVehicle, assignedProviderPlate, ...r }) => ({
+      ...r,
+      ref: serviceRef(r.id),
+      assignedProvider: assignedProviderId
+        ? {
+            id: assignedProviderId,
+            type: assignedProviderType,
+            fullName: assignedProviderName,
+            specialty: assignedProviderSpecialty,
+            vehicleType: assignedProviderVehicle,
+            plateNumber: assignedProviderPlate,
+          }
+        : null,
+    })),
+  });
 });
 
 /** Families can withdraw a request staff haven't scheduled yet. */

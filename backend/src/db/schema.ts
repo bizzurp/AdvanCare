@@ -48,11 +48,15 @@ export const userRole = pgEnum('user_role', [
   'CLIENT',
   'FAMILY_SPONSOR',
   'CAREGIVER',
+  'DOCTOR',
+  'TRANSPORT_DRIVER',
   'BHW_PROXY',
   'COORDINATOR',
   'ADMIN',
   'SUPER_ADMIN',
 ]);
+
+export const providerType = pgEnum('provider_type', ['DOCTOR', 'TRANSPORT_DRIVER']);
 
 export const shiftTier = pgEnum('shift_tier', ['BGAY_HOME_300', 'CVMC_INSTITUTIONAL_500']);
 
@@ -91,7 +95,7 @@ export const users = pgTable(
     // One app account per email. Staff rows are separate (a staff member may also be a family member).
     uniqueIndex('users_app_email_uq')
       .on(sql`lower(${t.email})`)
-      .where(sql`${t.email} IS NOT NULL AND ${t.role} IN ('CLIENT', 'FAMILY_SPONSOR', 'CAREGIVER', 'BHW_PROXY', 'COORDINATOR')`),
+      .where(sql`${t.email} IS NOT NULL AND ${t.role} IN ('CLIENT', 'FAMILY_SPONSOR', 'CAREGIVER', 'DOCTOR', 'TRANSPORT_DRIVER', 'BHW_PROXY', 'COORDINATOR')`),
   ],
 );
 
@@ -172,6 +176,32 @@ export const caregivers = pgTable(
   (t) => [
     check('caregivers_average_rating_range', sql`${t.averageRating} IS NULL OR ${t.averageRating} BETWEEN 1 AND 5`),
     check('caregivers_total_shifts_nonnegative', sql`${t.totalShiftsCompleted} >= 0`),
+  ],
+);
+
+export const providers = pgTable(
+  'providers',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .unique()
+      .references(() => users.id, restrict),
+    type: providerType('type').notNull(),
+    municipality: varchar('municipality', { length: 100 }).notNull(),
+    barangay: varchar('barangay', { length: 100 }),
+    specialty: varchar('specialty', { length: 120 }),
+    licenseNumber: varchar('license_number', { length: 50 }),
+    vehicleType: varchar('vehicle_type', { length: 50 }),
+    plateNumber: varchar('plate_number', { length: 20 }),
+    isAvailable: boolean('is_available').notNull().default(true),
+    isAccredited: boolean('is_accredited').notNull().default(true),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    index('providers_type_municipality_idx').on(t.type, t.municipality),
+    index('providers_user_id_idx').on(t.userId),
   ],
 );
 
@@ -518,12 +548,14 @@ export const serviceRequests = pgTable(
     staffNote: text('staff_note'),
     cancellationReason: text('cancellation_reason'),
     handledByUserId: uuid('handled_by_user_id').references(() => users.id, restrict),
+    assignedProviderId: uuid('assigned_provider_id').references(() => providers.id, restrict),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
   (t) => [
     index('service_requests_client_idx').on(t.clientId),
     index('service_requests_status_created_idx').on(t.status, t.createdAt),
+    index('service_requests_assigned_provider_idx').on(t.assignedProviderId),
     check('service_requests_kind', sql`${t.kind} IN ('telehealth', 'rhu', 'triage', 'prescription', 'transport')`),
     check('service_requests_status', sql`${t.status} IN ('SUBMITTED', 'IN_REVIEW', 'SCHEDULED', 'COMPLETED', 'CANCELLED')`),
     check('service_requests_scheduled_has_time', sql`${t.status} <> 'SCHEDULED' OR ${t.scheduledAt} IS NOT NULL`),

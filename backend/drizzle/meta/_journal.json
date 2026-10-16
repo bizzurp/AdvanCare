@@ -36,6 +36,20 @@
       "when": 1792098156343,
       "tag": "0004_service_requests",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792162783976,
+      "tag": "0005_magical_pandemic",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792162796013,
+      "tag": "0006_confused_scalphunter",
+      "breakpoints": true
     }
   ]
 }

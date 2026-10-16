@@ -202,4 +202,30 @@ describe('scope helpers', () => {
     expect(csv).toContain(`"'=HYPERLINK(""x"")","a,b"`);
     expect(csv).toContain(',"line\nbreak"');
   });
+
+  it('correctly maps 29 Cagayan LGUs across 3 legislative districts', async () => {
+    const { CAGAYAN_MUNICIPALITIES, CAGAYAN_DISTRICTS, getDistrict } = await import('../src/staff/municipalities');
+    expect(CAGAYAN_MUNICIPALITIES.length).toBe(29);
+    expect(CAGAYAN_DISTRICTS['District 1']?.length).toBe(11);
+    expect(CAGAYAN_DISTRICTS['District 2']?.length).toBe(12);
+    expect(CAGAYAN_DISTRICTS['District 3']?.length).toBe(6);
+
+    const allDistrictLgus = [
+      ...(CAGAYAN_DISTRICTS['District 1'] ?? []),
+      ...(CAGAYAN_DISTRICTS['District 2'] ?? []),
+      ...(CAGAYAN_DISTRICTS['District 3'] ?? []),
+    ];
+    expect(allDistrictLgus.length).toBe(29);
+    expect(new Set(allDistrictLgus).size).toBe(29);
+
+    // Every municipality in CAGAYAN_MUNICIPALITIES has a valid district
+    for (const m of CAGAYAN_MUNICIPALITIES) {
+      expect(['District 1', 'District 2', 'District 3']).toContain(getDistrict(m));
+    }
+
+    expect(getDistrict('Tuguegarao City')).toBe('District 3');
+    expect(getDistrict('Aparri')).toBe('District 1');
+    expect(getDistrict('Sanchez-Mira')).toBe('District 2');
+    expect(getDistrict('Unknown City')).toBe('Unknown');
+  });
 });

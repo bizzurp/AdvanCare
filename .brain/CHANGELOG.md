@@ -1,5 +1,11 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-16] - Multi-select Municipality & District scoping for Super Admin dashboard
+- Added Cagayan 3 legislative districts mapping (29 LGUs) and `getDistrict` helper in `backend/src/staff/municipalities.ts`.
+- Extended `GET /overview?municipalities=...` with Super Admin filtering vs. regular Admin intersection scoping, input validation with `isKnownMunicipality`, and per-municipality operational breakdown (`byMunicipality`).
+- Created `MunicipalityFilter` popover in `admin/` with district group checkboxes, indeterminate state, search-aware toggles, keyboard accessibility (Escape, focusout), and two-way URL sync.
+- Integrated "Current data by municipality" table on the Super Admin dashboard with quick drilldown links to `/requests` and `/caregivers`.
+
 ## [2026-10-16] - Sign-in code resend
 - Bug: testers stopped getting new codes after ~5 requests; the server allowed 5 codes per email per hour (each new code also cancels the previous one). Raised `MAX_CODES_PER_HOUR` to 10 with a clearer message; the app now confirms "New code sent at … Only the code in the newest email works." API (bf2f581a…) and Pages `advancare-app` redeployed.
 

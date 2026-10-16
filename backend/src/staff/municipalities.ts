@@ -39,3 +39,53 @@ const KNOWN = new Set<string>(CAGAYAN_MUNICIPALITIES);
 export function isKnownMunicipality(name: string): boolean {
   return KNOWN.has(name);
 }
+
+/**
+ * The 3 Legislative Districts of Cagayan Province (29 LGUs total).
+ */
+export const CAGAYAN_DISTRICTS: Record<string, readonly string[]> = {
+  'District 1': [
+    'Alcala',
+    'Amulung',
+    'Aparri',
+    'Baggao',
+    'Buguey',
+    'Camalaniugan',
+    'Gattaran',
+    'Gonzaga',
+    'Lal-lo',
+    'Santa Ana',
+    'Santa Teresita',
+  ],
+  'District 2': [
+    'Abulug',
+    'Allacapan',
+    'Ballesteros',
+    'Calayan',
+    'Claveria',
+    'Lasam',
+    'Pamplona',
+    'Piat',
+    'Rizal',
+    'Sanchez-Mira',
+    'Santa Praxedes',
+    'Santo Niño',
+  ],
+  'District 3': [
+    'Enrile',
+    'Iguig',
+    'Peñablanca',
+    'Solana',
+    'Tuao',
+    'Tuguegarao City',
+  ],
+} as const;
+
+export function getDistrict(municipality: string): string {
+  for (const [district, list] of Object.entries(CAGAYAN_DISTRICTS)) {
+    if (list.includes(municipality)) {
+      return district;
+    }
+  }
+  return 'Unknown';
+}

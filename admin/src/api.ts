@@ -113,6 +113,17 @@ export interface AlertRow {
   municipality: string;
 }
 
+export interface MunicipalityOverview {
+  municipality: string;
+  district: string;
+  requests: number;
+  waiting: number;
+  inProgress: number;
+  completed: number;
+  availableCaregivers: number;
+  revenue: number;
+}
+
 export interface Overview {
   range: number;
   from: string;
@@ -137,6 +148,7 @@ export interface Overview {
   daily: { day: string; requests: number }[];
   byService: { tier: ShiftTier; requests: number }[];
   byStatus: { status: ShiftStatus; requests: number }[];
+  byMunicipality: MunicipalityOverview[];
   alerts: { waiting: AlertRow[]; escalated: AlertRow[] };
 }
 
@@ -409,7 +421,13 @@ export const api = {
   revokeSessions: (id: string) => request<{ ended: number; account: Account }>('POST', `/accounts/${id}/sessions/revoke`),
 
   // Operations (phase B) — always limited to the signed-in person's municipalities.
-  overview: (range: string) => request<Overview>('GET', `/overview?range=${range}`),
+  overview: (range: string, municipalities?: string[]) => {
+    const q = new URLSearchParams({ range });
+    if (municipalities !== undefined) {
+      q.set('municipalities', municipalities.join(','));
+    }
+    return request<Overview>('GET', `/overview?${q.toString()}`);
+  },
   requests: (filters: Record<string, string | undefined>) => request<Paged & { requests: RequestRow[] }>('GET', `/requests${query(filters)}`),
   request: (id: string) => request<RequestDetail>('GET', `/requests/${id}`),
   shifts: (date: string) => request<{ date: string; shifts: ShiftCard[] }>('GET', `/shifts?date=${date}`),

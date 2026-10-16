@@ -120,11 +120,36 @@ describe.runIf(run)('operations dashboards: role × scope', () => {
     expect(row?.metadata).toMatchObject({ table: 'requests', scope: ['Solana'] });
   });
 
-  it('scopes the overview numbers', async () => {
-    const admin = await (await get('/overview?range=90', ids.adminCookie)).json<{ kpis: { clientsRegistered: number }; daily: unknown[] }>();
-    const sup = await (await get('/overview?range=90', ids.superCookie)).json<{ kpis: { clientsRegistered: number } }>();
+  it('scopes the overview numbers and breakdowns by municipality', async () => {
+    const admin = await (await get('/overview?range=90', ids.adminCookie)).json<{ kpis: { clientsRegistered: number }; daily: unknown[]; byMunicipality: { municipality: string; district: string }[] }>();
+    const sup = await (await get('/overview?range=90', ids.superCookie)).json<{ kpis: { clientsRegistered: number }; byMunicipality: { municipality: string; district: string }[] }>();
     expect(admin.daily).toHaveLength(90);
     expect(sup.kpis.clientsRegistered).toBeGreaterThan(admin.kpis.clientsRegistered);
+    // Super Admin gets all 29 LGUs by default
+    expect(sup.byMunicipality).toHaveLength(29);
+    // Scoped Admin gets only their assigned municipality
+    expect(admin.byMunicipality).toHaveLength(1);
+    expect(admin.byMunicipality[0]?.municipality).toBe('Solana');
+    expect(admin.byMunicipality[0]?.district).toBe('District 3');
+
+    // Super Admin filtering to specific subset
+    const filteredSup = await (await get('/overview?range=90&municipalities=Solana,Tuguegarao%20City', ids.superCookie)).json<{ byMunicipality: { municipality: string }[] }>();
+    expect(filteredSup.byMunicipality).toHaveLength(2);
+    expect(filteredSup.byMunicipality.map((m) => m.municipality).sort()).toEqual(['Solana', 'Tuguegarao City']);
+
+    // Admin filtering to out-of-scope municipality yields empty intersection
+    const outOfScopeAdmin = await (await get('/overview?range=90&municipalities=Baggao', ids.adminCookie)).json<{ kpis: { requests: number }; byMunicipality: unknown[] }>();
+    expect(outOfScopeAdmin.byMunicipality).toHaveLength(0);
+    expect(outOfScopeAdmin.kpis.requests).toBe(0);
+
+    // Empty municipalities param yields 0 results and empty breakdown
+    const emptySup = await (await get('/overview?range=90&municipalities=', ids.superCookie)).json<{ kpis: { requests: number }; byMunicipality: unknown[] }>();
+    expect(emptySup.byMunicipality).toHaveLength(0);
+    expect(emptySup.kpis.requests).toBe(0);
+
+    // Unknown/fictitious municipality strings are filtered out
+    const fictitious = await (await get('/overview?range=90&municipalities=Atlantis,Tuguegarao', ids.superCookie)).json<{ byMunicipality: unknown[] }>();
+    expect(fictitious.byMunicipality).toHaveLength(0);
   });
 
   it('keeps account management Super Admin only, and rejects suspended staff everywhere', async () => {

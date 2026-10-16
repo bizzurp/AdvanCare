@@ -1424,3 +1424,164 @@ a.barlist-row:hover .barlist-fill {
   display: grid;
   gap: var(--s8);
 }
+
+/* ---------- Municipality filter popover ---------- */
+.muni-filter-wrap {
+  position: relative;
+  display: inline-block;
+}
+.muni-filter-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s8);
+  font-weight: 500;
+  height: 38px;
+  padding: 0 var(--s12);
+  border-radius: 9px;
+  font-size: 13px;
+}
+.muni-filter-trigger.active {
+  border-color: var(--teal);
+  background: var(--paper);
+}
+.muni-arrow {
+  font-size: 11px;
+  color: var(--muted);
+  transition: transform var(--motion-fade);
+  line-height: 1;
+}
+.muni-arrow-up {
+  transform: rotate(180deg);
+}
+.muni-filter-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 100;
+  width: 440px;
+  max-width: 90vw;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--card-r);
+  box-shadow: 0 8px 30px rgba(23, 62, 55, 0.12);
+  padding: var(--s16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s12);
+}
+.muni-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s8);
+}
+.muni-filter-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.muni-filter-actions {
+  display: flex;
+  gap: var(--s4);
+}
+.muni-search-wrap .input {
+  width: 100%;
+  height: 34px;
+  font-size: 13px;
+}
+.muni-filter-body {
+  max-height: 360px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s12);
+  padding-right: 2px;
+}
+.muni-district-group {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--paper);
+}
+.muni-district-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--mint);
+  border-bottom: 1px solid var(--line);
+  user-select: none;
+}
+.muni-district-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.muni-district-title input {
+  margin: 0;
+  accent-color: var(--teal);
+  cursor: pointer;
+}
+.muni-district-toggle {
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 4px;
+}
+.muni-district-toggle:hover {
+  color: var(--ink);
+  background: rgba(23, 62, 55, 0.05);
+}
+.muni-district-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+  padding: 10px 12px;
+  background: var(--white);
+}
+.muni-district-list .check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+  margin: 0;
+}
+.muni-district-list .check input {
+  margin: 0;
+  accent-color: var(--teal);
+  cursor: pointer;
+}
+.center-text {
+  text-align: center;
+  padding: var(--s16) 0;
+}
+.btn-sm {
+  height: 28px;
+  padding: 0 var(--s8);
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+}
+.table-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+th.table-num {
+  text-align: right;
+}
+.table-actions-cell {
+  display: flex;
+  gap: var(--s8);
+  align-items: center;
+  white-space: nowrap;
+}

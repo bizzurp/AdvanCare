@@ -118,7 +118,7 @@ export type VehicleCategory = 'public' | 'private';
 
 export const VEHICLES: Record<VehicleCategory, { id: string; title: string; desc: string; icon: IconName }[]> = {
   public: [
-    { id: 'tricycle', title: 'Tricycle', desc: 'Short trips within the barangay or town', icon: 'car' },
+    { id: 'tricycle', title: 'Tricycle', desc: 'Short trips within the barangay or town', icon: 'tricycle' },
     { id: 'multicab', title: 'Multicab or jeepney', desc: 'Shared ride on regular routes', icon: 'bus' },
     { id: 'van-shared', title: 'Shared van', desc: 'Scheduled trips to Tuguegarao facilities', icon: 'bus' },
   ],

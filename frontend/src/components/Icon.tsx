@@ -41,6 +41,7 @@ export type IconName =
   | 'shield-check'
   | 'stethoscope'
   | 'transmission'
+  | 'tricycle'
   | 'user-heart'
   | 'user-rounded'
   | 'users-group-rounded'

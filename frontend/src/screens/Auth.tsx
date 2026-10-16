@@ -215,6 +215,7 @@ export function EmailCode({ mode, onVerified }: { mode: 'sign-in' | 'register'; 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+  const [sentNote, setSentNote] = useState('');
   const otpRef = useRef<HTMLInputElement>(null);
   const address = email.trim().toLowerCase();
 
@@ -234,12 +235,16 @@ export function EmailCode({ mode, onVerified }: { mode: 'sign-in' | 'register'; 
       return;
     }
     setError('');
+    setSentNote('');
     setLoading(true);
+    const resend = step === 'otp';
     try {
       await requestOtp(address);
       setStep('otp');
       setOtp('');
       setCooldown(60);
+      // Only the newest code works; say so, so people don't type an older one.
+      if (resend) setSentNote(`New code sent at ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}. Only the code in the newest email works.`);
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'Something went wrong.');
     } finally {
@@ -320,6 +325,11 @@ export function EmailCode({ mode, onVerified }: { mode: 'sign-in' | 'register'; 
         error={error}
         hint="Can’t find it? Check your Spam or Promotions folder. The code expires in 10 minutes."
       />
+      {sentNote && (
+        <p className="t-small t-teal" role="status">
+          {sentNote}
+        </p>
+      )}
       <Button type="submit" loading={loading} disabled={otp.length !== 6}>
         Verify and continue
       </Button>

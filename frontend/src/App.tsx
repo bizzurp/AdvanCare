@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { CaregiverHome, CaregiverShiftScreen } from './screens/CaregiverMode';
-import { HashRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import { HashRouter, Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from './state/AppState';
 import { Help, Onboarding, SignIn, Welcome } from './screens/Auth';
 import { Register } from './screens/Register';
@@ -32,6 +33,44 @@ function RouteFocus() {
   return null;
 }
 
+/** Screens where the phone's Back button closes the app (nothing to go back to). */
+const EXIT_SCREENS = ['/home', '/caregiver', '/welcome', '/sign-in'];
+/** Main tabs: Back returns to Home instead of closing the app. */
+const TAB_SCREENS = ['/services', '/reports', '/assistant', '/more', '/requests'];
+
+/**
+ * Android's hardware Back button. Without this the native app closes on every press;
+ * now it goes back a screen like the app's own Back arrow, and only exits from Home.
+ */
+function HardwareBack() {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const path = useRef(pathname);
+  path.current = pathname;
+  useEffect(() => {
+    if (Capacitor.getPlatform() !== 'android') return;
+    let remove: (() => void) | undefined;
+    let stop = false;
+    void import('@capacitor/app').then(({ App: NativeApp }) =>
+      NativeApp.addListener('backButton', ({ canGoBack }) => {
+        const p = path.current;
+        if (EXIT_SCREENS.includes(p)) void NativeApp.exitApp();
+        else if (TAB_SCREENS.includes(p)) navigate('/home');
+        else if (canGoBack) navigate(-1);
+        else navigate('/home', { replace: true });
+      }).then((h) => {
+        if (stop) void h.remove();
+        else remove = () => void h.remove();
+      }),
+    );
+    return () => {
+      stop = true;
+      remove?.();
+    };
+  }, [navigate]);
+  return null;
+}
+
 function RequireAuth() {
   const { session } = useApp();
   const location = useLocation();
@@ -48,6 +87,7 @@ export default function App() {
   return (
     <HashRouter>
       <RouteFocus />
+      <HardwareBack />
       <ErrorBoundary>
       <Routes>
         <Route path="/" element={<Entry />} />

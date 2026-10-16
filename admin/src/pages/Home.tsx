@@ -1,11 +1,13 @@
+import { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api, type Account, type AlertRow, type AuditEntry } from '../api';
 import { useMe } from '../auth';
 import { BarList, ColumnChart } from '../components/charts';
 import { Icon } from '../components/Icon';
+import { MunicipalityFilter, CAGAYAN_MUNICIPALITIES } from '../components/MunicipalityFilter';
 import { ScopeNote, StatusBadge } from '../components/ops';
 import { Badge, Button, ErrorNotice, Loading, Notice, PageHeader, useLoad } from '../components/ui';
-import { actionLabel, clock, day, isFailureAction, money, num, personName, relative, TIER_LABEL, todayManila, waitedFor } from '../format';
+import { actionLabel, clock, day, isFailureAction, money, num, personName, relative, scopeLabel, TIER_LABEL, todayManila, waitedFor } from '../format';
 
 function greeting(): string {
   const hour = Number(new Date().toLocaleString('en-PH', { timeZone: 'Asia/Manila', hour: 'numeric', hour12: false }));
@@ -21,9 +23,42 @@ const RANGES = [
 export function Home() {
   const me = useMe();
   const isSuper = me.role === 'SUPER_ADMIN';
+  const isMultiMuni = isSuper || (Array.isArray(me.municipalities) && me.municipalities.length > 1);
+  const availableMunicipalities = useMemo(
+    () => (me.municipalities === 'ALL' ? CAGAYAN_MUNICIPALITIES : me.municipalities),
+    [me.municipalities],
+  );
+
   const [params, setParams] = useSearchParams();
   const range = RANGES.some((r) => r.value === params.get('range')) ? params.get('range')! : '30';
-  const overview = useLoad(() => api.overview(range), [range]);
+  const muniParam = params.get('municipalities');
+
+  const selectedMunicipalities = useMemo(() => {
+    if (muniParam === null) return [...availableMunicipalities];
+    if (!muniParam) return [];
+    const requested = muniParam.split(',').map((s) => s.trim()).filter(Boolean);
+    return requested.filter((m) => availableMunicipalities.includes(m));
+  }, [muniParam, availableMunicipalities]);
+
+  const handleMunicipalitiesChange = (next: string[]) => {
+    setParams(
+      (prev) => {
+        const nextParams = new URLSearchParams(prev);
+        if (next.length === availableMunicipalities.length) {
+          nextParams.delete('municipalities');
+        } else {
+          nextParams.set('municipalities', next.join(','));
+        }
+        return nextParams;
+      },
+      { replace: true },
+    );
+  };
+
+  const overview = useLoad(
+    () => api.overview(range, muniParam !== null ? selectedMunicipalities : undefined),
+    [range, muniParam],
+  );
   const activity = useLoad(() => api.audit({}), []);
   const accounts = useLoad(() => (isSuper ? api.accounts().then((r) => r.accounts) : Promise.resolve([] as Account[])), [isSuper]);
   const o = overview.data;
@@ -35,7 +70,7 @@ export function Home() {
         title={`${greeting()}, ${personName(me).split(' ')[0]}`}
         subtitle={
           <>
-            Operations in <ScopeNote municipalities={me.municipalities} />. Figures update when you open this page.
+            Operations in {muniParam !== null ? scopeLabel(selectedMunicipalities) : <ScopeNote municipalities={me.municipalities} />}. Figures update when you open this page.
           </>
         }
       />
@@ -46,14 +81,35 @@ export function Home() {
         </Notice>
       ) : null}
 
-      <div className="filters" role="group" aria-label="Date range">
+      <div className="filters" role="group" aria-label="Dashboard filters">
         <div className="segmented">
           {RANGES.map((r) => (
-            <button key={r.value} type="button" aria-pressed={range === r.value} onClick={() => setParams({ range: r.value }, { replace: true })}>
+            <button
+              key={r.value}
+              type="button"
+              aria-pressed={range === r.value}
+              onClick={() =>
+                setParams(
+                  (prev) => {
+                    const next = new URLSearchParams(prev);
+                    next.set('range', r.value);
+                    return next;
+                  },
+                  { replace: true },
+                )
+              }
+            >
               {r.label}
             </button>
           ))}
         </div>
+        {isMultiMuni ? (
+          <MunicipalityFilter
+            value={selectedMunicipalities}
+            onChange={handleMunicipalitiesChange}
+            availableMunicipalities={availableMunicipalities}
+          />
+        ) : null}
         <Button variant="quiet" onClick={() => void overview.reload()} busy={overview.loading && !!o}>
           Refresh
         </Button>
@@ -126,6 +182,122 @@ export function Home() {
             <p className="muted small">
               {num(o.kpis.clientsServed)} of {num(o.kpis.clientsRegistered)} registered clients had a request in this period.
             </p>
+          </section>
+
+          <section className="card">
+            <div className="card-head">
+              <div>
+                <h2>Current data by municipality</h2>
+                <p className="muted small">
+                  Operational figures across {o.byMunicipality.length} {o.byMunicipality.length === 1 ? 'municipality' : 'municipalities'}.
+                </p>
+              </div>
+            </div>
+            {o.byMunicipality.length === 0 ? (
+              <p className="muted">No municipalities selected or available in your current scope.</p>
+            ) : (
+              <div className="table-wrap">
+                <table className="table table-compact">
+                  <thead>
+                    <tr>
+                      <th>Municipality</th>
+                      <th>District</th>
+                      <th className="table-num">Waiting</th>
+                      <th className="table-num">In Progress</th>
+                      <th className="table-num">Total Requests</th>
+                      <th className="table-num">Available Caregivers</th>
+                      <th className="table-num">Revenue</th>
+                      <th aria-label="Quick drilldowns">Quick Drilldowns</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {o.byMunicipality.map((m) => (
+                      <tr key={m.municipality}>
+                        <td>
+                          <Link
+                            to={`/requests?municipality=${encodeURIComponent(m.municipality)}&from=${from}`}
+                            className="strong-link"
+                          >
+                            {m.municipality}
+                          </Link>
+                        </td>
+                        <td>
+                          <Badge tone="neutral">{m.district}</Badge>
+                        </td>
+                        <td className="table-num">
+                          {m.waiting > 0 ? (
+                            <Link
+                              to={`/requests?municipality=${encodeURIComponent(m.municipality)}&status=WAITING`}
+                              aria-label={`${num(m.waiting)} waiting requests in ${m.municipality}`}
+                            >
+                              <Badge tone="warn">{num(m.waiting)}</Badge>
+                            </Link>
+                          ) : (
+                            <span className="muted">0</span>
+                          )}
+                        </td>
+                        <td className="table-num">
+                          {m.inProgress > 0 ? (
+                            <Link
+                              to={`/requests?municipality=${encodeURIComponent(m.municipality)}&status=IN_PROGRESS`}
+                              aria-label={`${num(m.inProgress)} in-progress requests in ${m.municipality}`}
+                            >
+                              <Badge tone="info">{num(m.inProgress)}</Badge>
+                            </Link>
+                          ) : (
+                            <span className="muted">0</span>
+                          )}
+                        </td>
+                        <td className="table-num">
+                          {m.requests > 0 ? (
+                            <Link
+                              to={`/requests?municipality=${encodeURIComponent(m.municipality)}&from=${from}`}
+                              aria-label={`${num(m.requests)} total requests in ${m.municipality}`}
+                            >
+                              {num(m.requests)}
+                            </Link>
+                          ) : (
+                            <span className="muted">0</span>
+                          )}
+                        </td>
+                        <td className="table-num">
+                          {m.availableCaregivers > 0 ? (
+                            <Link
+                              to={`/caregivers?municipality=${encodeURIComponent(m.municipality)}&accredited=yes&available=yes`}
+                              aria-label={`${num(m.availableCaregivers)} available caregivers in ${m.municipality}`}
+                            >
+                              <Badge tone="good">{num(m.availableCaregivers)}</Badge>
+                            </Link>
+                          ) : (
+                            <span className="muted">0</span>
+                          )}
+                        </td>
+                        <td className="table-num">{money(m.revenue)}</td>
+                        <td>
+                          <div className="table-actions-cell">
+                            <Link
+                              to={`/requests?municipality=${encodeURIComponent(m.municipality)}`}
+                              className="link-arrow small"
+                              aria-label={`View requests in ${m.municipality}`}
+                            >
+                              Requests
+                            </Link>
+                            <span className="muted" aria-hidden="true">·</span>
+                            <Link
+                              to={`/caregivers?municipality=${encodeURIComponent(m.municipality)}`}
+                              className="link-arrow small"
+                              aria-label={`View caregivers in ${m.municipality}`}
+                            >
+                              Caregivers
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </section>
         </div>
       )}

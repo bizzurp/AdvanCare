@@ -1,5 +1,8 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-16] - Android hardware Back button
+- Bug: the native Android app closed on every press of the phone's Back button (no Capacitor App plugin). Added `@capacitor/app` and `HardwareBack` in `frontend/src/App.tsx`: Back goes to the previous screen, main tabs return to Home, and only Home / caregiver home / welcome / sign-in close the app. Verified on the Pixel 9 emulator (register → Back → sign-in; Back on sign-in closes). Phones need a new APK build to get it.
+
 ## [2026-10-16] - Live prototype on the demo branch
 - Owner decision: the live API serves the Neon demo branch so reviewers see the fictional demo data. New Hyperdrive `advancare-neon-demo` (`953cafd8…`, caching off) is bound in `[env.production]`; production config `11c3b46c…` kept in a comment for switching back. API redeployed (version 88790c69…); Cloudflare Pages `advancare-app` and `advancare-admin` republished from current `main`; Vercel sites rebuilt from the push.
 - Verified: health via both console proxies (production env, Hyperdrive), live API returns a demo-branch-only client, all four sites serve the new build (no demo code, live API URL), console proxy tests pass.

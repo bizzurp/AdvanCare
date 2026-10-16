@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
   ActionBar,
@@ -20,10 +20,10 @@ import {
   TextArea,
   TextField,
 } from '../components/ui';
-import { DEPENDENCIES, LANGUAGES, MUNICIPALITIES, PAYMENT_METHODS, PLANS, SCOPE_LABELS, serviceIcon, serviceTitle } from '../data/catalog';
+import { CONDITIONS, DEPENDENCIES, LANGUAGES, MOBILITY, MUNICIPALITIES, PAYMENT_METHODS, PLANS, SCOPE_LABELS, serviceIcon, serviceTitle } from '../data/catalog';
 import { DEMO_BARANGAYS } from '../data/demo';
 import type { DelegationScope, FamilyMember } from '../data/types';
-import { isDemoMode } from '../services/api';
+import { ApiError, getAccount, updateAccount } from '../services/api';
 import { useApp } from '../state/AppState';
 import { formatPhone, normalizeLocal } from './Auth';
 import { planStatusText } from './Main';
@@ -83,7 +83,7 @@ export function Profile({ tab }: { tab: 'client' | 'family' }) {
               <h3 className="t-section" id="pi">
                 Personal information
               </h3>
-              <DetailRow icon="user-rounded" label="Age & gender" value={`${age(profile.dateOfBirth)} years old · ${profile.gender}`} />
+              <DetailRow icon="user-rounded" label="Age & gender" value={[profile.dateOfBirth ? `${age(profile.dateOfBirth)} years old` : '', profile.gender].filter(Boolean).join(' · ') || 'Not recorded'} />
               <DetailRow icon="map-point" label="Home address" value={`${profile.sitio ? profile.sitio + ', ' : ''}Brgy. ${profile.barangay}, ${profile.municipality}, Cagayan`} />
               <DetailRow icon="map-point-hospital" label="Landmark directions" value={profile.landmarkNotes} />
               <DetailRow icon="phone" label="Contact number" value={formatPhone(profile.phone)} />
@@ -151,14 +151,25 @@ export function Profile({ tab }: { tab: 'client' | 'family' }) {
 export function FamilyMemberScreen() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { profile, updateProfile } = useApp();
+  const { profile, saveProfile } = useApp();
   const existing = profile.family.find((m) => m.id === id);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const isNew = id === 'new';
   const [m, setM] = useState<FamilyMember>(
     existing ?? { id: `fam-${Date.now()}`, name: '', relationship: '', phone: '', isPrimary: profile.family.length === 0, isRemoteSponsor: false, scopes: ['SCOPE_CARE_NOTES_VIEW', 'SCOPE_FINANCIAL_SPONSOR'] },
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
   if (!existing && !isNew) return <Navigate to="/profile/family" replace />;
+
+  const persist = async (family: FamilyMember[]) => {
+    setSaving(true);
+    setSaveError('');
+    const err = await saveProfile({ family });
+    setSaving(false);
+    if (err) setSaveError(err);
+    else navigate('/profile/family', { replace: true });
+  };
 
   const save = () => {
     const e: Record<string, string> = {};
@@ -171,8 +182,7 @@ export function FamilyMemberScreen() {
     const saved = { ...m, phone: `+63${local}` };
     let family = isNew ? [...profile.family, saved] : profile.family.map((x) => (x.id === m.id ? saved : x));
     if (saved.isPrimary) family = family.map((x) => ({ ...x, isPrimary: x.id === saved.id }));
-    updateProfile({ family });
-    navigate('/profile/family', { replace: true });
+    void persist(family);
   };
   const toggle = (s: DelegationScope, v: boolean) => setM({ ...m, scopes: v ? [...m.scopes, s] : m.scopes.filter((x) => x !== s) });
 
@@ -193,66 +203,175 @@ export function FamilyMemberScreen() {
             <Checkbox key={s} label={SCOPE_LABELS[s].title} desc={SCOPE_LABELS[s].desc} checked={m.scopes.includes(s)} onChange={(v) => toggle(s, v)} />
           ))}
         </fieldset>
-        {isDemoMode && <DependencyNote>Family delegation (POST /api/v1/clients/:id/family) is not deployed; changes are saved on this device only.</DependencyNote>}
+        {saveError && <Banner tone="error">{saveError}</Banner>}
         {!isNew && (
-          <Button
-            variant="danger"
-            onClick={() => {
-              updateProfile({ family: profile.family.filter((x) => x.id !== m.id) });
-              navigate('/profile/family', { replace: true });
-            }}
-          >
+          <Button variant="danger" disabled={saving} onClick={() => void persist(profile.family.filter((x) => x.id !== m.id))}>
             Remove from circle of care
           </Button>
         )}
       </div>
       <ActionBar>
-        <Button onClick={save}>{isNew ? 'Add family member' : 'Save changes'}</Button>
+        <Button onClick={save} loading={saving}>
+          {isNew ? 'Add family member' : 'Save changes'}
+        </Button>
       </ActionBar>
     </Screen>
   );
 }
 
 // ---------------- 22 / Edit profile ----------------
+/** Barangay picker for known pilot municipalities; a free-text field elsewhere. */
+export function BarangayField({ municipality, value, onChange, error }: { municipality: string; value: string; onChange: (v: string) => void; error?: string }) {
+  const list = DEMO_BARANGAYS[municipality];
+  return list ? (
+    <SelectField label="Barangay" placeholder="Choose barangay" options={value && !list.includes(value) ? [value, ...list] : list} value={value} onChange={(e) => onChange(e.target.value)} error={error} />
+  ) : (
+    <TextField label="Barangay" value={value} onChange={(e) => onChange(e.target.value)} error={error} />
+  );
+}
+
 export function EditProfile() {
   const navigate = useNavigate();
-  const { profile, updateProfile } = useApp();
+  const { profile, saveProfile } = useApp();
   const [f, setF] = useState({
     fullName: profile.fullName,
+    dateOfBirth: profile.dateOfBirth,
+    gender: profile.gender,
+    philhealthId: profile.philhealthId ?? '',
     phone: profile.phone.replace(/^\+63/, ''),
     municipality: profile.municipality,
     barangay: profile.barangay,
     sitio: profile.sitio,
     landmarkNotes: profile.landmarkNotes,
     primaryLanguage: profile.primaryLanguage,
+    conditions: profile.conditions,
+    otherCondition: '',
+    mobility: profile.mobility,
+    allergies: profile.allergies === 'None known' ? '' : profile.allergies,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const save = () => {
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
+  const conditionOptions = [...new Set([...CONDITIONS, ...f.conditions])];
+  const save = async () => {
     const e: Record<string, string> = {};
     if (f.fullName.trim().length < 2) e.fullName = 'Enter the full name.';
+    if (f.dateOfBirth && new Date(f.dateOfBirth) > new Date()) e.dateOfBirth = 'Date of birth can’t be in the future.';
     if (!/^9\d{9}$/.test(normalizeLocal(f.phone))) e.phone = 'Enter a Philippine mobile number, like 0917 123 4567.';
-    if (!f.barangay) e.barangay = 'Choose a barangay.';
+    if (f.barangay.trim().length < 2) e.barangay = 'Choose a barangay.';
     if (f.landmarkNotes.trim().length < 5) e.landmarkNotes = 'Describe a landmark so caregivers can find the home.';
     setErrors(e);
     if (Object.keys(e).length) return;
-    updateProfile({ ...f, fullName: f.fullName.trim(), phone: `+63${normalizeLocal(f.phone)}` });
-    navigate('/profile', { replace: true });
+    const { otherCondition, ...rest } = f;
+    const conditions = otherCondition.trim() ? [...f.conditions, otherCondition.trim()] : f.conditions;
+    setSaving(true);
+    setSaveError('');
+    const err = await saveProfile({
+      ...rest,
+      conditions,
+      fullName: f.fullName.trim(),
+      barangay: f.barangay.trim(),
+      philhealthId: f.philhealthId.trim() || undefined,
+      allergies: f.allergies.trim() || 'None known',
+      phone: `+63${normalizeLocal(f.phone)}`,
+    });
+    setSaving(false);
+    if (err) setSaveError(err);
+    else navigate('/profile', { replace: true });
   };
   return (
     <Screen>
       <PageHeader title="Edit client information" />
       <div className="screen-body stack gap-20">
-        <h2 className="t-h2">Review your personal and contact details.</h2>
+        <h2 className="t-h2">Review personal, address and health details.</h2>
+        <h3 className="t-section">Personal</h3>
         <TextField label="Full name" value={f.fullName} onChange={(e) => setF({ ...f, fullName: e.target.value })} error={errors.fullName} />
+        <TextField label="Date of birth" type="date" max={new Date().toISOString().slice(0, 10)} value={f.dateOfBirth} onChange={(e) => setF({ ...f, dateOfBirth: e.target.value })} error={errors.dateOfBirth} />
+        <SelectField label="Gender" placeholder="Choose" options={['Female', 'Male', 'Prefer not to say']} value={f.gender} onChange={(e) => setF({ ...f, gender: e.target.value })} />
+        <TextField label="PhilHealth ID (optional)" inputMode="numeric" value={f.philhealthId} onChange={(e) => setF({ ...f, philhealthId: e.target.value })} />
         <TextField label="Mobile number" lead="+63" inputMode="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} error={errors.phone} />
+        <SelectField label="Primary language" options={LANGUAGES} value={f.primaryLanguage} onChange={(e) => setF({ ...f, primaryLanguage: e.target.value })} />
+        <h3 className="t-section">Address</h3>
         <SelectField label="Municipality" options={MUNICIPALITIES} value={f.municipality} onChange={(e) => setF({ ...f, municipality: e.target.value, barangay: '' })} />
-        <SelectField label="Barangay" placeholder="Choose barangay" options={DEMO_BARANGAYS[f.municipality] ?? []} value={f.barangay} onChange={(e) => setF({ ...f, barangay: e.target.value })} error={errors.barangay} />
+        <BarangayField municipality={f.municipality} value={f.barangay} onChange={(barangay) => setF({ ...f, barangay })} error={errors.barangay} />
         <TextField label="Sitio or purok" value={f.sitio} onChange={(e) => setF({ ...f, sitio: e.target.value })} />
         <TextArea label="Landmark directions" value={f.landmarkNotes} onChange={(e) => setF({ ...f, landmarkNotes: e.target.value })} error={errors.landmarkNotes} />
-        <SelectField label="Primary language" options={LANGUAGES} value={f.primaryLanguage} onChange={(e) => setF({ ...f, primaryLanguage: e.target.value })} />
+        <h3 className="t-section">Health background</h3>
+        <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
+          <legend className="field-label">Long-term conditions</legend>
+          {conditionOptions.map((c) => (
+            <Checkbox key={c} label={c} checked={f.conditions.includes(c)} onChange={(v) => setF({ ...f, conditions: v ? [...f.conditions, c] : f.conditions.filter((x) => x !== c) })} />
+          ))}
+        </fieldset>
+        <TextField label="Other condition (optional)" value={f.otherCondition} onChange={(e) => setF({ ...f, otherCondition: e.target.value })} />
+        <SelectField label="Mobility" placeholder="Choose" options={MOBILITY} value={f.mobility} onChange={(e) => setF({ ...f, mobility: e.target.value })} />
+        <TextField label="Drug or food allergies (optional)" value={f.allergies} onChange={(e) => setF({ ...f, allergies: e.target.value })} />
+        {saveError && <Banner tone="error">{saveError}</Banner>}
       </div>
       <ActionBar>
-        <Button onClick={save}>Save changes</Button>
+        <Button onClick={() => void save()} loading={saving}>
+          Save changes
+        </Button>
+      </ActionBar>
+    </Screen>
+  );
+}
+
+// ---------------- Account details (the signed-in person) ----------------
+export function AccountDetails() {
+  const navigate = useNavigate();
+  const { session, account, setAccount } = useApp();
+  const [f, setF] = useState({ fullName: account?.fullName ?? '', phone: (account?.phoneNumber ?? '').replace(/^\+63/, '') });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<{ tone: 'error' | 'info'; text: string } | null>(null);
+  const token = session?.accessToken;
+
+  // Fresh copy from the server (another phone may have changed it).
+  useEffect(() => {
+    if (!token) return;
+    getAccount(token)
+      .then((a) => {
+        setAccount(a);
+        setF({ fullName: a.fullName ?? '', phone: (a.phoneNumber ?? '').replace(/^\+63/, '') });
+      })
+      .catch(() => undefined);
+  }, [token, setAccount]);
+
+  const save = async () => {
+    const e: Record<string, string> = {};
+    if (f.fullName.trim().length < 2) e.fullName = 'Enter your full name.';
+    const local = normalizeLocal(f.phone);
+    if (f.phone.trim() && !/^9\d{9}$/.test(local)) e.phone = 'Enter a Philippine mobile number, like 0917 123 4567.';
+    setErrors(e);
+    if (Object.keys(e).length || !token) return;
+    setSaving(true);
+    setMessage(null);
+    try {
+      setAccount(await updateAccount(token, { fullName: f.fullName.trim(), phoneNumber: f.phone.trim() ? `+63${local}` : '' }));
+      setMessage({ tone: 'info', text: 'Your account details are saved.' });
+    } catch (err) {
+      setMessage({ tone: 'error', text: err instanceof ApiError ? err.message : 'Could not save. Try again.' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Screen>
+      <PageHeader title="Account details" back={() => navigate('/more')} />
+      <div className="screen-body stack gap-20">
+        <h2 className="t-h2">The person using this app.</h2>
+        <DetailRow icon="user-rounded" label="Email (used to sign in)" value={account?.email ?? session?.email ?? '—'} />
+        <TextField label="Your full name" value={f.fullName} onChange={(e) => setF({ ...f, fullName: e.target.value })} error={errors.fullName} />
+        <TextField label="Your mobile number (optional)" lead="+63" inputMode="tel" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} error={errors.phone} />
+        <p className="t-caption t-muted">To use a different email, sign out and sign in with the new one.</p>
+        {message && <Banner tone={message.tone}>{message.text}</Banner>}
+      </div>
+      <ActionBar>
+        <Button onClick={() => void save()} loading={saving}>
+          Save account details
+        </Button>
       </ActionBar>
     </Screen>
   );
@@ -391,7 +510,7 @@ export function PlanEnroll() {
 
 // ---------------- Settings ----------------
 export function Settings() {
-  const { prefs, setPrefs, session, setRole, resetDemo } = useApp();
+  const { prefs, setPrefs } = useApp();
   return (
     <Screen nav="more">
       <PageHeader title="Settings" />
@@ -417,24 +536,6 @@ export function Settings() {
           <Checkbox label="SMS updates to family" desc="Send shift summaries to family who have permission" checked={prefs.familySmsUpdates} onChange={(v) => setPrefs({ familySmsUpdates: v })} />
           <Checkbox label="Request reminders" desc="Remind me before scheduled visits and trips" checked={prefs.requestReminders} onChange={(v) => setPrefs({ requestReminders: v })} />
         </section>
-        {isDemoMode && session && (
-          <section className="stack gap-12">
-            <h2 className="t-section">Demo controls</h2>
-            <p className="t-caption t-muted">Switch roles to preview operations reports. Real roles come from the signed-in account.</p>
-            <Segmented
-              label="Demo role"
-              value={session.role}
-              onChange={setRole}
-              options={[
-                { value: 'household', label: 'Household' },
-                { value: 'coordinator', label: 'Coordinator' },
-              ]}
-            />
-            <Button variant="secondary" onClick={resetDemo}>
-              Reset demo data
-            </Button>
-          </section>
-        )}
         <section className="stack gap-12">
           <h2 className="t-section">Privacy</h2>
           <DependencyNote title="Device storage">{DEPENDENCIES.storage}</DependencyNote>

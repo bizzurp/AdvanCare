@@ -136,3 +136,30 @@ auth.post('/auth/sign-out', async (c) => {
   // 200 + JSON (not 204): the Workers test runner never exits after a bodiless 204.
   return c.json({ signedOut: true });
 });
+
+const AccountPatch = v.strictObject({
+  fullName: v.optional(v.pipe(v.string(), v.trim(), v.minLength(2, 'Enter your full name.'), v.maxLength(255))),
+  /** Philippine mobile in +63 format, or '' to remove it. */
+  phoneNumber: v.optional(v.union([v.literal(''), v.pipe(v.string(), v.trim(), v.regex(/^\+639\d{9}$/, 'Enter a Philippine mobile number, like 0917 123 4567.'))])),
+});
+
+/** The signed-in person edits their own account name and mobile number (the email is how they sign in). */
+auth.patch('/auth/me', requireClient, validate('json', AccountPatch), async (c) => {
+  const body = c.req.valid('json');
+  const db = c.get('db');
+  const userId = c.get('clientUserId');
+  const set: Partial<typeof users.$inferInsert> = {};
+  if (body.fullName !== undefined) set.fullName = body.fullName;
+  if (body.phoneNumber !== undefined) set.phoneNumber = body.phoneNumber || null;
+  if (Object.keys(set).length) {
+    try {
+      await db.update(users).set(set).where(eq(users.id, userId));
+    } catch (err) {
+      const code = (err as { code?: string }).code ?? (err as { cause?: { code?: string } }).cause?.code;
+      if (code === '23505') throw new ApiError(409, 'PHONE_IN_USE', 'That mobile number is already used by another AdvanCare account.');
+      throw err;
+    }
+  }
+  const [me] = await db.select({ id: users.id, email: users.email, fullName: users.fullName, phoneNumber: users.phoneNumber, role: users.role }).from(users).where(eq(users.id, userId)).limit(1);
+  return c.json({ me });
+});

@@ -19,7 +19,7 @@ import {
   TextArea,
   TextField,
 } from '../components/ui';
-import { ApiError, isDemoMode, uploadFile } from '../services/api';
+import { ApiError, uploadFile } from '../services/api';
 import { DEPENDENCIES, peso, SHIFT_RATES, VEHICLES, type VehicleCategory } from '../data/catalog';
 import { DEMO_FACILITIES, DEMO_GPS } from '../data/demo';
 import { useApp, useDraft } from '../state/AppState';
@@ -65,7 +65,7 @@ export function Prescription() {
             { value: 'new', label: 'New prescription' },
           ]}
         />
-        <SelectField label="Doctor" options={DEMO_GPS.map((g) => ({ value: g.id, label: g.name }))} value={d.doctorId} onChange={(e) => set({ doctorId: e.target.value })} hint={`${doc.specialty} · demo roster`} />
+        <SelectField label="Doctor" options={DEMO_GPS.map((g) => ({ value: g.id, label: g.name }))} value={d.doctorId} onChange={(e) => set({ doctorId: e.target.value })} hint={doc.specialty} />
         <TextField label="Date of consultation" type="date" max={toDateInput(new Date())} value={d.consultDate} onChange={(e) => set({ consultDate: e.target.value })} />
         <TextArea
           label={d.type === 'refill' ? 'Medicines to refill' : 'Medicines prescribed (if known)'}
@@ -134,8 +134,7 @@ export function PrescriptionReview() {
         <p className="row gap-8 t-caption t-muted">
           <Icon name="shield-check" size={16} /> Your doctor will review the request.
         </p>
-        {d.attachment && isDemoMode && <DependencyNote title="Upload">Demo mode: only the file name is saved; the photo isn’t sent.</DependencyNote>}
-        <DependencyNote title={isDemoMode ? undefined : 'How this works'}>{isDemoMode ? DEPENDENCIES.api : DEPENDENCIES.prescription}</DependencyNote>
+        <DependencyNote title="How this works">{DEPENDENCIES.prescription}</DependencyNote>
         {uploadError && <Banner tone="error">{uploadError}</Banner>}
         {error && <Banner tone="error">{error}</Banner>}
       </div>
@@ -146,7 +145,7 @@ export function PrescriptionReview() {
             // Connected: upload the photo first, then attach it to the request by id.
             let uploadIds: string[] = [];
             const file = attachmentFiles.get(RX_KEY);
-            if (!isDemoMode && file && session && !session.demo) {
+            if (file && session) {
               setUploading(true);
               setUploadError('');
               try {
@@ -300,7 +299,7 @@ export function Transport() {
         <p className="row gap-8 t-caption t-muted">
           <Icon name="shield-check" size={16} /> For scheduled trips. Not for emergencies. Fare is confirmed by the care team before the trip.
         </p>
-        <DependencyNote title={isDemoMode ? undefined : 'How this works'}>{isDemoMode ? DEPENDENCIES.api : DEPENDENCIES.transport}</DependencyNote>
+        <DependencyNote title="How this works">{DEPENDENCIES.transport}</DependencyNote>
         {error && <Banner tone="error">{error}</Banner>}
       </div>
       <ActionBar>
@@ -442,7 +441,6 @@ export function CaregiverRequest({ kind }: { kind: CareKind }) {
         {isCvmc && (
           <DependencyNote title="Provisional">CVMC ward access for AdvanCare caregivers awaits a coordination letter with CVMC Nursing Administration.</DependencyNote>
         )}
-        {isDemoMode && <DependencyNote>{DEPENDENCIES.caregiver}</DependencyNote>}
         {error && <Banner tone="error">{error}</Banner>}
       </div>
       <ActionBar>

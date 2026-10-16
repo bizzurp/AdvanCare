@@ -1,6 +1,6 @@
 import { and, desc, eq, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
-import { Hono } from 'hono';
+import { Hono, type Context } from 'hono';
 import * as v from 'valibot';
 import { careNotes, caregivers, clientProfiles, idempotencyRecords, payments, shifts, users } from '../db/schema';
 import type { AppEnv } from '../env';
@@ -193,4 +193,50 @@ appShifts.get('/shifts/:id/notes', validate('param', v.object({ id: v.pipe(v.str
     .where(eq(careNotes.shiftId, own.id))
     .orderBy(desc(careNotes.recordedAt));
   return c.json({ notes: notes.map(({ caregiverName, ...n }) => ({ ...n, caregiverFirstName: caregiverName ? caregiverName.trim().split(/\s+/)[0] : null })) });
+});
+
+const ShiftId = v.object({ id: v.pipe(v.string(), v.uuid()) });
+/** Families change or cancel a booking themselves until a caregiver is assigned; after that staff handle it. */
+const FAMILY_CHANGEABLE = ['REQUESTED', 'MATCHING', 'ESCALATED'] as const;
+
+async function ownOpenShift(c: Context<AppEnv>, id: string) {
+  const [row] = await c
+    .get('db')
+    .select({ id: shifts.id, status: shifts.status, caregiverId: shifts.caregiverId })
+    .from(shifts)
+    .innerJoin(clientProfiles, eq(clientProfiles.id, shifts.clientId))
+    .where(and(eq(shifts.id, id), eq(clientProfiles.userId, c.get('clientUserId'))))
+    .limit(1);
+  if (!row) throw new ApiError(404, 'NOT_FOUND', 'Request not found.');
+  if (!(FAMILY_CHANGEABLE as readonly string[]).includes(row.status) || row.caregiverId) {
+    throw new ApiError(409, 'NOT_ALLOWED', 'A caregiver is already assigned or the shift has started. Call your care coordinator to change it.');
+  }
+  return row;
+}
+
+const ShiftChange = v.strictObject({
+  scheduledDate: v.pipe(v.string(), v.isoDate('Choose a valid date.')),
+  scheduledStartTime: v.pipe(v.string(), v.transform(toManilaTime), v.regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Choose a valid start time.')),
+  locationDetails: v.optional(v.pipe(v.string(), v.trim(), v.minLength(3, 'Add where the caregiver should go.'), v.maxLength(500))),
+});
+
+appShifts.patch('/shifts/:id', validate('param', ShiftId), validate('json', ShiftChange), async (c) => {
+  const row = await ownOpenShift(c, c.req.valid('param').id);
+  const body = c.req.valid('json');
+  if (Date.parse(`${body.scheduledDate}T${body.scheduledStartTime}:00+08:00`) < Date.now() + MIN_LEAD_MS) {
+    throw new ApiError(422, 'VALIDATION_FAILED', 'Book at least 12 hours before the shift starts.', { nested: { scheduledStartTime: ['Choose a start at least 12 hours from now.'] } });
+  }
+  if (body.scheduledDate > manilaDate(manilaDayStart(MAX_DAYS_AHEAD))) throw new ApiError(422, 'VALIDATION_FAILED', `Bookings open up to ${MAX_DAYS_AHEAD} days ahead.`);
+  await c
+    .get('db')
+    .update(shifts)
+    .set({ scheduledDate: body.scheduledDate, scheduledStartTime: body.scheduledStartTime, ...(body.locationDetails ? { locationDetails: body.locationDetails } : {}) })
+    .where(eq(shifts.id, row.id));
+  return c.json({ ok: true, scheduledDate: body.scheduledDate, scheduledStartTime: body.scheduledStartTime });
+});
+
+appShifts.post('/shifts/:id/cancel', validate('param', ShiftId), async (c) => {
+  const row = await ownOpenShift(c, c.req.valid('param').id);
+  await c.get('db').update(shifts).set({ status: 'CANCELLED', cancelledAt: new Date(), cancellationReason: 'Cancelled by the family' }).where(eq(shifts.id, row.id));
+  return c.json({ ok: true });
 });

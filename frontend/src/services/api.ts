@@ -1,12 +1,10 @@
-// Real integration boundary. Only contracts specified in the Pilot MVP prompt pack are called;
-// everything else resolves to a local "saved-demo" result with the matching dependency note,
-// so the UI never claims a request reached a provider when it did not.
-import { DEPENDENCIES } from '../data/catalog';
-import type { ClientProfile, RequestStatus, ServiceKind, ServiceRequest } from '../data/types';
+// The app's only network boundary. Every request goes to the AdvanCare API; the UI never claims
+// a request reached the care team unless the API accepted it.
+import type { ClientProfile, FamilyMember, RequestStatus, ServiceKind, ServiceRequest } from '../data/types';
 
-export const API_BASE: string = (import.meta.env.VITE_API_BASE_URL ?? '').trim().replace(/\/$/, '');
-export const isDemoMode = API_BASE === '';
-export const DEMO_OTP = '999123';
+/** VITE_API_BASE_URL wins; otherwise the local API in development and the hosted API in builds. */
+const DEFAULT_API = import.meta.env.DEV ? 'http://localhost:8787' : 'https://advancare-api.mcleinonza0531.workers.dev';
+export const API_BASE: string = ((import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() || DEFAULT_API).replace(/\/$/, '');
 
 export class ApiError extends Error {
   constructor(
@@ -62,45 +60,85 @@ async function post<T>(path: string, body: unknown, token?: string, idempotencyK
   }
 }
 
-const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
 // ---------- Auth: ADV-AUTH-001 (6-digit code by email; SMS can replace the delivery later) ----------
 export async function requestOtp(email: string): Promise<void> {
-  if (isDemoMode) {
-    await wait(500);
-    return;
-  }
   await post('/api/v1/auth/request-otp', { email });
 }
 
 export interface AuthResult {
   accessToken: string;
-  demo: boolean;
   /** Account role on the server (CLIENT, CAREGIVER, …). */
   role?: string;
 }
 
 export async function verifyOtp(email: string, otp: string): Promise<AuthResult> {
-  if (isDemoMode) {
-    await wait(500);
-    if (otp !== DEMO_OTP) throw new ApiError('That code is incorrect. Check the email and try again.', 401);
-    return { accessToken: 'demo', demo: true };
-  }
   const r = await post<{ accessToken: string; user: { role: string } }>('/api/v1/auth/verify-otp', { email, otp });
-  return { accessToken: r.accessToken, demo: false, role: r.user.role };
+  return { accessToken: r.accessToken, role: r.user.role };
 }
 
 export async function signOutRemote(token?: string): Promise<void> {
-  if (isDemoMode || !token) return;
+  if (!token) return;
   await post('/api/v1/auth/sign-out', {}, token).catch(() => undefined);
 }
 
 // ---------- Client profile copy (the server needs it before a booking) ----------
-export const DEMO_PROFILE_ID = 'demo-client-1';
+export interface Account {
+  id: string;
+  email: string | null;
+  fullName: string | null;
+  phoneNumber: string | null;
+  role: string;
+}
+
+export const getAccount = (token: string) => get<{ me: Account }>('/api/v1/auth/me', token).then((r) => r.me);
+export const updateAccount = (token: string, patch: { fullName?: string; phoneNumber?: string }) =>
+  post<{ me: Account }>('/api/v1/auth/me', patch, token, undefined, 'PATCH').then((r) => r.me);
+
+export interface ServerClient {
+  id: string;
+  deviceRef: string | null;
+  fullName: string;
+  dateOfBirth: string | null;
+  gender: string | null;
+  municipality: string;
+  barangay: string;
+  sitio: string | null;
+  landmarkNotes: string | null;
+  philhealthId: string | null;
+  clinical: { conditions: string[]; mobility: string | null; allergies: string | null };
+  family: { id: string; name: string; relationship: string; phone: string; isPrimary: boolean; isRemoteSponsor: boolean; location: string | null }[];
+}
+
+/** Clients saved on this account (newest first), so a profile follows the person to any phone. */
+export const myClients = (token: string) => get<{ clients: ServerClient[] }>('/api/v1/clients/mine', token).then((r) => r.clients);
+
+/** Server copy → the app's profile; keeps on-phone extras (plan, permissions, language) from `base`. */
+export function profileFromServer(c: ServerClient, base: ClientProfile): ClientProfile {
+  const family: FamilyMember[] = c.family.map((f) => {
+    const same = base.family.find((b) => b.name === f.name && b.relationship === f.relationship);
+    return { id: same?.id ?? `fam-${f.id.slice(0, 8)}`, name: f.name, relationship: f.relationship, phone: f.phone, isPrimary: f.isPrimary, isRemoteSponsor: f.isRemoteSponsor, location: f.location ?? undefined, scopes: same?.scopes ?? ['SCOPE_CARE_NOTES_VIEW'] };
+  });
+  return {
+    ...base,
+    id: c.deviceRef ?? c.id,
+    clientCode: `AC-${c.id.slice(0, 6).toUpperCase()}`,
+    fullName: c.fullName,
+    dateOfBirth: c.dateOfBirth ?? '',
+    gender: c.gender ?? '',
+    municipality: c.municipality,
+    barangay: c.barangay,
+    sitio: c.sitio ?? '',
+    landmarkNotes: c.landmarkNotes ?? '',
+    philhealthId: c.philhealthId ?? undefined,
+    conditions: c.clinical.conditions,
+    mobility: c.clinical.mobility ?? '',
+    allergies: c.clinical.allergies ?? 'None known',
+    family,
+  };
+}
 
 /** Copies the profile kept on this phone to the server (create or update, keyed by its id here). */
 export async function syncClient(profile: ClientProfile, token?: string): Promise<string> {
-  if (profile.id === DEMO_PROFILE_ID) throw new ApiError('Finish registering the client first (More → Create an account), then try again.', 409);
   const r = await post<{ clientId: string }>(
     '/api/v1/clients/sync',
     {
@@ -157,7 +195,7 @@ const CONTRACTS: Partial<Record<ServiceKind, Contract>> = {
 const SERVICE_KINDS: ServiceKind[] = ['telehealth', 'rhu', 'triage', 'prescription', 'transport'];
 export const isServiceKind = (k: ServiceKind) => SERVICE_KINDS.includes(k);
 
-function serviceBody(req: ServiceRequest) {
+export function serviceBody(req: ServiceRequest) {
   const p = req.payload;
   const preferredAt = (p.startTime ?? p.pickupTime ?? req.scheduledFor ?? null) as string | null;
   const { clientId, uploadIds, attachment, ...details } = p as Record<string, unknown>;
@@ -172,16 +210,6 @@ function serviceBody(req: ServiceRequest) {
   };
 }
 
-const KIND_DEPENDENCY: Record<ServiceKind, string> = {
-  telehealth: DEPENDENCIES.telehealth,
-  rhu: DEPENDENCIES.rhu,
-  triage: DEPENDENCIES.triage,
-  prescription: DEPENDENCIES.prescription,
-  transport: DEPENDENCIES.transport,
-  'home-caregiver': DEPENDENCIES.caregiver,
-  'cvmc-caregiver': DEPENDENCIES.caregiver,
-};
-
 export interface SubmitResult {
   status: RequestStatus;
   dependencyNote?: string;
@@ -191,10 +219,7 @@ export interface SubmitResult {
 
 export async function submitServiceRequest(req: ServiceRequest, token?: string, profile?: ClientProfile): Promise<SubmitResult> {
   if (typeof navigator !== 'undefined' && !navigator.onLine) return { status: 'queued' };
-  await wait(300);
-  if (isDemoMode) return { status: 'saved-demo', dependencyNote: `${DEPENDENCIES.api} ${KIND_DEPENDENCY[req.kind]}` };
   const contract = CONTRACTS[req.kind];
-  if (!contract && !isServiceKind(req.kind)) return { status: 'saved-demo', dependencyNote: KIND_DEPENDENCY[req.kind] };
   if (!token) throw new ApiError('Please sign in again to send this request.', 401);
   // Keep the server's copy of the client up to date (address, family) before sending.
   if (profile) await syncClient(profile, token);
@@ -235,6 +260,7 @@ export interface ServerServiceRequest {
   ref: string;
   kind: string;
   status: ServerServiceStatus;
+  preferredAt: string | null;
   scheduledAt: string | null;
   staffNote: string | null;
   cancellationReason: string | null;
@@ -248,6 +274,25 @@ export async function myServiceRequests(token: string): Promise<ServerServiceReq
 
 export async function cancelServiceRequest(serverId: string, token: string): Promise<void> {
   await post(`/api/v1/service-requests/${serverId}/cancel`, {}, token);
+}
+
+/** Change a request's time or what was entered, until staff schedule it. */
+export async function updateServiceRequest(serverId: string, token: string, patch: { preferredAt?: string | null; summary?: string; details?: Record<string, unknown> }): Promise<void> {
+  await post(`/api/v1/service-requests/${serverId}`, patch, token, undefined, 'PATCH');
+}
+
+/** Times already booked with a TeleHealth doctor on a day (YYYY-MM-DD), as ISO timestamps. */
+export async function takenTeleSlots(token: string, doctorId: string, date: string): Promise<string[]> {
+  const q = new URLSearchParams({ doctorId, date });
+  return (await get<{ taken: string[] }>(`/api/v1/service-requests/telehealth/taken?${q}`, token)).taken;
+}
+
+/** Families move or cancel a caregiver booking until a caregiver is assigned. */
+export async function updateShift(serverId: string, token: string, change: { scheduledDate: string; scheduledStartTime: string; locationDetails?: string }): Promise<void> {
+  await post(`/api/v1/shifts/${serverId}`, change, token, undefined, 'PATCH');
+}
+export async function cancelShift(serverId: string, token: string): Promise<void> {
+  await post(`/api/v1/shifts/${serverId}/cancel`, {}, token);
 }
 
 // ---------- Live status of bookings (GET /api/v1/shifts/mine) ----------
@@ -354,7 +399,7 @@ export interface AssistantAnswer {
   allowed: boolean;
 }
 
-/** General AdvanCare questions only. Personal data stays on the device and is answered locally. */
+/** AdvanCare questions; with a session the assistant can also read the account's own booking summaries. */
 export async function askAssistant(turns: AssistantTurn[], token?: string): Promise<AssistantAnswer> {
   return post<AssistantAnswer>('/api/v1/assistant/chat', { messages: turns.slice(-12) }, token);
 }

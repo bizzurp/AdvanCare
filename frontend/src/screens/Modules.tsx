@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { AttachmentPicker, DayPicker, TimePicker, type AttachmentMeta } from '../components/Scheduling';
@@ -9,7 +9,6 @@ import {
   Checkbox,
   ChoiceGroup,
   ChoiceRow,
-  DemoTag,
   DependencyNote,
   PageHeader,
   Screen,
@@ -18,8 +17,8 @@ import {
   TextField,
 } from '../components/ui';
 import { DEPENDENCIES, FACILITY_LEVELS, RHU_PROVIDER_TYPES, RHU_SERVICES, RHU_VISIT_MODES, type FacilityLevel, type RhuProviderType } from '../data/catalog';
-import { DEMO_GPS, DEMO_RHUS, DEMO_SLOTS, DEMO_TAKEN } from '../data/demo';
-import { isDemoMode } from '../services/api';
+import { DEMO_GPS, DEMO_RHUS, DEMO_SLOTS } from '../data/demo';
+import { takenTeleSlots } from '../services/api';
 import { useApp, useDraft } from '../state/AppState';
 import { combine, formatDay, toDateInput, useSubmitRequest } from './requestUtils';
 
@@ -42,8 +41,25 @@ export function TeleHealth() {
   const [d, set, clear] = useDraft<TeleDraft>(TELE_KEY, teleInit);
   const { submit, submitting, error } = useSubmitRequest();
   const [errors, setErrors] = useState<{ time?: string }>({});
+  const { session } = useApp();
   const doc = DEMO_GPS.find((g) => g.id === d.doctorId) ?? DEMO_GPS[0];
-  const slotOk = d.time && !isPast(d.date, d.time) && !DEMO_TAKEN.has(d.time);
+  // Times other families already booked with this doctor (from the server).
+  const [taken, setTaken] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    if (!session) return;
+    let stop = false;
+    takenTeleSlots(session.accessToken, doc.id, d.date)
+      .then((list) => {
+        if (stop) return;
+        const times = new Set(list.map((iso) => new Date(iso).getTime()));
+        setTaken(new Set(DEMO_SLOTS.filter((s) => times.has(combine(d.date, s).getTime()))));
+      })
+      .catch(() => !stop && setTaken(new Set()));
+    return () => {
+      stop = true;
+    };
+  }, [session, doc.id, d.date]);
+  const slotOk = d.time && !isPast(d.date, d.time) && !taken.has(d.time);
 
   const book = () => {
     if (!slotOk) {
@@ -80,7 +96,6 @@ export function TeleHealth() {
               ★ {doc.rating} · {doc.reviews} reviews
             </div>
           </div>
-          <DemoTag>Demo</DemoTag>
         </div>
         <Link to="/services/telehealth/doctors" className="link-btn" style={{ marginTop: -12 }}>
           Change doctor
@@ -99,7 +114,7 @@ export function TeleHealth() {
             set({ time });
             setErrors({});
           }}
-          isDisabled={(s) => DEMO_TAKEN.has(s) || isPast(d.date, s)}
+          isDisabled={(s) => taken.has(s) || isPast(d.date, s)}
           error={errors.time}
         />
         <SelectField label="Reason for consultation" options={['General check-up', 'Follow-up consultation', 'New symptoms', 'Medication question', 'Other']} value={d.reason} onChange={(e) => set({ reason: e.target.value })} />
@@ -122,7 +137,7 @@ export function TeleHealth() {
             <Icon name="shield-check" size={16} /> {formatDay(d.date)} · {d.time} · {d.mode}
           </p>
         )}
-        <DependencyNote title={isDemoMode ? undefined : 'How this works'}>{isDemoMode ? DEPENDENCIES.api : DEPENDENCIES.telehealth}</DependencyNote>
+        <DependencyNote title="How this works">{DEPENDENCIES.telehealth}</DependencyNote>
         <Link to="/services/triage" className="link-btn">
           Not sure which service you need? Get assessed first
         </Link>
@@ -163,7 +178,6 @@ export function ChooseDoctor() {
             />
           ))}
         </ChoiceGroup>
-        <DemoTag>Demo physician roster</DemoTag>
       </div>
       <ActionBar>
         <Button
@@ -260,7 +274,6 @@ export function RhuServices() {
               ))}
             </ChoiceGroup>
             {errors.service && <span className="field-error" role="alert">{errors.service}</span>}
-            <DemoTag>Service list pending RHU confirmation</DemoTag>
           </section>
         )}
         <SelectField label="Health unit" options={DEMO_RHUS.map((r) => ({ value: r.id, label: r.name }))} value={d.rhuId} onChange={(e) => set({ rhuId: e.target.value })} />
@@ -276,7 +289,7 @@ export function RhuServices() {
         <TimePicker label="Preferred time" slots={['Morning', 'Afternoon']} value={d.window} onChange={(w) => set({ window: w })} error={errors.window} />
         <TextArea label="Notes for the RHU team (optional)" placeholder="Symptoms, last visit, or questions" value={d.notes} onChange={(e) => set({ notes: e.target.value })} />
         <p className="t-caption t-muted">The RHU confirms the exact schedule. RHU fees, if any, are set by the health unit.</p>
-        <DependencyNote title={isDemoMode ? undefined : 'How this works'}>{isDemoMode ? DEPENDENCIES.api : DEPENDENCIES.rhu}</DependencyNote>
+        <DependencyNote title="How this works">{DEPENDENCIES.rhu}</DependencyNote>
         {error && <Banner tone="error">{error}</Banner>}
       </div>
       <ActionBar>

@@ -18,7 +18,7 @@ import {
 import { CONDITIONS, DEPENDENCIES, LANGUAGES, MOBILITY, MUNICIPALITIES, SCOPE_LABELS } from '../data/catalog';
 import { DEMO_BARANGAYS } from '../data/demo';
 import type { ClientProfile, DelegationScope } from '../data/types';
-import { isDemoMode, syncClient } from '../services/api';
+import { syncClient } from '../services/api';
 import { useApp } from '../state/AppState';
 import { EmailCode, normalizeLocal } from './Auth';
 
@@ -168,7 +168,7 @@ export function Register() {
     };
     updateProfile(profile);
     // Copy it to the server now (bookings also re-send it, so a failure here isn't final).
-    if (!isDemoMode && session && !session.demo) {
+    if (session) {
       try {
         await syncClient(profile, session.accessToken);
         setSynced('yes');
@@ -201,7 +201,6 @@ export function Register() {
           </h2>
           <p className="t-body t-muted">Next, choose a care plan or request a service. Your BHW can help with membership and subsidy verification.</p>
           {synced === 'no' && <DependencyNote>We couldn’t reach AdvanCare just now. The record is saved on this phone and will be sent with your first request.</DependencyNote>}
-          {isDemoMode && <DependencyNote>Demo mode: the app isn’t connected to the AdvanCare server, so this profile is saved only on this device.</DependencyNote>}
         </div>
         <ActionBar>
           <LinkButton to="/plans">Choose a care plan</LinkButton>
@@ -233,7 +232,7 @@ export function Register() {
             <EmailCode
               mode="register"
               onVerified={(email, r) => {
-                signIn({ email, accessToken: r.accessToken, demo: r.demo, role: 'household' });
+                signIn({ email, accessToken: r.accessToken, role: 'household' });
                 setStep(1);
               }}
             />
@@ -291,7 +290,7 @@ export function Register() {
               disabled={!form.municipality}
               onChange={(e) => set({ barangay: e.target.value })}
               error={errors.barangay}
-              hint="Pilot barangays only. Demo list — to be replaced with the official PSGC list."
+              hint="Pilot barangays in this municipality."
             />
             <TextField label="Sitio or purok" value={form.sitio} onChange={(e) => set({ sitio: e.target.value })} error={errors.sitio} />
             <TextArea

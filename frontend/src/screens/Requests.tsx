@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
-import { ActionBar, Badge, Banner, Button, DependencyNote, DetailRow, LinkButton, PageHeader, Screen, Segmented, StatusBadge, TextField } from '../components/ui';
+import { ActionBar, Badge, Banner, Button, DependencyNote, DetailRow, LinkButton, PageHeader, Screen, Segmented, StatusBadge, TextArea, TextField } from '../components/ui';
 import { serviceIcon, serviceTitle } from '../data/catalog';
 import type { RequestStatus, ServiceKind, ServiceRequest } from '../data/types';
-import { ApiError, cancelServiceRequest, isServiceKind, shiftNotes, submitServiceRequest, type CareNote } from '../services/api';
+import { ApiError, cancelServiceRequest, cancelShift, isServiceKind, serviceBody, shiftNotes, submitServiceRequest, updateServiceRequest, updateShift, type CareNote } from '../services/api';
 import { useApp } from '../state/AppState';
 import { formatWhen } from './requestUtils';
 
@@ -152,16 +152,66 @@ export function RequestDetail() {
   const [whenErr, setWhenErr] = useState('');
   const [retrying, setRetrying] = useState(false);
   const [cancelError, setCancelError] = useState('');
+  const [savingWhen, setSavingWhen] = useState(false);
+  const [editingNote, setEditingNote] = useState(false);
+  const [note, setNote] = useState('');
+  const [noteError, setNoteError] = useState('');
+  const [savingNote, setSavingNote] = useState(false);
   if (!r) return <Navigate to="/requests" replace />;
 
   const p = progress(r.status);
   const steps = STEPS[r.kind];
   const canChange = ['saved-demo', 'queued', 'submitted'].includes(r.status) && !r.isDemoRecord;
-  // Once the server has it, staff own the schedule: services can still be withdrawn here,
-  // a sent caregiver booking is changed by calling the coordinator.
-  const onServer = !!r.serverId && !!session && !session.demo;
-  const canReschedule = canChange && !onServer;
-  const canCancel = canChange && (!onServer || isServiceKind(r.kind));
+  // Until staff confirm it (or assign a caregiver), the family can move, edit or cancel it here.
+  const onServer = !!r.serverId && !!session;
+  const canReschedule = canChange;
+  const canCancel = canChange;
+  const canEditNote = canChange && isServiceKind(r.kind);
+
+  const saveWhen = async () => {
+    if (!when || new Date(when) <= new Date()) {
+      setWhenErr('Choose a future date and time.');
+      return;
+    }
+    const at = new Date(when);
+    if (onServer && r.serverId && session) {
+      setSavingWhen(true);
+      setWhenErr('');
+      try {
+        if (isServiceKind(r.kind)) await updateServiceRequest(r.serverId, session.accessToken, { preferredAt: at.toISOString() });
+        // Caregiver shifts are booked in Asia/Manila wall time.
+        else await updateShift(r.serverId, session.accessToken, { scheduledDate: new Date(at.getTime() + 8 * 3600_000).toISOString().slice(0, 10), scheduledStartTime: at.toISOString() });
+      } catch (e) {
+        setWhenErr(e instanceof ApiError ? e.message : 'Could not change the time. Try again.');
+        return;
+      } finally {
+        setSavingWhen(false);
+      }
+    }
+    const payload = { ...r.payload, ...('startTime' in r.payload ? { startTime: at.toISOString() } : {}), ...('pickupTime' in r.payload ? { pickupTime: at.toISOString() } : {}) };
+    updateRequest(r.id, { scheduledFor: at.toISOString(), payload });
+    setRescheduling(false);
+  };
+
+  const saveNote = async () => {
+    const text = note.trim();
+    const details = [...r.details.filter((d) => d.label !== 'Note for the care team'), ...(text ? [{ label: 'Note for the care team', value: text, icon: 'chat-round-dots' as const }] : [])];
+    const next = { ...r, details, payload: { ...r.payload, familyNote: text || undefined } };
+    if (onServer && r.serverId && session) {
+      setSavingNote(true);
+      setNoteError('');
+      try {
+        await updateServiceRequest(r.serverId, session.accessToken, { details: serviceBody(next).details });
+      } catch (e) {
+        setNoteError(e instanceof ApiError ? e.message : 'Could not save the note. Try again.');
+        return;
+      } finally {
+        setSavingNote(false);
+      }
+    }
+    updateRequest(r.id, { details: next.details, payload: next.payload });
+    setEditingNote(false);
+  };
 
   const retry = async (req: ServiceRequest) => {
     setRetrying(true);
@@ -196,7 +246,7 @@ export function RequestDetail() {
             </p>
           ) : null}
         </div>
-        {r.serverId && session && !session.demo && (r.careNotes ?? 0) > 0 ? <CareNotes serverId={r.serverId} token={session.accessToken} /> : null}
+        {r.serverId && session && (r.careNotes ?? 0) > 0 ? <CareNotes serverId={r.serverId} token={session.accessToken} /> : null}
 
         {r.status === 'cancelled' ? (
           <Banner tone="info" icon="check-circle">
@@ -238,7 +288,6 @@ export function RequestDetail() {
         </section>
 
         {r.dependencyNote && <DependencyNote>{r.dependencyNote}</DependencyNote>}
-        {r.isDemoRecord && <DependencyNote title="Demo record">This is sample history, not a real service record.</DependencyNote>}
 
         {(r.kind === 'triage' || r.kind === 'rhu' || r.kind === 'telehealth') && r.status !== 'cancelled' && (
           <Link to="/services/transport" className="service-row">
@@ -256,16 +305,7 @@ export function RequestDetail() {
         {rescheduling && (
           <div className="card stack gap-12">
             <TextField label="New date and time" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} error={whenErr} />
-            <Button
-              onClick={() => {
-                if (!when || new Date(when) <= new Date()) {
-                  setWhenErr('Choose a future date and time.');
-                  return;
-                }
-                updateRequest(r.id, { scheduledFor: new Date(when).toISOString() });
-                setRescheduling(false);
-              }}
-            >
+            <Button loading={savingWhen} onClick={() => void saveWhen()}>
               Save new schedule
             </Button>
             {r.status === 'submitted' && <p className="t-caption t-muted">Your care team will confirm the new time.</p>}
@@ -278,6 +318,30 @@ export function RequestDetail() {
             <Button loading={retrying} onClick={() => void retry(r)}>
               Send now
             </Button>
+          )}
+          {canEditNote && !confirmCancel && !editingNote && (
+            <Button
+              variant="quiet"
+              onClick={() => {
+                setNote(String(r.payload.familyNote ?? ''));
+                setEditingNote(true);
+              }}
+            >
+              {r.payload.familyNote ? 'Edit note for the care team' : 'Add a note for the care team'}
+            </Button>
+          )}
+          {editingNote && (
+            <div className="card stack gap-12">
+              <TextArea label="Note for the care team" value={note} maxLength={500} onChange={(e) => setNote(e.target.value)} error={noteError} />
+              <div className="grid-2">
+                <Button variant="secondary" onClick={() => setEditingNote(false)}>
+                  Close
+                </Button>
+                <Button loading={savingNote} onClick={() => void saveNote()}>
+                  Save note
+                </Button>
+              </div>
+            </div>
           )}
           {(canReschedule || canCancel) && !confirmCancel && (
             <div className={canReschedule && canCancel ? 'grid-2' : undefined}>
@@ -293,7 +357,7 @@ export function RequestDetail() {
               )}
             </div>
           )}
-          {onServer && !canCancel && r.status !== 'in-progress' && <p className="t-caption t-muted">To change or cancel this booking, call your care coordinator.</p>}
+          {onServer && !canCancel && r.status !== 'in-progress' && <p className="t-caption t-muted">This is confirmed. To change or cancel it, call your care coordinator.</p>}
           {cancelError && <Banner tone="error">{cancelError}</Banner>}
           {confirmCancel && (
             <div className="card stack gap-12" role="alertdialog" aria-labelledby="cc">
@@ -310,7 +374,8 @@ export function RequestDetail() {
                     setCancelError('');
                     if (onServer && r.serverId && session) {
                       try {
-                        await cancelServiceRequest(r.serverId, session.accessToken);
+                        if (isServiceKind(r.kind)) await cancelServiceRequest(r.serverId, session.accessToken);
+                        else await cancelShift(r.serverId, session.accessToken);
                       } catch (e) {
                         setCancelError(e instanceof ApiError ? e.message : 'Could not cancel. Try again.');
                         setConfirmCancel(false);

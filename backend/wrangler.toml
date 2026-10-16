@@ -45,8 +45,8 @@ simple = { limit = 10, period = 60 }
 
 [env.production]
 name = "advancare-api"
-# Web apps use Cloudflare Pages; the staff console proxies /api to this Worker.
-vars = { ENVIRONMENT = "production", ALLOWED_ORIGINS = "https://advancare-app.pages.dev,capacitor://localhost,https://localhost", R2_BUCKET_NAME = "advancare-uploads", ADMIN_ORIGINS = "https://advancare-admin.pages.dev", ADMIN_APP_URL = "https://advancare-admin.pages.dev", MAIL_FROM_NAME = "AdvanCare" }
+# Web apps on Cloudflare Pages and Vercel; both staff consoles proxy /api to this Worker.
+vars = { ENVIRONMENT = "production", ALLOWED_ORIGINS = "https://advancare-app.pages.dev,https://advancare.vercel.app,capacitor://localhost,https://localhost", R2_BUCKET_NAME = "advancare-uploads", ADMIN_ORIGINS = "https://advancare-admin.pages.dev,https://advancare-admin.vercel.app", ADMIN_APP_URL = "https://advancare-admin.pages.dev", MAIL_FROM_NAME = "AdvanCare" }
 
 # Hyperdrive "advancare-neon": Neon direct (unpooled) URL, query caching disabled so
 # clinical and shift data are never served stale.

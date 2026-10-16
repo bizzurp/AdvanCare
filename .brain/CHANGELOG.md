@@ -1,5 +1,8 @@
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-16] - Vercel hosting allowed by the API
+- Friend's Vercel projects (repo `bizzurp/AdvanCare`): families `https://advancare.vercel.app` (Root Directory `frontend`), staff `https://advancare-admin.vercel.app` (Root Directory `admin`). Added them to production `ALLOWED_ORIGINS` / `ADMIN_ORIGINS` and redeployed `advancare-api` (version a19c550e…), which also shipped today's new family endpoints. Verified health, console login via the Vercel proxy (no CSRF block) and families CORS. `advancare.vercel.app` was still serving the old demo-mode build at the time; its production deployment must be rebuilt from latest `main`.
+
 ## [2026-10-16] - App finished: no demo mode, editable profile/account, connected bookings
 
 ### Changed

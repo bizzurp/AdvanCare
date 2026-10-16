@@ -11,6 +11,7 @@ import { adminMe } from './me';
 import { adminMoney } from './money';
 import { adminOperations } from './operations';
 import { adminPeople } from './people';
+import { adminProviders } from './providers';
 import { adminServices } from './services';
 
 /**
@@ -39,7 +40,7 @@ admin.use('*', withDb);
 // Guards are attached by path (not via sub-app `use('*')`, which Hono would apply to every admin route).
 for (const path of ['/me', '/me/*', '/municipalities', '/audit']) admin.use(path, requireStaff());
 // Operations dashboards: any staff member, always limited to their municipalities inside the handlers.
-for (const path of ['/overview', '/requests', '/requests/*', '/shifts', '/clients', '/clients/*', '/caregivers', '/caregivers/*', '/payments', '/exports/*', '/service-requests', '/service-requests/*']) {
+for (const path of ['/overview', '/requests', '/requests/*', '/shifts', '/clients', '/clients/*', '/caregivers', '/caregivers/*', '/providers', '/providers/*', '/payments', '/exports/*', '/service-requests', '/service-requests/*']) {
   admin.use(path, requireStaff());
 }
 for (const path of ['/accounts', '/accounts/*']) admin.use(path, requireStaff('SUPER_ADMIN'));
@@ -52,5 +53,6 @@ admin.route('/', adminAccounts);
 admin.route('/', adminActions);
 admin.route('/', adminOperations);
 admin.route('/', adminPeople);
+admin.route('/', adminProviders);
 admin.route('/', adminMoney);
 admin.route('/', adminServices);

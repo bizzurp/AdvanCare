@@ -119,3 +119,25 @@ advanCARE connects grassroots rural households in Cagayan to accredited local ca
 - **Limits:** staff writes use the stable production origin; previews are outside `ADMIN_ORIGINS`. Proxy infrastructure may affect per-IP limits; per-email limits and five-strike lockout remain. Do not trust caller-supplied IP headers. Current prescription uploads pass through the API to R2 and need no bucket CORS change. Vercel config is retained only as an alternative; switching providers requires updating origins and rebuilding.
 - **Operations:** root `DEPLOY.md` records live URLs, manual build/upload commands, staff access and rollback. Git pushes do not trigger these Direct Upload projects. The installed Wrangler can redirect creation of new Pages projects into Worker deployments; actual Pages resources were created through the API, and the unintended `advancare-admin` Worker was removed. Existing Pages projects deploy normally.
 - **Verified:** both apps render in a browser; API and console-proxied health report production/Hyperdrive `ok`; staff auth errors, POST forwarding, Origin/CORS checks, deep-link fallback, headers and service worker revalidation pass. Proxy tests pass. Authenticated email/booking/session-reload tests remain for real account holders. App stores/native releases are deferred.
+
+## 10. Multi-Provider Operations: Doctors & Transport Drivers (as built, 2026-10-16)
+
+- **Schema & Migrations (`drizzle/0005_magical_pandemic.sql`, `drizzle/0006_confused_scalphunter.sql`):**
+  - Added `'DOCTOR'` and `'TRANSPORT_DRIVER'` to `user_role` pgEnum and to the `users_app_email_uq` index predicate.
+  - Added `provider_type` pgEnum (`DOCTOR`, `TRANSPORT_DRIVER`).
+  - Created `providers` table: `id`, `user_id` (FK RESTRICT to `users`), `type`, `municipality`, `barangay`, `specialty`, `license_number` (PRC), `vehicle_type`, `plate_number`, `is_available`, `is_accredited`, `created_at`, `updated_at`.
+  - Added `assigned_provider_id` to `service_requests` table (FK RESTRICT to `providers`, indexed with `service_requests_assigned_provider_idx`).
+- **Staff API (`routes/admin/providers.ts` & `routes/admin/services.ts`):**
+  - Scoped provider management: `GET /api/v1/admin/providers` (filters: `type`, `municipality`, `available`, `q`; non-super admins are restricted to `TRANSPORT_DRIVER`), `POST /api/v1/admin/providers` (`DOCTOR` creation strictly restricted to `SUPER_ADMIN`), `GET /api/v1/admin/providers/:id` (doctor details restricted to `SUPER_ADMIN`), `PATCH /api/v1/admin/providers/:id` (doctor updates restricted to `SUPER_ADMIN`).
+  - Candidate matching: `GET /api/v1/admin/service-requests/:id/candidates` (for `telehealth`, restricted to `SUPER_ADMIN`; returns accredited physicians province-wide without cross-municipality warnings; for `transport`, scoped to staff municipality).
+  - Assignment: `POST /api/v1/admin/service-requests/:id/assign` (assigning doctors to `telehealth` restricted to `SUPER_ADMIN`; sets status to `SCHEDULED`, writes `service_request.assigned` audit log, and notifies family via email).
+- **App API (`routes/services.ts`):**
+  - `GET /api/v1/service-requests/mine` left-joins `providers` and `users` to return `assignedProvider` (`id`, `name`, `type`, `specialty`, `licenseNumber`, `vehicleType`, `plateNumber`).
+- **Apps:**
+  - Admin Console (`admin/`):
+    - Operations sidebar has **Transport Drivers** (`/drivers`) for regular staff to manage local transport operators and vehicles.
+    - Administration sidebar has **Telehealth Doctors** (`/telehealth`, `superOnly: true`) for provincial doctor onboarding and roster management.
+    - Super Admin Dashboard (`Home.tsx`): Features a live **Telehealth assignment queue** displaying open teleconsultation requests across all 29 LGUs with direct "Assign Doctor" actions.
+    - Service Requests (`pages/Services.tsx`): Regular admins only see "Assign Driver" on transport requests; telehealth doctor assignment is restricted to Super Admin.
+  - Client PWA (`frontend/`): `Requests.tsx` detail renders assigned provider card (physician name + PRC license / driver name + vehicle details) alongside scheduled times and notes.
+

@@ -235,6 +235,23 @@ export function RequestDetail() {
             {r.serverRef ? ` · ${r.serverRef}` : ''}
           </p>
           {r.caregiverFirstName ? <p className="t-body">Caregiver: {r.caregiverFirstName}</p> : null}
+          {r.assignedProvider ? (
+            <div className="card row gap-12" style={{ padding: '12px 16px', background: '#FFFFFF', border: '1px solid var(--border-light, #E2E8F0)', borderRadius: 12 }}>
+              <span className="icon-tile">
+                <Icon name={r.assignedProvider.type === 'DOCTOR' ? 'stethoscope' : 'bus'} />
+              </span>
+              <div>
+                <div className="t-medium">
+                  {r.assignedProvider.type === 'DOCTOR' ? `Dr. ${r.assignedProvider.fullName}` : r.assignedProvider.fullName}
+                </div>
+                <div className="t-caption t-muted">
+                  {r.assignedProvider.type === 'DOCTOR'
+                    ? (r.assignedProvider.specialty ?? 'General Practice')
+                    : `${r.assignedProvider.vehicleType ?? 'Transport Vehicle'}${r.assignedProvider.plateNumber ? ` · Plate ${r.assignedProvider.plateNumber}` : ''}`}
+                </div>
+              </div>
+            </div>
+          ) : null}
           {r.staffNote ? (
             <Banner icon="chat-round-dots">
               <strong>From your care team:</strong> {r.staffNote}

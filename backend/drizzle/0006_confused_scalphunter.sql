@@ -1,0 +1,2 @@
+DROP INDEX "users_app_email_uq";--> statement-breakpoint
+CREATE UNIQUE INDEX "users_app_email_uq" ON "users" USING btree (lower("email")) WHERE "users"."email" IS NOT NULL AND "users"."role" IN ('CLIENT', 'FAMILY_SPONSOR', 'CAREGIVER', 'DOCTOR', 'TRANSPORT_DRIVER', 'BHW_PROXY', 'COORDINATOR');

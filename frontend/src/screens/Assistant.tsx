@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon, type IconName } from '../components/Icon';
-import { DependencyNote, PageHeader, Screen } from '../components/ui';
-import { DEPENDENCIES } from '../data/catalog';
-import { askAssistant, isDemoMode, type AssistantTurn } from '../services/api';
+import { PageHeader, Screen } from '../components/ui';
+import { askAssistant, type AssistantTurn } from '../services/api';
 import { useApp } from '../state/AppState';
 
 interface Msg {
@@ -31,8 +30,8 @@ function localAnswer(text: string, ctx: Ctx): Msg | null {
 }
 
 /**
- * Demo-mode shortcut assistant (no API configured). It only routes to app sections and
- * summarises the person's own data; it never gives medical advice. See DEPENDENCIES.assistant.
+ * Shortcut answers used when the AI assistant can't be reached (offline, rate limited). It only
+ * routes to app sections and summarises the person's own data; it never gives medical advice.
  */
 function reply(text: string, ctx: Ctx): Msg {
   const t = text.toLowerCase();
@@ -53,7 +52,7 @@ function reply(text: string, ctx: Ctx): Msg {
 }
 
 export function Assistant() {
-  const { profile, requests } = useApp();
+  const { profile, requests, session } = useApp();
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState('');
   const [thinking, setThinking] = useState(false);
@@ -74,8 +73,8 @@ export function Assistant() {
     if (!text || thinking) return;
     setInput('');
     const local = localAnswer(text, ctx);
-    if (local || isDemoMode) {
-      setMsgs((m) => [...m, { from: 'user', text }, local ?? reply(text, ctx)]);
+    if (local) {
+      setMsgs((m) => [...m, { from: 'user', text }, local]);
       return;
     }
     // Only the conversation text goes to the server — no profile or request data from this device.
@@ -83,10 +82,11 @@ export function Assistant() {
     setMsgs((m) => [...m, { from: 'user', text }]);
     setThinking(true);
     try {
-      const a = await askAssistant(history);
+      const a = await askAssistant(history, session?.accessToken);
       setMsgs((m) => [...m, { from: 'bot', text: a.reply, link: a.link ?? undefined }]);
-    } catch (e) {
-      setMsgs((m) => [...m, { from: 'bot', text: e instanceof Error ? e.message : 'The care assistant could not answer right now.' }]);
+    } catch {
+      // Still help: point to the right part of the app.
+      setMsgs((m) => [...m, reply(text, ctx)]);
     } finally {
       setThinking(false);
     }
@@ -142,13 +142,9 @@ export function Assistant() {
           {/* Keeps the newest message clear of the sticky input and bottom nav when scrolled into view. */}
           <div ref={end} style={{ scrollMarginBottom: 150 }} />
         </div>
-        {isDemoMode ? (
-          <DependencyNote>{DEPENDENCIES.assistant}</DependencyNote>
-        ) : (
-          <p className="t-small t-muted">
-            Answers about AdvanCare come from an AI assistant and can be wrong. It cannot give medical advice. Questions about your own requests and profile are answered on this phone.
-          </p>
-        )}
+        <p className="t-small t-muted">
+          Answers about AdvanCare come from an AI assistant and can be wrong. It cannot give medical advice. Questions about your own requests and profile are answered on this phone.
+        </p>
       </div>
       <form
         className="row gap-8"

@@ -2,9 +2,9 @@ import { useEffect, useRef, useState, type PointerEvent as RPointerEvent } from 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { OnboardingArtCareWay, OnboardingArtClearer, OnboardingArtConnected, WelcomeHero } from '../components/Illustrations';
-import { Banner, Brand, Button, DependencyNote, LinkButton, PageHeader, Screen, TextField } from '../components/ui';
+import { Brand, Button, DependencyNote, LinkButton, PageHeader, Screen, TextField } from '../components/ui';
 import { DEPENDENCIES } from '../data/catalog';
-import { ApiError, DEMO_OTP, isDemoMode, requestOtp, verifyOtp } from '../services/api';
+import { ApiError, requestOtp, verifyOtp } from '../services/api';
 import { useApp } from '../state/AppState';
 
 // ---------------- 01 / Welcome ----------------
@@ -208,7 +208,7 @@ export function formatPhone(e164: string) {
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function EmailCode({ mode, onVerified }: { mode: 'sign-in' | 'register'; onVerified: (email: string, token: { accessToken: string; demo: boolean; role?: string }) => void }) {
+export function EmailCode({ mode, onVerified }: { mode: 'sign-in' | 'register'; onVerified: (email: string, token: { accessToken: string; role?: string }) => void }) {
   const [step, setStep] = useState<'email' | 'otp'>('email');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
@@ -320,11 +320,6 @@ export function EmailCode({ mode, onVerified }: { mode: 'sign-in' | 'register'; 
         error={error}
         hint="Can’t find it? Check your Spam or Promotions folder. The code expires in 10 minutes."
       />
-      {isDemoMode && (
-        <Banner icon="shield-check">
-          Demo mode: no email is sent. Use code <strong>{DEMO_OTP}</strong>.
-        </Banner>
-      )}
       <Button type="submit" loading={loading} disabled={otp.length !== 6}>
         Verify and continue
       </Button>
@@ -353,7 +348,7 @@ export function SignIn() {
             mode="sign-in"
             onVerified={(email, r) => {
               const caregiver = r.role === 'CAREGIVER';
-              signIn({ email, accessToken: r.accessToken, demo: r.demo, role: caregiver ? 'caregiver' : 'household' });
+              signIn({ email, accessToken: r.accessToken, role: caregiver ? 'caregiver' : 'household' });
               const from = (location.state as { from?: string } | null)?.from;
               navigate(caregiver ? '/caregiver' : (from ?? '/home'), { replace: true });
             }}

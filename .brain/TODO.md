@@ -22,7 +22,7 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 - ✅ Staff console: Service requests inbox, detail (health requests audited on open), review / schedule (date-time + note) / complete / cancel (reason), audited file viewing; family emailed on schedule and cancel (2026-10-16).
 - ✅ Uploads need sign-in, are checked for real JPEG/PNG/PDF content, recorded with their owner and linked to the request; `/storage/*` is owner-only (2026-10-16).
 
-- ⬜ Families can cancel a sent caregiver booking only by calling the coordinator (no app endpoint yet).
+- ✅ Families move/cancel a caregiver booking in the app until a caregiver is assigned; service requests editable until scheduled (2026-10-16).
 - ⬜ Demo reviewer Super Admin (`demo.reviewer@demo.advancare.test`) exists only on the demo branch (made for testing).
 
 ### P3 — Online prototype
@@ -42,7 +42,8 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 - Production bucket CORS is unnecessary for current API-mediated prescription uploads (P2); owner configuration is needed only if direct presigned browser→R2 uploads are used later.
 
 ### P4 — Polish & cleanup
-- ⬜ Remove the PWA's demo coordinator dashboard and "Coordinator" switch.
+- ✅ Removed the PWA demo mode, demo labels and "Coordinator" switch; sample data kept unlabelled (2026-10-16).
+- ⬜ Redeploy the API Worker and families' Pages app so the hosted prototype gets these changes (not yet deployed).
 - ⬜ Plans (Silver/Gold/Platinum) stored on the server; LGU subsidy report (Table 4).
 - ⬜ Staff "promote to Super Admin" with second-admin approval.
 - ⬜ Offline: encrypted on-device storage (ADV-FE-001).

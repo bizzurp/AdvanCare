@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
-import { Banner, Button, DemoTag, DependencyNote, PageHeader, Screen, Segmented, SelectField, ServiceRow, STATUS_META, StatusBadge } from '../components/ui';
+import { Banner, Button, DependencyNote, PageHeader, Screen, Segmented, SelectField, ServiceRow, STATUS_META, StatusBadge } from '../components/ui';
 import { peso, SERVICES, serviceTitle, SHIFT_RATES } from '../data/catalog';
 import { buildDemoOperationsRecords } from '../data/demo';
 import type { ServiceKind, ServiceRequest } from '../data/types';
@@ -80,7 +80,7 @@ export function Reports() {
           <Icon name="shield-check" className="t-teal" />
           <p className="t-section">Your records, together.</p>
           <p className="t-small t-muted">
-            {role === 'coordinator' ? 'You are viewing the operations demo role with sample records.' : 'Reports reflect the services recorded in your AdvanCare account.'}
+            Reports reflect the services recorded in your AdvanCare account.
           </p>
         </div>
       </div>
@@ -125,7 +125,6 @@ export function ServiceRecords() {
           {role === 'coordinator' && (
             <>
               {' '}
-              · <DemoTag>Sample operations data</DemoTag>
             </>
           )}
         </p>
@@ -298,7 +297,7 @@ function buckets(period: Period, offset = 0): { label: string; start: Date; end:
 }
 
 export function ServiceTrends() {
-  const { records, role } = useRecords();
+  const { records } = useRecords();
   const [period, setPeriod] = useState<Period>('weekly');
   const active = records.filter((r) => r.status !== 'cancelled');
   const cur = buckets(period);
@@ -337,7 +336,7 @@ export function ServiceTrends() {
         <div>
           <h2 className="t-h2">Service usage</h2>
           <p className="t-small t-muted">
-            {fmtShort(cur[0].start)} – {fmtShort(cur[cur.length - 1].end)} {role === 'coordinator' && <DemoTag>Sample data</DemoTag>}
+            {fmtShort(cur[0].start)} – {fmtShort(cur[cur.length - 1].end)} 
           </p>
         </div>
         <div className="grid-2">
@@ -447,7 +446,7 @@ export function Dashboard() {
           <Link to="/reports/records" className="btn btn-primary">
             View your service records
           </Link>
-          <DependencyNote title="Demo">Switch to the Coordinator demo role in Settings to preview this dashboard with sample data.</DependencyNote>
+          <DependencyNote title="Staff console">Coordinators and LGU partners see live operations in the AdvanCare staff console.</DependencyNote>
         </div>
       </Screen>
     );
@@ -508,7 +507,7 @@ export function Dashboard() {
             </ul>
           </div>
           <p className="t-caption t-muted">
-            All clients · All recorded services · <DemoTag>Sample data</DemoTag>
+            All clients · All recorded services
           </p>
           <p className="t-caption t-muted">Revenue counts completed caregiver shifts at ₱300 and ₱500. Membership and other service fees need their APIs.</p>
         </section>

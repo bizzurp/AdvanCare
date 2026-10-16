@@ -2,7 +2,6 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Icon, type IconName } from '../components/Icon';
 import { Brand, LinkButton, PageHeader, Screen, SectionHeading, ServiceRow, StatusBadge } from '../components/ui';
 import { PLANS, serviceIcon, serviceTitle, SERVICES } from '../data/catalog';
-import { isDemoMode } from '../services/api';
 import { useApp } from '../state/AppState';
 import { formatWhen } from './requestUtils';
 
@@ -165,6 +164,7 @@ export function More() {
       <div className="screen-body stack gap-12">
         <h2 className="t-h2 mb-8">Care, all in one place.</h2>
         <ServiceRow icon="user-rounded" title="Client & family profile" desc="Personal details and caregivers" to="/profile" />
+        <ServiceRow icon="shield-check" title="Account details" desc="Your name, mobile number and sign-in email" to="/account" />
         <ServiceRow icon="shield-check" title="Care plans" desc="Silver, Gold, and Platinum" to="/plans" />
         <ServiceRow icon="document-text" title="Your requests" desc="Status, details, and updates" to="/requests" />
         <ServiceRow icon="chat-round-dots" title="Care assistant" desc="Find information and get support" to="/assistant" />
@@ -183,7 +183,7 @@ export function More() {
         </div>
         {session && (
           <p className="t-caption t-muted t-center mt-8">
-            {isDemoMode ? 'Demo mode · ' : ''}Signed in as {session.email ?? session.phone}
+            Signed in as {session.email ?? session.phone}
           </p>
         )}
       </div>

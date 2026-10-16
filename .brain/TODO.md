@@ -43,7 +43,7 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 
 ### P4 — Polish & cleanup
 - ✅ Removed the PWA demo mode, demo labels and "Coordinator" switch; sample data kept unlabelled (2026-10-16).
-- ⬜ Redeploy the API Worker and families' Pages app so the hosted prototype gets these changes (not yet deployed).
+- ✅ Live API, Pages and Vercel sites run the current version on the Neon demo branch (2026-10-16). 👤 Before real use: switch the production Hyperdrive back (see `TESTING.md`) and replace the borrowed Gemini key.
 - ⬜ Plans (Silver/Gold/Platinum) stored on the server; LGU subsidy report (Table 4).
 - ⬜ Staff "promote to Super Admin" with second-admin approval.
 - ⬜ Offline: encrypted on-device storage (ADV-FE-001).

@@ -6,7 +6,7 @@ import { BarList, ColumnChart } from '../components/charts';
 import { Icon } from '../components/Icon';
 import { MunicipalityFilter, CAGAYAN_MUNICIPALITIES } from '../components/MunicipalityFilter';
 import { ScopeNote, StatusBadge } from '../components/ops';
-import { Badge, Button, ErrorNotice, Loading, Notice, PageHeader, useLoad } from '../components/ui';
+import { Badge, Button, ErrorNotice, Loading, Modal, Notice, PageHeader, useLoad } from '../components/ui';
 import { actionLabel, clock, day, dateTime, isFailureAction, money, num, personName, relative, scopeLabel, TIER_LABEL, todayManila, waitedFor } from '../format';
 import { AssignProviderModal } from './Services';
 
@@ -317,6 +317,7 @@ export function Home() {
           queue={telehealthQueue.data}
           loading={telehealthQueue.loading}
           error={telehealthQueue.error}
+          assigningId={assignModalId && assignDetail.loading ? assignModalId : null}
           onAssign={(id) => setAssignModalId(id)}
         />
       ) : null}
@@ -332,6 +333,17 @@ export function Home() {
         </div>
         {activity.loading ? <Loading /> : activity.error ? <ErrorNotice error={activity.error} /> : <ActivityList entries={activity.data?.entries.slice(0, 8) ?? []} />}
       </section>
+
+      {assignModalId && assignDetail.error ? (
+        <Modal title="Unable to load request details" onClose={() => setAssignModalId(null)}>
+          <ErrorNotice error={assignDetail.error} />
+          <div className="mt16" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="secondary" onClick={() => setAssignModalId(null)}>
+              Close
+            </Button>
+          </div>
+        </Modal>
+      ) : null}
 
       {assignModalId && assignDetail.data ? (
         <AssignProviderModal
@@ -431,11 +443,13 @@ function TelehealthQueueSection({
   queue,
   loading,
   error,
+  assigningId,
   onAssign,
 }: {
   queue: { requests: ServiceRow[]; total: number } | null;
   loading: boolean;
   error: unknown;
+  assigningId?: string | null;
   onAssign: (requestId: string) => void;
 }) {
   if (loading && !queue) return <Loading label="Loading telehealth queue…" />;
@@ -511,7 +525,11 @@ function TelehealthQueueSection({
                       )}
                     </td>
                     <td>
-                      <Button variant={r.assignedProvider ? 'secondary' : 'primary'} onClick={() => onAssign(r.id)}>
+                      <Button
+                        variant={r.assignedProvider ? 'secondary' : 'primary'}
+                        busy={assigningId === r.id}
+                        onClick={() => onAssign(r.id)}
+                      >
                         {r.assignedProvider ? 'Change doctor' : 'Assign doctor'}
                       </Button>
                     </td>

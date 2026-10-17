@@ -44,13 +44,13 @@ export function toDateInput(d: Date) {
   return `${y}-${m}-${day}`;
 }
 
-/** "9:00 AM" + "2026-10-16" -> Date (local time). */
+/** "9:00 AM" + "2026-10-16" -> Date (Asia/Manila, UTC+8). */
 export function combine(date: string, time12: string) {
   const [, hh, mm, ap] = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(time12.trim()) ?? [];
   let h = Number(hh ?? 9) % 12;
   if ((ap ?? 'AM').toUpperCase() === 'PM') h += 12;
-  const [y, m, d] = date.split('-').map(Number);
-  return new Date(y, m - 1, d, h, Number(mm ?? 0));
+  const iso = `${date}T${String(h).padStart(2, '0')}:${String(mm ?? 0).padStart(2, '0')}:00+08:00`;
+  return new Date(iso);
 }
 
 /** Creates the request, attempts the real submission, stores the honest result. */

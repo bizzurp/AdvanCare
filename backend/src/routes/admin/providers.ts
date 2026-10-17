@@ -126,6 +126,9 @@ adminProviders.post(
     if (body.type === 'TRANSPORT_DRIVER' && !inScope(staff, body.municipality)) {
       throw new ApiError(403, 'FORBIDDEN', 'You can only add providers in your own municipalities.');
     }
+    if (body.type === 'DOCTOR' && staff.role !== 'SUPER_ADMIN') {
+      throw new ApiError(403, 'FORBIDDEN', 'Telehealth doctors can only be added by Super Admins.');
+    }
     if (body.type === 'DOCTOR' && !body.specialty) throw new ApiError(422, 'VALIDATION_FAILED', 'Specialty is required for doctors.');
     if (body.type === 'TRANSPORT_DRIVER' && !body.vehicleType) throw new ApiError(422, 'VALIDATION_FAILED', 'Vehicle type is required for transport drivers.');
 
@@ -268,6 +271,9 @@ adminProviders.patch(
       .limit(1);
 
     if (!row) throw new ApiError(404, 'NOT_FOUND', 'Provider not found.');
+    if (row.p.type === 'DOCTOR' && staff.role !== 'SUPER_ADMIN') {
+      throw new ApiError(403, 'FORBIDDEN', 'Telehealth doctor credentials can only be modified by Super Admins.');
+    }
     if (row.p.type === 'TRANSPORT_DRIVER') {
       if (staff.role === 'SUPER_ADMIN') {
         throw new ApiError(403, 'FORBIDDEN', 'Transport drivers are managed directly by local municipal admins.');

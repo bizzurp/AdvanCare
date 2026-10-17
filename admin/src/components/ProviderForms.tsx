@@ -29,6 +29,8 @@ const VEHICLE_TYPES = [
 ];
 
 export function AddDoctorModal({ onClose, onAdded }: { onClose: () => void; onAdded: (id: string) => void }) {
+  const me = useMe();
+  const isSuper = me.role === 'SUPER_ADMIN';
   const municipalities = useScopeMunicipalities();
   const [form, setForm] = useState({
     fullName: '',
@@ -47,11 +49,20 @@ export function AddDoctorModal({ onClose, onAdded }: { onClose: () => void; onAd
     if (!form.municipality && municipalities.length === 1) set({ municipality: municipalities[0]! });
   }, [municipalities, form.municipality]);
 
+  if (!isSuper) {
+    return (
+      <Modal title="Telehealth Doctors" onClose={onClose}>
+        <p className="muted">Telehealth doctor onboarding is managed by Super Admins.</p>
+      </Modal>
+    );
+  }
+
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     const res = await action.run(() =>
       api.createProvider({
         ...form,
+        fullName: form.fullName.trim().replace(/^Dr\.?\s*/i, ''),
         type: 'DOCTOR',
         phone: form.phone.replace(/\s/g, ''),
       }),
@@ -299,8 +310,8 @@ export function ManageProvider({ provider, onSaved }: { provider: ProviderDetail
               isAvailable: form.isAvailable,
               active: form.active,
               ...(isDoctor
-                ? { specialty: form.specialty || undefined, licenseNumber: form.licenseNumber || undefined }
-                : { vehicleType: form.vehicleType || undefined, plateNumber: form.plateNumber || undefined }),
+                ? { specialty: form.specialty.trim(), licenseNumber: form.licenseNumber.trim() }
+                : { vehicleType: form.vehicleType.trim(), plateNumber: form.plateNumber.trim() }),
             };
             if (await action.run(() => api.updateProvider(provider.id, change))) {
               onSaved('Provider updated.');

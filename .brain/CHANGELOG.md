@@ -19,17 +19,21 @@
   - Safe date/time formatting helpers in `requestUtils.ts` (`formatWhen`, `formatDay`, `formatTime`) guarding against empty/invalid dates and NaN rendering.
   - Fixed Vite build PostCSS parent directory traversal error by explicitly configuring `css.postcss: {}` in `frontend/vite.config.ts`.
 
-- **Role Isolation**: Removed per-municipality TeleHealth doctor assignment from the regular staff admin dashboard and centralized it under the Super Admin dashboard.
-- **Operations & Navigation**:
-  - Regular staff sidebar in `Operations` now features **Transport Drivers** (`/drivers`), focused purely on municipality transport operators and vehicles.
-  - Super Admin `Administration` menu gains **Telehealth Doctors** (`/telehealth`, `superOnly: true`), providing provincial roster management and onboarding.
-- **Super Admin Dashboard (`Home.tsx`)**:
-  - Added real-time **Telehealth assignment queue** displaying open teleconsultation requests across all 29 LGUs with KPI counters (open, waiting for doctor, assigned).
-  - Integrated direct "Assign Doctor" action launching candidate physician selector modal with family notification note.
-- **Backend Access Control**:
-  - Restricted doctor candidate matching and assignment (`GET/POST /service-requests/:id/candidates`, `POST /service-requests/:id/assign`) for `telehealth` to `SUPER_ADMIN`.
-  - Restricted `DOCTOR` provider creation, updates, and profile viewing to `SUPER_ADMIN`.
-  - Eliminated cross-municipality assignment warnings for teleconsultants since teleconsultation operates remotely across all LGUs.
+- **Universal TeleHealth Booking (De-regionalized across all 29 LGUs)**:
+  - Teleconsultation physicians are now universal across all 29 Cagayan LGUs and municipalities without regional locking; any patient/client can book any accredited telehealth doctor.
+  - Added public client endpoint `GET /api/v1/service-requests/telehealth/doctors` returning active accredited doctors across the province.
+  - Mobile app (`frontend`): Dynamically fetches accredited telehealth physicians; automatically syncs choice to available doctors; surfaces "Universal TeleHealth · Open to all municipalities" badge; marks unavailable doctors as unselectable. Fixed ISO timestamp conversion with explicit `+08:00` offset (`Asia/Manila`) so overseas OFW sponsors book accurate appointment slots.
+  - Server-side slot reservation (`backend/src/routes/services.ts`): Updated `slotTaken` and `GET /service-requests/telehealth/taken` to inspect both `serviceRequests.assignedProviderId` and JSON details `doctorId`; prevented `'gp-any'` from creating global slot lockouts.
+  - Assignment & Roster: Both Super Admins and local staff can view universal telehealth doctor profiles and assign doctors to requests. Candidate provider lookup checks for existing appointment slot overlaps across all LGUs.
+- **Super Admin Transport Driver Restriction**:
+  - Removed "Add driver" button and actions from the Super Admin dashboard, candidate selection dialogs, and driver roster pages.
+  - Transport driver onboarding and management is strictly reserved for local municipal admins with local jurisdiction.
+  - Backend validation in `POST /api/v1/admin/providers` and `PATCH /api/v1/admin/providers/:id` enforces `403 FORBIDDEN` when Super Admins attempt to create or edit transport driver profiles.
+- **Code Review Hardening & A11y**:
+  - Fixed doctor update vulnerability ensuring only Super Admins can alter doctor credentials (`DOCTOR`).
+  - Pass trimmed empty strings when clearing optional provider fields in admin forms to ensure `null` persistence.
+  - Added keyboard navigation and ARIA radiogroup/radio semantics to candidate provider list.
+  - Added request loading spinners and error modal dialogs for Telehealth assignment queue in admin console.
 
 ## [2026-10-16] - Multi-provider Support: Doctors & Transport Drivers
 - **Schema & Migrations (`0005_magical_pandemic.sql`, `0006_confused_scalphunter.sql`)**:

@@ -163,7 +163,6 @@ function DetailsList({ details }: { details: Record<string, unknown> }) {
 
 export function ServiceDetailPage() {
   const { id = '' } = useParams();
-  const me = useMe();
   const detail = useLoad(() => api.service(id), [id]);
   const [open, setOpen] = useState<null | 'schedule' | 'complete' | 'cancel' | 'assign'>(null);
   const [flash, setFlash] = useState<string | null>(null);
@@ -178,7 +177,6 @@ export function ServiceDetailPage() {
     setFlash(msg);
     void detail.reload();
   };
-  const isSuper = me.role === 'SUPER_ADMIN';
   const openStatuses: ServiceStatus[] = ['SUBMITTED', 'IN_REVIEW', 'SCHEDULED'];
   const isOpen = openStatuses.includes(r.status);
   const canAssign = isOpen && (r.kind === 'transport' || r.kind === 'telehealth');
@@ -324,8 +322,6 @@ export function ServiceDetailPage() {
                 <button type="button" className="link-btn" onClick={() => setOpen('assign')}>
                   Assign now
                 </button>
-              ) : r.kind === 'telehealth' && !isSuper ? (
-                <span className="small"> (Doctor assignment is handled by Super Admin)</span>
               ) : null}
             </p>
           )}
@@ -473,13 +469,23 @@ export function AssignProviderModal({
           ) : null}
         </Notice>
       ) : (
-        <ul className="list mb16">
+        <ul className="list mb16" role="radiogroup" aria-label="Candidate providers">
           {shown.map((c: ProviderCandidate) => (
             <li
               key={c.id}
+              role="radio"
+              aria-checked={selectedId === c.id}
+              aria-disabled={!c.eligible}
+              tabIndex={c.eligible ? 0 : -1}
               className={`list-row candidate ${selectedId === c.id ? 'candidate-selected' : ''}`}
               style={{ cursor: c.eligible ? 'pointer' : 'default', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
               onClick={() => c.eligible && setSelectedId(c.id)}
+              onKeyDown={(e) => {
+                if (c.eligible && (e.key === ' ' || e.key === 'Enter')) {
+                  e.preventDefault();
+                  setSelectedId(c.id);
+                }
+              }}
             >
               <span>
                 <b>{c.type === 'DOCTOR' ? `Dr. ${c.fullName}` : c.fullName}</b>{' '}

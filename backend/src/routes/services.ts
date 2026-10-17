@@ -83,13 +83,20 @@ const ServiceRequestBody = v.strictObject({
 
 /** Open TeleHealth bookings already holding this doctor's slot (cancelled ones free it again). */
 async function slotTaken(db: AppEnv['Variables']['db'], doctorId: string, at: Date, exceptId?: string) {
+  if (doctorId === 'gp-any') return false;
   const [hit] = await db
     .select({ id: serviceRequests.id })
     .from(serviceRequests)
     .where(
       and(
         eq(serviceRequests.kind, 'telehealth'),
-        sql`${serviceRequests.details}->>'doctorId' = ${doctorId}`,
+        or(
+          sql`${serviceRequests.assignedProviderId}::text = ${doctorId}`,
+          and(
+            isNull(serviceRequests.assignedProviderId),
+            sql`${serviceRequests.details}->>'doctorId' = ${doctorId}`,
+          ),
+        ),
         sql`coalesce(${serviceRequests.scheduledAt}, ${serviceRequests.preferredAt}) = ${at.toISOString()}::timestamptz`,
         sql`${serviceRequests.status} <> 'CANCELLED'`,
         exceptId ? sql`${serviceRequests.id} <> ${exceptId}` : undefined,
@@ -137,6 +144,7 @@ appServices.get(
   validate('query', v.object({ doctorId: DOCTOR_ID, date: v.pipe(v.string(), v.isoDate()) })),
   async (c) => {
     const { doctorId, date } = c.req.valid('query');
+    if (doctorId === 'gp-any') return c.json({ taken: [] });
     const rows = await c
       .get('db')
       .select({ at: sql<string>`coalesce(${serviceRequests.scheduledAt}, ${serviceRequests.preferredAt})` })
@@ -144,7 +152,13 @@ appServices.get(
       .where(
         and(
           eq(serviceRequests.kind, 'telehealth'),
-          sql`${serviceRequests.details}->>'doctorId' = ${doctorId}`,
+          or(
+            sql`${serviceRequests.assignedProviderId}::text = ${doctorId}`,
+            and(
+              isNull(serviceRequests.assignedProviderId),
+              sql`${serviceRequests.details}->>'doctorId' = ${doctorId}`,
+            ),
+          ),
           sql`${serviceRequests.status} <> 'CANCELLED'`,
           sql`(coalesce(${serviceRequests.scheduledAt}, ${serviceRequests.preferredAt}) at time zone 'Asia/Manila')::date = ${date}::date`,
         ),

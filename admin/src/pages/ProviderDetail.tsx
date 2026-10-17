@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
+import { useMe } from '../auth';
 import { Icon } from '../components/Icon';
 import { ManageProvider } from '../components/ProviderForms';
 import { Badge, ErrorNotice, Loading, Notice, PageHeader, useLoad } from '../components/ui';
 import { dateTime, SERVICE_KIND_LABEL, SERVICE_STATUS } from '../format';
 
 export function ProviderDetail() {
+  const me = useMe();
+  const isSuper = me.role === 'SUPER_ADMIN';
   const { id = '' } = useParams();
   const detail = useLoad(() => api.provider(id), [id]);
   const [params] = useSearchParams();
@@ -86,14 +89,20 @@ export function ProviderDetail() {
 
       {flash ? <Notice tone="good">{flash}</Notice> : null}
 
-      <ManageProvider
-        key={`${p.isAccredited}${p.isAvailable}${p.accountActive}${p.specialty}${p.vehicleType}${p.plateNumber}`}
-        provider={p}
-        onSaved={(msg) => {
-          setFlash(msg);
-          void detail.reload();
-        }}
-      />
+      {!isDoctor && isSuper ? (
+        <Notice tone="info" title="Municipal Management">
+          Transport operators and drivers are managed and accredited directly by local municipal administrators in {p.municipality}.
+        </Notice>
+      ) : (
+        <ManageProvider
+          key={`${p.isAccredited}${p.isAvailable}${p.accountActive}${p.specialty}${p.vehicleType}${p.plateNumber}`}
+          provider={p}
+          onSaved={(msg) => {
+            setFlash(msg);
+            void detail.reload();
+          }}
+        />
+      )}
 
       <section className="card">
         <h2>Assigned Requests</h2>

@@ -1,6 +1,24 @@
 # advanCARE: Changelog (Operational Brain)
 
-## [2026-10-17] - Centralize Telehealth Assignment in Super Admin Dashboard
+## [2026-10-17] - Service Rating, Unfulfilled Booking Reporting, and Caregiver Booking Flexibility
+- **Completed Service Rating & Feedback**:
+  - Added interactive `StarRating` component (1-5 stars with hover/touch scaling, accessible radio group semantics, and rating labels: Needs improvement, Fair, Good, Very good, Excellent).
+  - Integrated Service Rating card into `RequestDetail` for completed shifts and service requests with comments textarea and submission states.
+  - Implemented rating review cards showing past submitted score, review text, and "Edit rating" functionality.
+  - Updated `RequestsList` to surface completed ratings (e.g. `★ 5.0`) or `★ Rate service` prompt badges.
+  - Added backend endpoints `POST /api/v1/shifts/:id/rate` (updates `caregivers.averageRating`) and `POST /api/v1/service-requests/:id/rate` (persists rating/review in request details).
+- **Unfulfilled Service & Problem Reporting Flow**:
+  - Implemented "Report unfulfilled service" button and collapsible report form on all active, confirmed, and completed requests.
+  - Support categorized reporting reasons: Caregiver/Provider no-show, Service unfulfilled/incomplete, Late arrival, Cancellation without notice, Safety/quality concerns, Billing discrepancies, or Other.
+  - Added status tracking banner displaying reported issue, timestamp, and "Under Review by Care Coordinators" badge.
+  - Added backend endpoints `POST /api/v1/shifts/:id/report` (escalates shift to `ESCALATED` with reason) and `POST /api/v1/service-requests/:id/report` (records report in details and updates staff note).
+- **Caregiver & Doctor Booking Flexibility**:
+  - Solved locked provider selection: Caregiver booking (`CaregiverRequest` in `Care.tsx`) now offers "Caregiver assignment preference" defaulting to "Any available (Fastest - auto-dispatched by coordination team)", with optional "Preferred caregiver" name field.
+  - TeleHealth doctor selection in `demo.ts` and `Modules.tsx` now supports "Any available doctor (Next available)" so clients are not forced to choose a specific physician to book.
+- **Bug Fixes & Hardening**:
+  - Safe date/time formatting helpers in `requestUtils.ts` (`formatWhen`, `formatDay`, `formatTime`) guarding against empty/invalid dates and NaN rendering.
+  - Fixed Vite build PostCSS parent directory traversal error by explicitly configuring `css.postcss: {}` in `frontend/vite.config.ts`.
+
 - **Role Isolation**: Removed per-municipality TeleHealth doctor assignment from the regular staff admin dashboard and centralized it under the Super Admin dashboard.
 - **Operations & Navigation**:
   - Regular staff sidebar in `Operations` now features **Transport Drivers** (`/drivers`), focused purely on municipality transport operators and vehicles.

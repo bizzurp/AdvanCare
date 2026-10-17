@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { Hono } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
@@ -100,6 +100,36 @@ async function slotTaken(db: AppEnv['Variables']['db'], doctorId: string, at: Da
 }
 
 const DOCTOR_ID = v.pipe(v.string(), v.regex(/^[A-Za-z0-9_-]{1,40}$/));
+
+/** Universal list of accredited telehealth doctors for mobile booking across all municipalities. */
+appServices.get('/service-requests/telehealth/doctors', async (c) => {
+  const db = c.get('db');
+  const provUser = alias(users, 'doctor_user');
+  const rows = await db
+    .select({
+      id: providers.id,
+      fullName: provUser.fullName,
+      specialty: providers.specialty,
+      municipality: providers.municipality,
+      barangay: providers.barangay,
+      isAvailable: providers.isAvailable,
+    })
+    .from(providers)
+    .innerJoin(provUser, eq(provUser.id, providers.userId))
+    .where(and(eq(providers.type, 'DOCTOR'), eq(providers.isAccredited, true), eq(provUser.isActive, true)))
+    .orderBy(asc(provUser.fullName));
+
+  return c.json({
+    doctors: rows.map((r) => ({
+      id: r.id,
+      fullName: r.fullName,
+      specialty: r.specialty,
+      municipality: r.municipality,
+      barangay: r.barangay,
+      isAvailable: r.isAvailable,
+    })),
+  });
+});
 
 /** Times already booked for a doctor on one day (Asia/Manila), so the app can grey them out. */
 appServices.get(
@@ -281,3 +311,58 @@ appServices.patch('/service-requests/:id', validate('param', v.object({ id: v.pi
   await db.update(serviceRequests).set({ details, preferredAt }).where(eq(serviceRequests.id, row.id));
   return c.json({ ok: true, preferredAt });
 });
+
+const ServiceRate = v.strictObject({
+  rating: v.pipe(v.number(), v.integer(), v.minValue(1, 'Rating must be at least 1 star.'), v.maxValue(5, 'Rating cannot exceed 5 stars.')),
+  review: v.optional(v.pipe(v.string(), v.trim(), v.maxLength(1000))),
+});
+
+appServices.post('/service-requests/:id/rate', validate('param', v.object({ id: v.pipe(v.string(), v.uuid()) })), validate('json', ServiceRate), async (c) => {
+  const db = c.get('db');
+  const serviceId = c.req.valid('param').id;
+  const { rating, review } = c.req.valid('json');
+
+  const [row] = await db
+    .select({ id: serviceRequests.id, status: serviceRequests.status, details: serviceRequests.details })
+    .from(serviceRequests)
+    .innerJoin(clientProfiles, eq(clientProfiles.id, serviceRequests.clientId))
+    .where(and(eq(serviceRequests.id, serviceId), eq(clientProfiles.userId, c.get('clientUserId'))))
+    .limit(1);
+
+  if (!row) throw new ApiError(404, 'NOT_FOUND', 'Request not found.');
+  if (row.status !== 'COMPLETED') throw new ApiError(409, 'NOT_ALLOWED', 'You can only rate a completed service.');
+
+  const details = { ...(row.details as Record<string, unknown>), rating, review: review || null, ratedAt: new Date().toISOString() };
+  await db.update(serviceRequests).set({ details }).where(eq(serviceRequests.id, row.id));
+
+  return c.json({ ok: true, rating, review: review || null });
+});
+
+const ServiceReport = v.strictObject({
+  reason: v.pipe(v.string(), v.trim(), v.minLength(3, 'Select or describe the reason for your report.'), v.maxLength(200)),
+  details: v.optional(v.pipe(v.string(), v.trim(), v.maxLength(1000))),
+});
+
+appServices.post('/service-requests/:id/report', validate('param', v.object({ id: v.pipe(v.string(), v.uuid()) })), validate('json', ServiceReport), async (c) => {
+  const db = c.get('db');
+  const serviceId = c.req.valid('param').id;
+  const { reason, details } = c.req.valid('json');
+
+  const [row] = await db
+    .select({ id: serviceRequests.id, status: serviceRequests.status, details: serviceRequests.details })
+    .from(serviceRequests)
+    .innerJoin(clientProfiles, eq(clientProfiles.id, serviceRequests.clientId))
+    .where(and(eq(serviceRequests.id, serviceId), eq(clientProfiles.userId, c.get('clientUserId'))))
+    .limit(1);
+
+  if (!row) throw new ApiError(404, 'NOT_FOUND', 'Request not found.');
+
+  const reportData = { reason, details: details || null, reportedAt: new Date().toISOString() };
+  const updatedDetails = { ...(row.details as Record<string, unknown>), reportedIssue: reportData };
+  const staffNote = `[ISSUE REPORTED: ${reason}]${details ? ` ${details}` : ''}`;
+
+  await db.update(serviceRequests).set({ details: updatedDetails, staffNote }).where(eq(serviceRequests.id, row.id));
+
+  return c.json({ ok: true });
+});
+

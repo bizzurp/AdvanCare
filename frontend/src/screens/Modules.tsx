@@ -17,7 +17,7 @@ import {
   TextField,
 } from '../components/ui';
 import { DEPENDENCIES, FACILITY_LEVELS, RHU_PROVIDER_TYPES, RHU_SERVICES, RHU_VISIT_MODES, type FacilityLevel, type RhuProviderType } from '../data/catalog';
-import { DEMO_GPS, DEMO_RHUS, DEMO_SLOTS } from '../data/demo';
+import { DEMO_GPS, DEMO_RHUS, DEMO_SLOTS, type DemoDoctor } from '../data/demo';
 import { fetchTelehealthDoctors, takenTeleSlots } from '../services/api';
 import { useApp, useDraft } from '../state/AppState';
 import { combine, formatDay, toDateInput, useSubmitRequest } from './requestUtils';
@@ -42,7 +42,19 @@ export function TeleHealth() {
   const { submit, submitting, error } = useSubmitRequest();
   const [errors, setErrors] = useState<{ time?: string }>({});
   const { session } = useApp();
-  const doc = DEMO_GPS.find((g) => g.id === d.doctorId) ?? DEMO_GPS[0];
+  const [doctors, setDoctors] = useState<DemoDoctor[]>(DEMO_GPS);
+
+  useEffect(() => {
+    let stop = false;
+    fetchTelehealthDoctors(session?.accessToken).then((list) => {
+      if (!stop && list.length) setDoctors(list);
+    });
+    return () => {
+      stop = true;
+    };
+  }, [session]);
+
+  const doc = doctors.find((g) => g.id === d.doctorId) ?? doctors[0] ?? DEMO_GPS[0];
   // Times other families already booked with this doctor (from the server).
   const [taken, setTaken] = useState<Set<string>>(new Set());
   useEffect(() => {
@@ -73,6 +85,7 @@ export function TeleHealth() {
       scheduledFor: at.toISOString(),
       details: [
         { label: 'Doctor', value: `${doc.name} · ${doc.specialty}`, icon: 'stethoscope' },
+        { label: 'Coverage', value: 'Universal booking (All municipalities)', icon: 'map-point' },
         { label: 'Consultation', value: d.mode, icon: 'chat-round-dots' },
         { label: 'Reason', value: d.reason + (d.notes ? ` — ${d.notes}` : ''), icon: 'document-text' },
       ],
@@ -92,8 +105,8 @@ export function TeleHealth() {
               {doc.name}
             </div>
             <div className="t-small t-muted">{doc.specialty}</div>
-            <div className="t-caption" style={{ color: 'var(--gold)' }}>
-              ★ {doc.rating} · {doc.reviews} reviews
+            <div className="t-caption" style={{ color: 'var(--gold, #996116)' }}>
+              ★ {doc.rating ?? 4.9} · {doc.reviews ?? 120} reviews
             </div>
           </div>
         </div>
@@ -155,24 +168,37 @@ export function TeleHealth() {
 // ---------------- 24 / Choose doctor ----------------
 export function ChooseDoctor() {
   const navigate = useNavigate();
+  const { session } = useApp();
   const [d, set] = useDraft<TeleDraft>(TELE_KEY, teleInit);
+  const [doctors, setDoctors] = useState<DemoDoctor[]>(DEMO_GPS);
   const [pick, setPick] = useState(d.doctorId);
-  const chosen = DEMO_GPS.find((g) => g.id === pick)!;
+
+  useEffect(() => {
+    let stop = false;
+    fetchTelehealthDoctors(session?.accessToken).then((list) => {
+      if (!stop && list.length) setDoctors(list);
+    });
+    return () => {
+      stop = true;
+    };
+  }, [session]);
+
+  const chosen = doctors.find((g) => g.id === pick) ?? doctors[0] ?? DEMO_GPS[0];
   return (
     <Screen>
       <PageHeader title="Choose a doctor" />
       <div className="screen-body stack gap-16">
-        <h2 className="t-h2">Your consultation provider.</h2>
+        <h2 className="t-h2">Universal consultation booking</h2>
         <p className="t-small t-muted" style={{ marginTop: -8 }}>
-          General practitioners available for TeleHealth.
+          Telehealth physicians are available across all Cagayan LGUs and municipalities without regional restrictions.
         </p>
         <ChoiceGroup label="Doctors">
-          {DEMO_GPS.map((g) => (
+          {doctors.map((g) => (
             <ChoiceRow
               key={g.id}
               icon="stethoscope"
               title={g.name}
-              desc={`${g.specialty} · ${g.rating} rating · ${g.languages.join(', ')}`}
+              desc={`${g.specialty} · ★ ${g.rating ?? 4.9} rating${g.municipality ? ` · ${g.municipality}` : ''}`}
               selected={pick === g.id}
               onSelect={() => setPick(g.id)}
             />

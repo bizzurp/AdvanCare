@@ -189,9 +189,6 @@ adminServices.get('/service-requests/:id/candidates', validate('param', IdParam)
   const staff = c.get('staff');
   const row = await loadService(c, c.req.valid('param').id);
   const kind = row.sr.kind;
-  if (kind === 'telehealth' && staff.role !== 'SUPER_ADMIN') {
-    throw new ApiError(403, 'FORBIDDEN', 'Only Super Admins can view and assign telehealth doctor candidates.');
-  }
   const targetType = kind === 'telehealth' ? 'DOCTOR' : kind === 'transport' ? 'TRANSPORT_DRIVER' : null;
   if (!targetType) return c.json({ candidates: [] });
 
@@ -217,7 +214,7 @@ adminServices.get('/service-requests/:id/candidates', validate('param', IdParam)
     .where(
       and(
         eq(providers.type, targetType),
-        scopeCondition(staff, providers.municipality),
+        targetType === 'DOCTOR' ? undefined : scopeCondition(staff, providers.municipality),
       ),
     )
     .orderBy(asc(provUser.fullName));
@@ -288,10 +285,8 @@ adminServices.post(
       .limit(1);
 
     if (!provider) throw new ApiError(404, 'NOT_FOUND', 'Provider not found.');
-    assertInScope(staff, provider.municipality, 'Provider');
-
-    if (row.sr.kind === 'telehealth' && staff.role !== 'SUPER_ADMIN') {
-      throw new ApiError(403, 'FORBIDDEN', 'Only Super Admins can assign doctors to telehealth requests.');
+    if (provider.type === 'TRANSPORT_DRIVER') {
+      assertInScope(staff, provider.municipality, 'Provider');
     }
 
     const expectedType = row.sr.kind === 'telehealth' ? 'DOCTOR' : row.sr.kind === 'transport' ? 'TRANSPORT_DRIVER' : null;

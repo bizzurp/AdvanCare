@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
 import { useMe } from '../auth';
 import { Icon } from '../components/Icon';
-import { Pagination, ScopeNote, useUrlFilters } from '../components/ops';
+import { Pagination, useUrlFilters } from '../components/ops';
 import { AddDoctorModal } from '../components/ProviderForms';
 import { Badge, Button, ErrorNotice, Loading, PageHeader, useLoad } from '../components/ui';
 
@@ -17,19 +17,19 @@ export function TelehealthDoctors() {
   const [params] = useSearchParams();
   const [addingDoctor, setAddingDoctor] = useState(params.get('add') === 'doctor');
 
+  const isSuper = me.role === 'SUPER_ADMIN';
+
   return (
     <>
       <PageHeader
         title="Telehealth Doctors"
-        subtitle={
-          <>
-            Physicians, teleconsultants and medical specialists · Super Admin · <ScopeNote municipalities={me.municipalities} />
-          </>
-        }
+        subtitle="Physicians, teleconsultants and medical specialists · Universal across all LGUs"
         actions={
-          <Button onClick={() => setAddingDoctor(true)}>
-            Add doctor
-          </Button>
+          isSuper ? (
+            <Button onClick={() => setAddingDoctor(true)}>
+              Add doctor
+            </Button>
+          ) : null
         }
       />
 
@@ -104,7 +104,7 @@ export function TelehealthDoctors() {
                 {!list.data.providers.length ? (
                   <tr>
                     <td colSpan={8} className="empty">
-                      {f.active ? 'No doctors match these filters.' : 'No doctors registered in your municipalities yet.'}
+                      {f.active ? 'No doctors match these filters.' : 'No doctors registered yet.'}
                     </td>
                   </tr>
                 ) : null}

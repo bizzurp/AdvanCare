@@ -7,21 +7,29 @@ import { useApp } from '../state/AppState';
 const month = (d: Date, style: 'short' | 'long') => d.toLocaleDateString('en-PH', { month: style });
 
 /** "16 Oct 2026 · 10:00 AM" — matches the design's date style. */
-export function formatWhen(iso: string) {
+export function formatWhen(iso?: string | null) {
+  if (!iso) return 'Not scheduled';
   const d = new Date(iso);
+  if (isNaN(d.getTime())) return String(iso);
   return `${d.getDate()} ${month(d, 'short')} ${d.getFullYear()} · ${formatTime(iso)}`;
 }
 
 /** "16 October 2026" */
-export function formatDay(iso: string) {
+export function formatDay(iso?: string | null) {
+  if (!iso) return '';
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
   const d = m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : new Date(iso);
+  if (isNaN(d.getTime())) return String(iso);
   return `${d.getDate()} ${month(d, 'long')} ${d.getFullYear()}`;
 }
 
-export function formatTime(iso: string) {
-  return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+export function formatTime(iso?: string | null) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return String(iso);
+  return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 }
+
 
 export function addDays(base: Date, n: number) {
   const d = new Date(base);

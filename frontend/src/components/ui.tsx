@@ -1,9 +1,10 @@
-import { forwardRef, useId, type ReactNode, type InputHTMLAttributes, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react';
+import { forwardRef, useId, useState, type ReactNode, type InputHTMLAttributes, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import emblem from '../assets/logo-emblem.png';
 import { Icon, type IconName } from './Icon';
 import { useApp } from '../state/AppState';
 import type { RequestStatus } from '../data/types';
+
 
 // ---------- Brand ----------
 export function Brand({ size = 'md' }: { size?: 'md' | 'sm' }) {
@@ -391,6 +392,95 @@ export function Stepper({ steps, current }: { steps: string[]; current: number }
     </nav>
   );
 }
+
+// ---------- Star Rating ----------
+const RATING_LABELS: Record<number, string> = {
+  1: 'Needs improvement',
+  2: 'Fair',
+  3: 'Good',
+  4: 'Very good',
+  5: 'Excellent',
+};
+
+export function StarRating({
+  value,
+  onChange,
+  size = 28,
+  readOnly = false,
+  showLabel = true,
+}: {
+  value: number;
+  onChange?: (val: number) => void;
+  size?: number;
+  readOnly?: boolean;
+  showLabel?: boolean;
+}) {
+  const [hover, setHover] = useState<number | null>(null);
+  const active = hover ?? value;
+
+  return (
+    <div className="stack gap-4">
+      <div
+        className="row gap-8"
+        role={readOnly ? 'img' : 'radiogroup'}
+        aria-label={readOnly ? `${value} out of 5 stars` : 'Rate service 1 to 5 stars'}
+      >
+        {[1, 2, 3, 4, 5].map((star) => {
+          const filled = star <= active;
+          if (readOnly) {
+            return (
+              <span
+                key={star}
+                style={{
+                  fontSize: size,
+                  lineHeight: 1,
+                  color: filled ? 'var(--gold, #996116)' : 'var(--line, #d3dfd7)',
+                  userSelect: 'none',
+                }}
+                aria-hidden="true"
+              >
+                ★
+              </span>
+            );
+          }
+          return (
+            <button
+              key={star}
+              type="button"
+              role="radio"
+              aria-checked={value === star}
+              aria-label={`${star} star${star > 1 ? 's' : ''}: ${RATING_LABELS[star]}`}
+              onClick={() => onChange?.(star)}
+              onMouseEnter={() => setHover(star)}
+              onMouseLeave={() => setHover(null)}
+              onFocus={() => setHover(star)}
+              onBlur={() => setHover(null)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                padding: '4px',
+                cursor: 'pointer',
+                fontSize: size,
+                lineHeight: 1,
+                color: filled ? 'var(--gold, #996116)' : 'var(--line, #d3dfd7)',
+                transition: 'transform 0.15s ease, color 0.15s ease',
+                transform: active === star ? 'scale(1.2)' : 'none',
+              }}
+            >
+              ★
+            </button>
+          );
+        })}
+      </div>
+      {showLabel && active > 0 && (
+        <span className="t-small t-medium" style={{ color: 'var(--gold, #996116)' }}>
+          {RATING_LABELS[active] ?? `${active} stars`}
+        </span>
+      )}
+    </div>
+  );
+}
+
 
 // ---------- Bottom navigation ----------
 export type Tab = 'home' | 'services' | 'reports' | 'assistant' | 'more';

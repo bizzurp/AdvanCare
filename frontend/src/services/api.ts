@@ -1,6 +1,7 @@
 // The app's only network boundary. Every request goes to the AdvanCare API; the UI never claims
 // a request reached the care team unless the API accepted it.
 import type { ClientProfile, FamilyMember, RequestStatus, ServiceKind, ServiceRequest } from '../data/types';
+import { DEMO_GPS, type DemoDoctor } from '../data/demo';
 
 /** VITE_API_BASE_URL wins; otherwise the local API in development and the hosted API in builds. */
 const DEFAULT_API = import.meta.env.DEV ? 'http://localhost:8787' : 'https://advancare-api.mcleinonza0531.workers.dev';
@@ -284,6 +285,14 @@ export async function cancelServiceRequest(serverId: string, token: string): Pro
   await post(`/api/v1/service-requests/${serverId}/cancel`, {}, token);
 }
 
+export async function rateServiceRequest(serverId: string, token: string, rating: number, review?: string): Promise<void> {
+  await post(`/api/v1/service-requests/${serverId}/rate`, { rating, review }, token);
+}
+
+export async function reportServiceRequest(serverId: string, token: string, reason: string, details?: string): Promise<void> {
+  await post(`/api/v1/service-requests/${serverId}/report`, { reason, details }, token);
+}
+
 /** Change a request's time or what was entered, until staff schedule it. */
 export async function updateServiceRequest(serverId: string, token: string, patch: { preferredAt?: string | null; summary?: string; details?: Record<string, unknown> }): Promise<void> {
   await post(`/api/v1/service-requests/${serverId}`, patch, token, undefined, 'PATCH');
@@ -295,6 +304,28 @@ export async function takenTeleSlots(token: string, doctorId: string, date: stri
   return (await get<{ taken: string[] }>(`/api/v1/service-requests/telehealth/taken?${q}`, token)).taken;
 }
 
+/** Universal list of accredited telehealth doctors across all LGUs and municipalities. */
+export async function fetchTelehealthDoctors(token?: string): Promise<DemoDoctor[]> {
+  if (!token) return DEMO_GPS;
+  try {
+    const res = await get<{ doctors: Array<{ id: string; fullName: string; specialty: string | null; municipality: string; isAvailable: boolean }> }>('/api/v1/service-requests/telehealth/doctors', token);
+    if (!res.doctors?.length) return DEMO_GPS;
+    return res.doctors.map((d) => ({
+      id: d.id,
+      name: d.fullName.startsWith('Dr.') ? d.fullName : `Dr. ${d.fullName}`,
+      initials: (d.fullName.replace(/^Dr\.\s*/, '').split(/\s+/).map((w) => w[0]).slice(0, 2).join('') || 'DR').toUpperCase(),
+      specialty: d.specialty || 'General practitioner',
+      rating: 4.9,
+      reviews: 58,
+      languages: ['English', 'Tagalog', 'Ilocano'],
+      municipality: d.municipality,
+      isAvailable: d.isAvailable,
+    }));
+  } catch {
+    return DEMO_GPS;
+  }
+}
+
 /** Families move or cancel a caregiver booking until a caregiver is assigned. */
 export async function updateShift(serverId: string, token: string, change: { scheduledDate: string; scheduledStartTime: string; locationDetails?: string }): Promise<void> {
   await post(`/api/v1/shifts/${serverId}`, change, token, undefined, 'PATCH');
@@ -302,6 +333,15 @@ export async function updateShift(serverId: string, token: string, change: { sch
 export async function cancelShift(serverId: string, token: string): Promise<void> {
   await post(`/api/v1/shifts/${serverId}/cancel`, {}, token);
 }
+
+export async function rateShift(serverId: string, token: string, rating: number, review?: string): Promise<void> {
+  await post(`/api/v1/shifts/${serverId}/rate`, { rating, review }, token);
+}
+
+export async function reportShift(serverId: string, token: string, reason: string, details?: string): Promise<void> {
+  await post(`/api/v1/shifts/${serverId}/report`, { reason, details }, token);
+}
+
 
 // ---------- Live status of bookings (GET /api/v1/shifts/mine) ----------
 export type ServerShiftStatus = 'REQUESTED' | 'MATCHING' | 'CONFIRMED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'ESCALATED';

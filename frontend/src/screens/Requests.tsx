@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
-import { ActionBar, Badge, Banner, Button, DependencyNote, DetailRow, LinkButton, PageHeader, Screen, Segmented, StatusBadge, TextArea, TextField } from '../components/ui';
+import { ActionBar, Badge, Banner, Button, DependencyNote, DetailRow, LinkButton, PageHeader, Screen, Segmented, SelectField, StarRating, StatusBadge, TextArea, TextField } from '../components/ui';
 import { serviceIcon, serviceTitle } from '../data/catalog';
 import type { RequestStatus, ServiceKind, ServiceRequest } from '../data/types';
-import { ApiError, cancelServiceRequest, cancelShift, isServiceKind, serviceBody, shiftNotes, submitServiceRequest, updateServiceRequest, updateShift, type CareNote } from '../services/api';
+import { ApiError, cancelServiceRequest, cancelShift, isServiceKind, rateServiceRequest, rateShift, reportServiceRequest, reportShift, serviceBody, shiftNotes, submitServiceRequest, updateServiceRequest, updateShift, type CareNote } from '../services/api';
 import { useApp } from '../state/AppState';
 import { formatWhen } from './requestUtils';
+
 
 // ---------------- 20 / Request received ----------------
 export function RequestReceived() {
@@ -100,11 +101,32 @@ export function RequestsList() {
                     <span className="row-desc" style={{ display: 'block' }}>
                       {r.summary}
                     </span>
-                    <span className="t-caption t-muted">{formatWhen(r.scheduledFor ?? r.createdAt)}</span>
+                    <span className="row between" style={{ alignItems: 'center', marginTop: 4 }}>
+                      <span className="t-caption t-muted">{formatWhen(r.scheduledFor ?? r.createdAt)}</span>
+                      <span className="row gap-8" style={{ alignItems: 'center' }}>
+                        {r.reportedIssue && (
+                          <span className="badge badge-error" style={{ fontSize: 11, padding: '2px 8px' }}>
+                            Issue reported
+                          </span>
+                        )}
+                        {r.status === 'completed' && (
+                          r.rating ? (
+                            <span className="t-caption t-medium" style={{ color: 'var(--gold, #996116)' }}>
+                              ★ {r.rating.toFixed(1)}
+                            </span>
+                          ) : (
+                            <span className="badge badge-pending" style={{ fontSize: 11, padding: '2px 8px' }}>
+                              ★ Rate service
+                            </span>
+                          )
+                        )}
+                      </span>
+                    </span>
                   </span>
                 </Link>
               </li>
             ))}
+
           </ul>
         )}
       </div>
@@ -157,11 +179,27 @@ export function RequestDetail() {
   const [note, setNote] = useState('');
   const [noteError, setNoteError] = useState('');
   const [savingNote, setSavingNote] = useState(false);
+
+  // Rating state
+  const [ratingValue, setRatingValue] = useState(r?.rating ?? 5);
+  const [ratingComment, setRatingComment] = useState(r?.ratingReview ?? '');
+  const [ratingSubmitting, setRatingSubmitting] = useState(false);
+  const [ratingError, setRatingError] = useState('');
+  const [isEditingRating, setIsEditingRating] = useState(false);
+
+  // Issue reporting state
+  const [reportingIssue, setReportingIssue] = useState(false);
+  const [reportReason, setReportReason] = useState('Caregiver or provider did not show up (No-show)');
+  const [reportDetails, setReportDetails] = useState('');
+  const [reportSubmitting, setReportSubmitting] = useState(false);
+  const [reportError, setReportError] = useState('');
+
   if (!r) return <Navigate to="/requests" replace />;
 
   const p = progress(r.status);
-  const steps = STEPS[r.kind];
+  const steps = STEPS[r.kind] ?? ['Requested', 'Confirmed', 'In progress', 'Completed'];
   const canChange = ['saved-demo', 'queued', 'submitted'].includes(r.status) && !r.isDemoRecord;
+
   // Until staff confirm it (or assign a caregiver), the family can move, edit or cancel it here.
   const onServer = !!r.serverId && !!session;
   const canReschedule = canChange;
@@ -262,6 +300,23 @@ export function RequestDetail() {
               <Badge tone="success">Paid</Badge>
             </p>
           ) : null}
+          {r.reportedIssue && (
+            <div className="banner banner-warn" role="status" style={{ borderLeft: '4px solid var(--red, #a83a32)' }}>
+              <span style={{ color: 'var(--red, #a83a32)', display: 'inline-flex' }}>
+                <Icon name="chat-round-dots" />
+              </span>
+              <div className="stack gap-4 grow">
+                <strong style={{ color: 'var(--red, #a83a32)' }}>Issue Reported: {r.reportedIssue.reason}</strong>
+                {r.reportedIssue.details && <p className="t-small">{r.reportedIssue.details}</p>}
+                <p className="t-caption t-muted">
+                  Reported {formatWhen(r.reportedIssue.reportedAt)} · Status: <strong>Under Review</strong>
+                </p>
+                <p className="t-caption" style={{ color: 'var(--ink)' }}>
+                  Our care coordination team is actively investigating this unfulfilled booking and will contact your household.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
         {r.serverId && session && (r.careNotes ?? 0) > 0 ? <CareNotes serverId={r.serverId} token={session.accessToken} /> : null}
 
@@ -303,6 +358,191 @@ export function RequestDetail() {
             <DetailRow key={d.label} icon={d.icon ?? 'document-text'} label={d.label} value={d.value} />
           ))}
         </section>
+
+        {/* Rating section when completed */}
+        {r.status === 'completed' && (
+          <section className="stack gap-12" aria-labelledby="rating-heading">
+            <h3 className="t-section" id="rating-heading">
+              Service Rating & Feedback
+            </h3>
+            {r.rating && !isEditingRating ? (
+              <div className="card stack gap-12" style={{ background: '#FFFFFF', border: '1px solid var(--line)', borderRadius: 14 }}>
+                <div className="row between">
+                  <span className="t-medium">Your rating</span>
+                  <button
+                    type="button"
+                    className="link-btn"
+                    onClick={() => {
+                      setRatingValue(r.rating ?? 5);
+                      setRatingComment(r.ratingReview ?? '');
+                      setIsEditingRating(true);
+                    }}
+                  >
+                    Edit rating
+                  </button>
+                </div>
+                <div className="row gap-8" style={{ alignItems: 'center' }}>
+                  <StarRating value={r.rating} readOnly size={22} showLabel={false} />
+                  <span className="t-medium" style={{ color: 'var(--gold, #996116)', marginLeft: 4 }}>
+                    {r.rating.toFixed(1)} / 5.0
+                  </span>
+                </div>
+                {r.ratingReview ? <p className="t-body" style={{ fontStyle: 'italic', color: 'var(--ink)' }}>“{r.ratingReview}”</p> : null}
+                <p className="t-caption t-muted">Submitted {formatWhen(r.ratedAt ?? r.createdAt)}</p>
+              </div>
+            ) : (
+              <div className="card stack gap-16" style={{ background: '#FAFBF9', border: '1.5px solid var(--line)', borderRadius: 14 }}>
+                <div className="stack gap-4">
+                  <h4 className="t-medium" style={{ fontSize: 16 }}>
+                    {isEditingRating ? 'Update your rating' : `How was your ${serviceTitle(r.kind)}?`}
+                  </h4>
+                  <p className="t-small t-muted">
+                    {isEditingRating ? 'Change your score or feedback below.' : 'Your feedback helps improve care quality and supports our accredited providers.'}
+                  </p>
+                </div>
+                <StarRating value={ratingValue} onChange={setRatingValue} size={32} showLabel={true} />
+                <TextArea
+                  label="Comments or feedback (optional)"
+                  placeholder="Tell us about the care received, punctuality, or any notes..."
+                  value={ratingComment}
+                  maxLength={1000}
+                  onChange={(e) => setRatingComment(e.target.value)}
+                />
+                {ratingError && <Banner tone="error">{ratingError}</Banner>}
+                <div className="row gap-12">
+                  {isEditingRating && (
+                    <Button variant="secondary" onClick={() => setIsEditingRating(false)}>
+                      Cancel
+                    </Button>
+                  )}
+                  <Button
+                    loading={ratingSubmitting}
+                    onClick={async () => {
+                      setRatingSubmitting(true);
+                      setRatingError('');
+                      try {
+                        if (onServer && r.serverId && session) {
+                          if (isServiceKind(r.kind)) {
+                            await rateServiceRequest(r.serverId, session.accessToken, ratingValue, ratingComment.trim() || undefined);
+                          } else {
+                            await rateShift(r.serverId, session.accessToken, ratingValue, ratingComment.trim() || undefined);
+                          }
+                        }
+                        updateRequest(r.id, {
+                          rating: ratingValue,
+                          ratingReview: ratingComment.trim() || undefined,
+                          ratedAt: new Date().toISOString(),
+                        });
+                        setIsEditingRating(false);
+                      } catch (err) {
+                        setRatingError(err instanceof ApiError ? err.message : 'Could not save rating. Try again.');
+                      } finally {
+                        setRatingSubmitting(false);
+                      }
+                    }}
+                  >
+                    Submit rating
+                  </Button>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Report Unfulfilled Service or Problem */}
+        {r.status !== 'cancelled' && (
+          <section className="stack gap-12">
+            {!r.reportedIssue && !reportingIssue ? (
+              <div className="card row between" style={{ background: '#FFFDFD', border: '1px dashed var(--line)', padding: '14px 16px', alignItems: 'center' }}>
+                <div className="stack gap-2">
+                  <span className="t-medium" style={{ fontSize: 15 }}>Having trouble with this service?</span>
+                  <span className="t-caption t-muted">Report unfulfilled service, no-show, or care concern</span>
+                </div>
+                <button
+                  type="button"
+                  className="link-btn"
+                  style={{ color: 'var(--red, #a83a32)', fontWeight: 600, whiteSpace: 'nowrap' }}
+                  onClick={() => setReportingIssue(true)}
+                >
+                  Report issue
+                </button>
+              </div>
+            ) : reportingIssue ? (
+              <div className="card stack gap-16" style={{ background: '#FFFBFB', border: '1.5px solid var(--red-bg, #fbe9e7)', borderRadius: 14 }}>
+                <div className="stack gap-4">
+                  <h3 className="t-section" style={{ color: 'var(--red, #a83a32)', fontSize: 17 }}>Report unfulfilled service</h3>
+                  <p className="t-small t-muted">
+                    Was your booking not fulfilled, a caregiver or driver didn’t arrive, or was there a problem? Let us know so our coordination team can take immediate action.
+                  </p>
+                </div>
+                <SelectField
+                  label="What happened?"
+                  options={[
+                    'Caregiver or provider did not show up (No-show)',
+                    'Service was not performed or incomplete',
+                    'Caregiver or provider arrived significantly late',
+                    'Service was cancelled without notice',
+                    'Safety or quality of care concern',
+                    'Billing or payment discrepancy',
+                    'Other issue',
+                  ]}
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                />
+                <TextArea
+                  label="Please provide details (optional)"
+                  placeholder="Explain what happened so our care coordination team can investigate..."
+                  value={reportDetails}
+                  maxLength={1000}
+                  onChange={(e) => setReportDetails(e.target.value)}
+                />
+                {reportError && <Banner tone="error">{reportError}</Banner>}
+                <div className="grid-2">
+                  <Button variant="secondary" onClick={() => setReportingIssue(false)}>
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="danger"
+                    loading={reportSubmitting}
+                    onClick={async () => {
+                      if (!reportReason.trim()) {
+                        setReportError('Please select a reason.');
+                        return;
+                      }
+                      setReportSubmitting(true);
+                      setReportError('');
+                      try {
+                        if (onServer && r.serverId && session) {
+                          if (isServiceKind(r.kind)) {
+                            await reportServiceRequest(r.serverId, session.accessToken, reportReason, reportDetails.trim() || undefined);
+                          } else {
+                            await reportShift(r.serverId, session.accessToken, reportReason, reportDetails.trim() || undefined);
+                          }
+                        }
+                        updateRequest(r.id, {
+                          reportedIssue: {
+                            reason: reportReason,
+                            details: reportDetails.trim() || undefined,
+                            reportedAt: new Date().toISOString(),
+                            status: 'under_review',
+                          },
+                        });
+                        setReportingIssue(false);
+                      } catch (err) {
+                        setReportError(err instanceof ApiError ? err.message : 'Could not submit report. Try again.');
+                      } finally {
+                        setReportSubmitting(false);
+                      }
+                    }}
+                  >
+                    Submit report
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+          </section>
+        )}
+
 
         {r.dependencyNote && <DependencyNote>{r.dependencyNote}</DependencyNote>}
 

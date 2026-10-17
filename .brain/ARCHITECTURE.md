@@ -128,16 +128,18 @@ advanCARE connects grassroots rural households in Cagayan to accredited local ca
   - Created `providers` table: `id`, `user_id` (FK RESTRICT to `users`), `type`, `municipality`, `barangay`, `specialty`, `license_number` (PRC), `vehicle_type`, `plate_number`, `is_available`, `is_accredited`, `created_at`, `updated_at`.
   - Added `assigned_provider_id` to `service_requests` table (FK RESTRICT to `providers`, indexed with `service_requests_assigned_provider_idx`).
 - **Staff API (`routes/admin/providers.ts` & `routes/admin/services.ts`):**
-  - Scoped provider management: `GET /api/v1/admin/providers` (filters: `type`, `municipality`, `available`, `q`; non-super admins are restricted to `TRANSPORT_DRIVER`), `POST /api/v1/admin/providers` (`DOCTOR` creation strictly restricted to `SUPER_ADMIN`), `GET /api/v1/admin/providers/:id` (doctor details restricted to `SUPER_ADMIN`), `PATCH /api/v1/admin/providers/:id` (doctor updates restricted to `SUPER_ADMIN`).
-  - Candidate matching: `GET /api/v1/admin/service-requests/:id/candidates` (for `telehealth`, restricted to `SUPER_ADMIN`; returns accredited physicians province-wide without cross-municipality warnings; for `transport`, scoped to staff municipality).
-  - Assignment: `POST /api/v1/admin/service-requests/:id/assign` (assigning doctors to `telehealth` restricted to `SUPER_ADMIN`; sets status to `SCHEDULED`, writes `service_request.assigned` audit log, and notifies family via email).
+  - Scoped provider management: `GET /api/v1/admin/providers` (filters: `type`, `municipality`, `available`, `q`; telehealth doctors are de-regionalized and viewable by all staff; transport drivers are scoped to assigned staff municipalities). `POST /api/v1/admin/providers` (`DOCTOR` creation strictly restricted to `SUPER_ADMIN`; `TRANSPORT_DRIVER` creation restricted to local municipal admins, returning 403 to Super Admins). `GET /api/v1/admin/providers/:id` (telehealth doctor profiles viewable by all staff; drivers require municipal scope). `PATCH /api/v1/admin/providers/:id` (`DOCTOR` updates restricted to `SUPER_ADMIN`; `TRANSPORT_DRIVER` updates restricted to local municipal admins).
+  - Candidate matching: `GET /api/v1/admin/service-requests/:id/candidates` (for `telehealth`, open to all staff and returns accredited physicians province-wide with active appointment overlap checks; for `transport`, scoped to staff municipality).
+  - Assignment: `POST /api/v1/admin/service-requests/:id/assign` (open to in-scope staff; assigns provider to request, sets status to `SCHEDULED`, writes `service_request.assigned` audit log, and notifies family via email).
 - **App API (`routes/services.ts`):**
+  - `GET /api/v1/service-requests/telehealth/doctors`: Public client endpoint returning accredited active telehealth physicians province-wide across all 29 LGUs.
+  - `GET /api/v1/service-requests/telehealth/taken`: Slot occupancy check verifying both `assigned_provider_id` and `details->>'doctorId'`, ignoring `'gp-any'` mock IDs.
   - `GET /api/v1/service-requests/mine` left-joins `providers` and `users` to return `assignedProvider` (`id`, `name`, `type`, `specialty`, `licenseNumber`, `vehicleType`, `plateNumber`).
 - **Apps:**
   - Admin Console (`admin/`):
-    - Operations sidebar has **Transport Drivers** (`/drivers`) for regular staff to manage local transport operators and vehicles.
-    - Administration sidebar has **Telehealth Doctors** (`/telehealth`, `superOnly: true`) for provincial doctor onboarding and roster management.
+    - Operations sidebar has **Transport Drivers** (`/drivers`) for regular staff to manage local transport operators and vehicles. Super Admin dashboard and roster pages omit the "Add driver" button.
+    - Administration sidebar has **Telehealth Doctors** (`/telehealth`), accessible across staff, with doctor registration/credentials editing restricted to Super Admin.
     - Super Admin Dashboard (`Home.tsx`): Features a live **Telehealth assignment queue** displaying open teleconsultation requests across all 29 LGUs with direct "Assign Doctor" actions.
-    - Service Requests (`pages/Services.tsx`): Regular admins only see "Assign Driver" on transport requests; telehealth doctor assignment is restricted to Super Admin.
-  - Client PWA (`frontend/`): `Requests.tsx` detail renders assigned provider card (physician name + PRC license / driver name + vehicle details) alongside scheduled times and notes.
+    - Service Requests (`pages/Services.tsx`): Staff can assign doctors to telehealth requests and drivers to transport requests.
+  - Client PWA (`frontend/`): `Modules.tsx` dynamically loads accredited physicians from `/telehealth/doctors`, enables universal booking across all 29 LGUs, syncs doctor selection, and displays the "Universal TeleHealth · Open to all municipalities" badge. `Requests.tsx` detail renders assigned provider card (physician name + PRC license / driver name + vehicle details) alongside scheduled times and notes.
 

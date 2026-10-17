@@ -219,12 +219,32 @@ adminServices.get('/service-requests/:id/candidates', validate('param', IdParam)
     )
     .orderBy(asc(provUser.fullName));
 
+  const checkTime = row.sr.scheduledAt ?? row.sr.preferredAt;
+  const conflictingProviderIds = new Set<string>();
+  if (checkTime) {
+    const conflicts = await db
+      .select({ providerId: serviceRequests.assignedProviderId })
+      .from(serviceRequests)
+      .where(
+        and(
+          sql`${serviceRequests.id} <> ${row.sr.id}`,
+          sql`${serviceRequests.assignedProviderId} is not null`,
+          sql`${serviceRequests.status} in ('SUBMITTED', 'IN_REVIEW', 'SCHEDULED')`,
+          sql`coalesce(${serviceRequests.scheduledAt}, ${serviceRequests.preferredAt}) = ${new Date(checkTime).toISOString()}::timestamptz`,
+        ),
+      );
+    for (const conf of conflicts) {
+      if (conf.providerId) conflictingProviderIds.add(conf.providerId);
+    }
+  }
+
   return c.json({
     candidates: candidates.map((p) => {
       const blockers: string[] = [];
       if (!p.isAvailable) blockers.push('Marked as not available');
       if (!p.isAccredited) blockers.push('Not accredited');
       if (!p.isActive) blockers.push('Account deactivated');
+      if (conflictingProviderIds.has(p.id)) blockers.push('Already booked for another appointment at this time');
       const sameMunicipality = p.municipality.toLowerCase() === row.client.municipality.toLowerCase();
       const warnings: string[] = [];
       if (p.type === 'TRANSPORT_DRIVER' && !sameMunicipality) {

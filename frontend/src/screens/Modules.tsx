@@ -47,12 +47,18 @@ export function TeleHealth() {
   useEffect(() => {
     let stop = false;
     fetchTelehealthDoctors(session?.accessToken).then((list) => {
-      if (!stop && list.length) setDoctors(list);
+      if (!stop && list.length) {
+        setDoctors(list);
+        if (!list.some((g) => g.id === d.doctorId)) {
+          const firstAvailable = list.find((g) => g.isAvailable !== false) ?? list[0];
+          set({ doctorId: firstAvailable.id });
+        }
+      }
     });
     return () => {
       stop = true;
     };
-  }, [session]);
+  }, [session, d.doctorId]);
 
   const doc = doctors.find((g) => g.id === d.doctorId) ?? doctors[0] ?? DEMO_GPS[0];
   // Times other families already booked with this doctor (from the server).
@@ -171,17 +177,22 @@ export function ChooseDoctor() {
   const { session } = useApp();
   const [d, set] = useDraft<TeleDraft>(TELE_KEY, teleInit);
   const [doctors, setDoctors] = useState<DemoDoctor[]>(DEMO_GPS);
-  const [pick, setPick] = useState(d.doctorId);
-
+  const [pick, setPick] = useState(d.doctorId || 'gp-any');
   useEffect(() => {
     let stop = false;
     fetchTelehealthDoctors(session?.accessToken).then((list) => {
-      if (!stop && list.length) setDoctors(list);
+      if (!stop && list.length) {
+        setDoctors(list);
+        if (!list.some((g) => g.id === pick)) {
+          const firstAvailable = list.find((g) => g.isAvailable !== false) ?? list[0];
+          setPick(firstAvailable.id);
+        }
+      }
     });
     return () => {
       stop = true;
     };
-  }, [session]);
+  }, [session, pick]);
 
   const chosen = doctors.find((g) => g.id === pick) ?? doctors[0] ?? DEMO_GPS[0];
   return (
@@ -193,16 +204,21 @@ export function ChooseDoctor() {
           Telehealth physicians are available across all Cagayan LGUs and municipalities without regional restrictions.
         </p>
         <ChoiceGroup label="Doctors">
-          {doctors.map((g) => (
-            <ChoiceRow
-              key={g.id}
-              icon="stethoscope"
-              title={g.name}
-              desc={`${g.specialty} · ★ ${g.rating ?? 4.9} rating${g.municipality ? ` · ${g.municipality}` : ''}`}
-              selected={pick === g.id}
-              onSelect={() => setPick(g.id)}
-            />
-          ))}
+          {doctors.map((g) => {
+            const isAvail = g.isAvailable !== false;
+            return (
+              <ChoiceRow
+                key={g.id}
+                icon="stethoscope"
+                title={g.name}
+                desc={`${g.specialty}${g.municipality ? ` · Based in ${g.municipality}` : ''} · Universal booking${!isAvail ? ' (Currently unavailable)' : ''}`}
+                selected={pick === g.id}
+                onSelect={() => {
+                  if (isAvail) setPick(g.id);
+                }}
+              />
+            );
+          })}
         </ChoiceGroup>
       </div>
       <ActionBar>

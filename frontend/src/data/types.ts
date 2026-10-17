@@ -66,7 +66,21 @@ export interface ServiceRequest {
     plateNumber?: string | null;
   } | null;
   isDemoRecord?: boolean;
+  /** Rating given by user once completed (1 to 5). */
+  rating?: number;
+  /** Review or feedback text submitted with the rating. */
+  ratingReview?: string;
+  /** ISO timestamp when rating was submitted. */
+  ratedAt?: string;
+  /** Unfulfilled or service issue reported by user. */
+  reportedIssue?: {
+    reason: string;
+    details?: string;
+    reportedAt: string;
+    status: 'submitted' | 'under_review' | 'resolved';
+  };
 }
+
 
 export type Role = 'household' | 'coordinator' | 'caregiver';
 

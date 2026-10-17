@@ -41,13 +41,12 @@ adminProviders.get(
     const staff = c.get('staff');
     const f = c.req.valid('query');
     const isSuper = staff.role === 'SUPER_ADMIN';
-    if (!isSuper && f.type === 'DOCTOR') {
-      throw new ApiError(403, 'FORBIDDEN', 'Only Super Admins can access doctors and teleconsultants.');
-    }
-    const targetType = !isSuper ? 'TRANSPORT_DRIVER' : f.type;
+    const isDoctor = f.type === 'DOCTOR';
+    const targetType = f.type;
 
     const where: SQL | undefined = and(
-      scopeCondition(staff, providers.municipality),
+      // Telehealth doctors serve all LGUs universally; only transport drivers are strictly municipality-scoped
+      isDoctor ? undefined : scopeCondition(staff, providers.municipality),
       targetType ? eq(providers.type, targetType) : undefined,
       f.municipality ? eq(providers.municipality, f.municipality) : undefined,
       f.available ? eq(providers.isAvailable, f.available === 'yes') : undefined,
@@ -121,10 +120,12 @@ adminProviders.post(
     const db = c.get('db');
     const staff = c.get('staff');
     const body = c.req.valid('json');
-    if (body.type === 'DOCTOR' && staff.role !== 'SUPER_ADMIN') {
-      throw new ApiError(403, 'FORBIDDEN', 'Only Super Admins can add doctors and teleconsultants.');
+    if (body.type === 'TRANSPORT_DRIVER' && staff.role === 'SUPER_ADMIN') {
+      throw new ApiError(403, 'FORBIDDEN', 'Transport drivers are managed directly by local municipal admins.');
     }
-    if (!inScope(staff, body.municipality)) throw new ApiError(403, 'FORBIDDEN', 'You can only add providers in your own municipalities.');
+    if (body.type === 'TRANSPORT_DRIVER' && !inScope(staff, body.municipality)) {
+      throw new ApiError(403, 'FORBIDDEN', 'You can only add providers in your own municipalities.');
+    }
     if (body.type === 'DOCTOR' && !body.specialty) throw new ApiError(422, 'VALIDATION_FAILED', 'Specialty is required for doctors.');
     if (body.type === 'TRANSPORT_DRIVER' && !body.vehicleType) throw new ApiError(422, 'VALIDATION_FAILED', 'Vehicle type is required for transport drivers.');
 
@@ -191,10 +192,9 @@ adminProviders.get('/providers/:id', validate('param', IdParam), async (c) => {
     .limit(1);
 
   if (!row) throw new ApiError(404, 'NOT_FOUND', 'Provider not found.');
-  if (row.provider.type === 'DOCTOR' && staff.role !== 'SUPER_ADMIN') {
-    throw new ApiError(404, 'NOT_FOUND', 'Provider not found.');
+  if (row.provider.type === 'TRANSPORT_DRIVER') {
+    assertInScope(staff, row.provider.municipality, 'Provider');
   }
-  assertInScope(staff, row.provider.municipality, 'Provider');
 
   const requests = await db
     .select({
@@ -268,11 +268,15 @@ adminProviders.patch(
       .limit(1);
 
     if (!row) throw new ApiError(404, 'NOT_FOUND', 'Provider not found.');
-    if (row.p.type === 'DOCTOR' && staff.role !== 'SUPER_ADMIN') {
-      throw new ApiError(403, 'FORBIDDEN', 'Only Super Admins can update doctors and teleconsultants.');
+    if (row.p.type === 'TRANSPORT_DRIVER') {
+      if (staff.role === 'SUPER_ADMIN') {
+        throw new ApiError(403, 'FORBIDDEN', 'Transport drivers are managed directly by local municipal admins.');
+      }
+      assertInScope(staff, row.p.municipality, 'Provider');
+      if (body.municipality && !inScope(staff, body.municipality)) {
+        throw new ApiError(403, 'FORBIDDEN', 'You can only move providers within your own municipalities.');
+      }
     }
-    assertInScope(staff, row.p.municipality, 'Provider');
-    if (body.municipality && !inScope(staff, body.municipality)) throw new ApiError(403, 'FORBIDDEN', 'You can only move providers within your own municipalities.');
 
     const pChanges: Partial<typeof providers.$inferInsert> = {};
     if (body.isAvailable !== undefined) pChanges.isAvailable = body.isAvailable;

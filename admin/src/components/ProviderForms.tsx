@@ -127,6 +127,8 @@ export function AddDoctorModal({ onClose, onAdded }: { onClose: () => void; onAd
 }
 
 export function AddDriverModal({ onClose, onAdded }: { onClose: () => void; onAdded: (id: string) => void }) {
+  const me = useMe();
+  const isSuper = me.role === 'SUPER_ADMIN';
   const municipalities = useScopeMunicipalities();
   const [form, setForm] = useState({
     fullName: '',
@@ -144,6 +146,14 @@ export function AddDriverModal({ onClose, onAdded }: { onClose: () => void; onAd
   useEffect(() => {
     if (!form.municipality && municipalities.length === 1) set({ municipality: municipalities[0]! });
   }, [municipalities, form.municipality]);
+
+  if (isSuper) {
+    return (
+      <Modal title="Transport Drivers" onClose={onClose}>
+        <p className="muted">Transport drivers are managed directly by local municipal admins for their specific municipality.</p>
+      </Modal>
+    );
+  }
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();

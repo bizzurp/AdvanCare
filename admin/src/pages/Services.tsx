@@ -181,7 +181,7 @@ export function ServiceDetailPage() {
   const isSuper = me.role === 'SUPER_ADMIN';
   const openStatuses: ServiceStatus[] = ['SUBMITTED', 'IN_REVIEW', 'SCHEDULED'];
   const isOpen = openStatuses.includes(r.status);
-  const canAssign = isOpen && (r.kind === 'transport' || (r.kind === 'telehealth' && isSuper));
+  const canAssign = isOpen && (r.kind === 'transport' || r.kind === 'telehealth');
 
   return (
     <>
@@ -220,10 +220,6 @@ export function ServiceDetailPage() {
                     ? 'Assign doctor'
                     : 'Assign driver'}
               </Button>
-            ) : r.kind === 'telehealth' && !isSuper ? (
-              <span className="muted small" style={{ alignSelf: 'center' }}>
-                Telehealth doctor assignment is handled in the Super Admin dashboard.
-              </span>
             ) : null}
             {r.status === 'SUBMITTED' ? (
               <Button
@@ -414,6 +410,8 @@ export function AssignProviderModal({
   onDone: (msg: string) => void;
 }) {
   const r = detail.request;
+  const me = useMe();
+  const isSuper = me.role === 'SUPER_ADMIN';
   const isDoctor = r.kind === 'telehealth';
   const list = useLoad(() => api.serviceCandidates(r.id).then((res) => res.candidates), [r.id]);
   const action = useAction();
@@ -468,7 +466,11 @@ export function AssignProviderModal({
           {hidden
             ? `Every ${isDoctor ? 'doctor' : 'driver'} has a blocker. Show all to see why, or register a new one.`
             : `No ${isDoctor ? 'doctors' : 'drivers'} registered yet.`}{' '}
-          <Link to={isDoctor ? '/telehealth?add=doctor' : '/drivers?add=driver'}>Add a {isDoctor ? 'doctor' : 'driver'}</Link>
+          {isDoctor ? (
+            isSuper ? <Link to="/telehealth?add=doctor">Add a doctor</Link> : null
+          ) : !isSuper ? (
+            <Link to="/drivers?add=driver">Add a driver</Link>
+          ) : null}
         </Notice>
       ) : (
         <ul className="list mb16">

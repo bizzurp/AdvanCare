@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
-import { useMe } from '../auth';
 import { Icon } from '../components/Icon';
 import { ManageProvider } from '../components/ProviderForms';
 import { Badge, ErrorNotice, Loading, Notice, PageHeader, useLoad } from '../components/ui';
 import { dateTime, SERVICE_KIND_LABEL, SERVICE_STATUS } from '../format';
 
 export function ProviderDetail() {
-  const me = useMe();
-  const isSuper = me.role === 'SUPER_ADMIN';
   const { id = '' } = useParams();
   const detail = useLoad(() => api.provider(id), [id]);
   const [params] = useSearchParams();
@@ -22,16 +19,6 @@ export function ProviderDetail() {
 
   const { provider: p, requests, stats } = detail.data;
   const isDoctor = p.type === 'DOCTOR';
-
-  if (isDoctor && !isSuper) {
-    return (
-      <div className="card">
-        <h1>Access restricted</h1>
-        <p className="muted">Only Super Admins can view and manage doctor profiles.</p>
-        <Link to="/drivers">Back to Transport Drivers</Link>
-      </div>
-    );
-  }
 
   return (
     <>

@@ -68,7 +68,7 @@ export function App() {
             <Route path="drivers" element={<Drivers />} />
             <Route path="providers" element={<Navigate to="/drivers" replace />} />
             <Route path="providers/:id" element={<ProviderDetail />} />
-            <Route path="telehealth" element={<RequireSession superOnly><TelehealthDoctors /></RequireSession>} />
+            <Route path="telehealth" element={<TelehealthDoctors />} />
             <Route path="payments" element={<Payments />} />
             <Route path="reports" element={<Reports />} />
             <Route path="admins" element={<RequireSession superOnly><Admins /></RequireSession>} />

@@ -240,3 +240,68 @@ appShifts.post('/shifts/:id/cancel', validate('param', ShiftId), async (c) => {
   await c.get('db').update(shifts).set({ status: 'CANCELLED', cancelledAt: new Date(), cancellationReason: 'Cancelled by the family' }).where(eq(shifts.id, row.id));
   return c.json({ ok: true });
 });
+
+const ShiftRate = v.strictObject({
+  rating: v.pipe(v.number(), v.integer(), v.minValue(1, 'Rating must be at least 1 star.'), v.maxValue(5, 'Rating cannot exceed 5 stars.')),
+  review: v.optional(v.pipe(v.string(), v.trim(), v.maxLength(1000))),
+});
+
+appShifts.post('/shifts/:id/rate', validate('param', ShiftId), validate('json', ShiftRate), async (c) => {
+  const db = c.get('db');
+  const shiftId = c.req.valid('param').id;
+  const { rating, review } = c.req.valid('json');
+
+  const [row] = await db
+    .select({ id: shifts.id, status: shifts.status, caregiverId: shifts.caregiverId })
+    .from(shifts)
+    .innerJoin(clientProfiles, eq(clientProfiles.id, shifts.clientId))
+    .where(and(eq(shifts.id, shiftId), eq(clientProfiles.userId, c.get('clientUserId'))))
+    .limit(1);
+
+  if (!row) throw new ApiError(404, 'NOT_FOUND', 'Shift not found.');
+  if (row.status !== 'COMPLETED') throw new ApiError(409, 'NOT_ALLOWED', 'You can only rate a completed shift.');
+
+  if (row.caregiverId) {
+    const [cg] = await db.select().from(caregivers).where(eq(caregivers.id, row.caregiverId)).limit(1);
+    if (cg) {
+      const curRating = cg.averageRating !== null ? Number(cg.averageRating) : null;
+      const count = cg.totalShiftsCompleted > 0 ? cg.totalShiftsCompleted : 1;
+      const newRating = curRating !== null ? ((curRating * count) + rating) / (count + 1) : rating;
+      const rounded = (Math.round(newRating * 100) / 100).toFixed(2);
+      await db.update(caregivers).set({ averageRating: rounded }).where(eq(caregivers.id, cg.id));
+    }
+  }
+
+  return c.json({ ok: true, rating, review: review || null });
+});
+
+const ShiftReport = v.strictObject({
+  reason: v.pipe(v.string(), v.trim(), v.minLength(3, 'Select or describe the reason for your report.'), v.maxLength(200)),
+  details: v.optional(v.pipe(v.string(), v.trim(), v.maxLength(1000))),
+});
+
+appShifts.post('/shifts/:id/report', validate('param', ShiftId), validate('json', ShiftReport), async (c) => {
+  const db = c.get('db');
+  const shiftId = c.req.valid('param').id;
+  const { reason, details } = c.req.valid('json');
+
+  const [row] = await db
+    .select({ id: shifts.id, status: shifts.status })
+    .from(shifts)
+    .innerJoin(clientProfiles, eq(clientProfiles.id, shifts.clientId))
+    .where(and(eq(shifts.id, shiftId), eq(clientProfiles.userId, c.get('clientUserId'))))
+    .limit(1);
+
+  if (!row) throw new ApiError(404, 'NOT_FOUND', 'Shift not found.');
+
+  const escalationReason = `[FAMILY REPORT: ${reason}]${details ? ` ${details}` : ''}`;
+  const updateData: { escalationReason: string; status?: 'ESCALATED' } = { escalationReason };
+  if (row.status !== 'COMPLETED' && row.status !== 'CANCELLED') {
+    updateData.status = 'ESCALATED';
+  }
+
+  await db.update(shifts).set(updateData).where(eq(shifts.id, row.id));
+
+  return c.json({ ok: true, escalated: updateData.status === 'ESCALATED' });
+});
+

@@ -319,6 +319,8 @@ interface VisitDraft {
   ward: string;
   tasks: string[];
   notes: string;
+  caregiverPreference: 'any' | 'preferred';
+  preferredCaregiverName: string;
 }
 
 type CareKind = 'home-caregiver' | 'cvmc-caregiver';
@@ -335,6 +337,8 @@ function useVisit(kind: CareKind) {
     ward: '',
     tasks: [],
     notes: '',
+    caregiverPreference: 'any',
+    preferredCaregiverName: '',
   }));
 }
 
@@ -358,6 +362,10 @@ export function CaregiverRequest({ kind }: { kind: CareKind }) {
       return;
     }
     setTimeErr('');
+    const prefLabel = d.caregiverPreference === 'preferred' && d.preferredCaregiverName.trim()
+      ? `Preferred: ${d.preferredCaregiverName.trim()}`
+      : 'Any available caregiver (Auto-assigned)';
+
     void submit({
       kind,
       summary: `${isCvmc ? 'Institutional' : 'General'} caregiver · 8 hours`,
@@ -365,6 +373,7 @@ export function CaregiverRequest({ kind }: { kind: CareKind }) {
       details: [
         { label: 'Care location', value: d.location + (d.ward ? ` · ${d.ward}` : ''), icon: isCvmc ? 'hospital' : 'map-point' },
         { label: 'Shift', value: range.label, icon: 'calendar' },
+        { label: 'Caregiver', value: prefLabel, icon: 'user-heart' },
         { label: 'Rate', value: `${peso(rate.gross)} for 8 hours · ${peso(rate.caregiver)} to caregiver`, icon: 'shield-check' },
         ...(d.tasks.length ? [{ label: 'Care needed', value: d.tasks.join(', '), icon: 'user-heart' as const }] : []),
         ...(d.notes ? [{ label: 'Notes', value: d.notes, icon: 'document-text' as const }] : []),
@@ -373,12 +382,14 @@ export function CaregiverRequest({ kind }: { kind: CareKind }) {
         shiftTier: isCvmc ? 'CVMC_INSTITUTIONAL_500' : 'BGAY_HOME_300',
         scheduledDate: d.date,
         scheduledStartTime: range.s.toISOString(),
-        locationDetails: [d.location, d.ward, d.notes].filter(Boolean).join(' · '),
+        locationDetails: [d.location, d.ward, d.notes, d.caregiverPreference === 'preferred' && d.preferredCaregiverName ? `Preferred caregiver: ${d.preferredCaregiverName}` : ''].filter(Boolean).join(' · '),
         tasks: d.tasks,
+        preferredCaregiver: d.caregiverPreference === 'preferred' && d.preferredCaregiverName.trim() ? d.preferredCaregiverName.trim() : null,
       },
       onDone: clear,
     });
   };
+
 
   return (
     <Screen>
@@ -419,9 +430,37 @@ export function CaregiverRequest({ kind }: { kind: CareKind }) {
             )}
           </ChoiceGroup>
         </section>
+        <section className="stack gap-12">
+          <h3 className="t-section">Caregiver assignment</h3>
+          <Segmented
+            label="Caregiver assignment preference"
+            value={d.caregiverPreference}
+            onChange={(caregiverPreference) => set({ caregiverPreference })}
+            options={[
+              { value: 'any', label: 'Any available (Fastest)' },
+              { value: 'preferred', label: 'Preferred caregiver' },
+            ]}
+          />
+          {d.caregiverPreference === 'any' ? (
+            <p className="t-caption t-muted">
+              AdvanCare will automatically dispatch the nearest accredited caregiver. You don't need to specify a person.
+            </p>
+          ) : (
+            <div className="card stack gap-8" style={{ background: '#FAFBF9', border: '1px solid var(--line)' }}>
+              <TextField
+                label="Preferred caregiver's name (optional)"
+                placeholder="e.g. Sister Elena or Kuya Roberto"
+                value={d.preferredCaregiverName}
+                onChange={(e) => set({ preferredCaregiverName: e.target.value })}
+                hint="If available, the care team assigns them; otherwise, the nearest accredited caregiver is assigned."
+              />
+            </div>
+          )}
+        </section>
         {!isCvmc && (
           <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
             <legend className="t-section">Care needed (optional)</legend>
+
             {HOME_TASKS.map((t) => (
               <Checkbox key={t} label={t} checked={d.tasks.includes(t)} onChange={(v) => set({ tasks: v ? [...d.tasks, t] : d.tasks.filter((x) => x !== t) })} />
             ))}

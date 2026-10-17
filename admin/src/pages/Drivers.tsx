@@ -11,11 +11,12 @@ const KEYS = ['q', 'municipality', 'available'] as const;
 
 export function Drivers() {
   const me = useMe();
+  const isSuper = me.role === 'SUPER_ADMIN';
   const navigate = useNavigate();
   const f = useUrlFilters(KEYS);
   const list = useLoad(() => api.providers({ ...f.values, type: 'TRANSPORT_DRIVER', page: String(f.page) }), [f.key]);
   const [params] = useSearchParams();
-  const [addingDriver, setAddingDriver] = useState(params.get('add') === 'driver');
+  const [addingDriver, setAddingDriver] = useState(!isSuper && params.get('add') === 'driver');
 
   return (
     <>
@@ -27,13 +28,15 @@ export function Drivers() {
           </>
         }
         actions={
-          <Button onClick={() => setAddingDriver(true)}>
-            Add driver
-          </Button>
+          !isSuper ? (
+            <Button onClick={() => setAddingDriver(true)}>
+              Add driver
+            </Button>
+          ) : null
         }
       />
 
-      {addingDriver ? <AddDriverModal onClose={() => setAddingDriver(false)} onAdded={(id) => navigate(`/providers/${id}?added=1`)} /> : null}
+      {!isSuper && addingDriver ? <AddDriverModal onClose={() => setAddingDriver(false)} onAdded={(id) => navigate(`/providers/${id}?added=1`)} /> : null}
 
       <div className="filters">
         <input

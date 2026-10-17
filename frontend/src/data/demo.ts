@@ -45,17 +45,22 @@ export interface DemoDoctor {
   id: string;
   name: string;
   initials: string;
-  specialty: 'General practitioner';
+  specialty: string;
   rating: number;
   reviews: number;
   languages: string[];
+  municipality?: string;
+  isAvailable?: boolean;
 }
 
 export const DEMO_GPS: DemoDoctor[] = [
+  { id: 'gp-any', name: 'Any available doctor', initials: 'AD', specialty: 'General practitioner', rating: 4.9, reviews: 262, languages: ['English', 'Tagalog', 'Ilocano'] },
   { id: 'gp-1', name: 'Dr. Santos Reyes', initials: 'SR', specialty: 'General practitioner', rating: 4.9, reviews: 124, languages: ['English', 'Ilocano', 'Tagalog'] },
+
   { id: 'gp-2', name: 'Dr. Liza Agustin', initials: 'LA', specialty: 'General practitioner', rating: 4.8, reviews: 86, languages: ['English', 'Tagalog'] },
   { id: 'gp-3', name: 'Dr. Ramon Baggao', initials: 'RB', specialty: 'General practitioner', rating: 4.7, reviews: 52, languages: ['Ilocano', 'Ybanag', 'English'] },
 ];
+
 
 /** Demo time slots; a slot listed in `taken` is shown as unavailable. */
 export const DEMO_SLOTS = ['9:00 AM', '10:00 AM', '11:00 AM', '1:00 PM', '3:00 PM', '4:00 PM'];

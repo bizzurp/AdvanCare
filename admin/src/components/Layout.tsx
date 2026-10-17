@@ -31,7 +31,7 @@ const NAV: { heading?: string; items: NavItem[] }[] = [
     heading: 'Administration',
     items: [
       { to: '/admins', label: 'Admin accounts', icon: 'users-group-rounded', superOnly: true },
-      { to: '/telehealth', label: 'Telehealth Doctors', icon: 'stethoscope', superOnly: true },
+      { to: '/telehealth', label: 'Telehealth Doctors', icon: 'stethoscope' },
       { to: '/audit', label: 'Audit log', icon: 'document-text' },
     ],
   },

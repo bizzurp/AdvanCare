@@ -18,7 +18,7 @@ import {
 } from '../components/ui';
 import { DEPENDENCIES, FACILITY_LEVELS, RHU_PROVIDER_TYPES, RHU_SERVICES, RHU_VISIT_MODES, type FacilityLevel, type RhuProviderType } from '../data/catalog';
 import { DEMO_GPS, DEMO_RHUS, DEMO_SLOTS } from '../data/demo';
-import { takenTeleSlots } from '../services/api';
+import { fetchTelehealthDoctors, takenTeleSlots } from '../services/api';
 import { useApp, useDraft } from '../state/AppState';
 import { combine, formatDay, toDateInput, useSubmitRequest } from './requestUtils';
 
@@ -186,7 +186,7 @@ export function ChooseDoctor() {
             navigate(-1);
           }}
         >
-          Choose {chosen.name.replace(/^Dr\. \S+ /, 'Dr. ')}
+          {chosen?.id === 'gp-any' ? 'Select any available doctor' : `Choose ${chosen?.name.replace(/^Dr\. \S+ /, 'Dr. ') ?? 'doctor'}`}
         </Button>
       </ActionBar>
     </Screen>

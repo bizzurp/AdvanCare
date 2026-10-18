@@ -48,7 +48,7 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 - ⬜ Plans (Silver/Gold/Platinum) stored on the server; LGU subsidy report (Table 4).
 - ⬜ Staff "promote to Super Admin" with second-admin approval.
 - ⬜ Offline: encrypted on-device storage (ADV-FE-001).
-- ⬜ Standalone public marketing & donation website in `website/` (Master Prompt created in `website/MASTER_PROMPT.md`, 2026-10-17; build pending).
+- ✅ Standalone public marketing & donation website built in `website/` (Vite + React + TS, Hero with brand gist & donation QR code to help the poor, 50/50 LGU plans, audited transparency ledger, 29 LGUs directory; production build verified in `dist/`) (2026-10-17).
 
 ### Later (not needed for the prototype)
 - ⬜ GCash/Maya online payments · SMS codes and SMS keyword booking · push notifications · n8n automations (matching, summaries, reports) · NEMT trip tracking/maps (PostGIS) · Tagalog/Ilocano/Ybanag translations.

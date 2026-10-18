@@ -17,6 +17,7 @@ describe('schema invariants (ADR-007)', () => {
       'family_profiles',
       'idempotency_records',
       'payments',
+      'providers',
       'service_requests',
       'shifts',
       'staff_credentials',

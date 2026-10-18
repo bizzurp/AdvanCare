@@ -393,7 +393,7 @@ export function CaregiverRequest({ kind }: { kind: CareKind }) {
 
   return (
     <Screen>
-      <PageHeader title={isCvmc ? 'CVMC caregiver' : 'Home-based caregiver'} back="/services" />
+      <PageHeader title={isCvmc ? 'Hospital institutional caregiver' : 'Home-based caregiver'} back="/services" />
       <div className="screen-body stack gap-24">
         <h2 className="t-h2">
           {isCvmc ? 'Compassionate support,' : 'A helping hand,'}

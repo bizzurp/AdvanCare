@@ -81,7 +81,7 @@ export const SERVICES: ServiceDef[] = [
   { kind: 'prescription', title: 'Medical prescription', desc: 'Request a prescription from your doctor', icon: 'document-medicine', path: '/services/prescription', group: 'consult' },
   { kind: 'transport', title: 'Non-emergency transport', desc: 'Public or private vehicle to your next visit', icon: 'bus', path: '/services/transport', group: 'travel' },
   { kind: 'home-caregiver', title: 'Home-based caregiver', desc: `${peso(300)} for an 8-hour visit`, icon: 'user-heart', path: '/services/home-caregiver', group: 'care' },
-  { kind: 'cvmc-caregiver', title: 'CVMC institutional caregiver', desc: `${peso(500)} for an 8-hour visit`, icon: 'hospital', path: '/services/cvmc-caregiver', group: 'care' },
+  { kind: 'cvmc-caregiver', title: 'Hospital institutional caregiver', desc: `${peso(500)} for an 8-hour visit`, icon: 'hospital', path: '/services/cvmc-caregiver', group: 'care' },
 ];
 
 export const serviceTitle = (k: ServiceKind) => SERVICES.find((s) => s.kind === k)?.title ?? k;

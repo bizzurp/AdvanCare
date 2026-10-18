@@ -21,11 +21,12 @@ const DOCTOR_SPECIALTIES = [
 ];
 
 const VEHICLE_TYPES = [
-  'Non-emergency transport vehicle',
-  'Stretcher Van',
-  'Wheelchair Accessible Van',
-  'Sedan',
-  'Tricycle (Local Rural)',
+  'Tricycle',
+  'Multicab or jeepney',
+  'Shared van',
+  'Private car',
+  'Wheelchair-accessible van',
+  'Non-emergency stretcher vehicle',
 ];
 
 export function AddDoctorModal({ onClose, onAdded }: { onClose: () => void; onAdded: (id: string) => void }) {

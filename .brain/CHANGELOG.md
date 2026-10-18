@@ -1,4 +1,18 @@
+## [2026-10-18] - Demo transport drivers and mobile booking label
+
+- Demo seed adds two available, accredited transport drivers per Cagayan LGU, with fictional contacts and vehicles. `npm run db:seed-demo -- --neon-demo-branch --drivers-only` adds only drivers and can be repeated without duplicating them; existing database safety checks remain.
+- Added four available, accredited fictional TeleHealth doctors (general practice, family medicine, internal medicine). `--doctors-only` adds these without other fixtures and skips duplicates.
+- Mobile service catalogue and booking header now say “Hospital institutional caregiver”; existing service IDs and booking rules are retained.
+
 # advanCARE: Changelog (Operational Brain)
+
+## [2026-10-17] - Standalone Public Marketing & Social-Impact Website (`website/`)
+- **Standalone Marketing & Donation Website Built (`website/`)**:
+  - Implemented completely isolated Vite + React 18 + TypeScript web app in `/Users/mclein/Documents/Developer/Personal_Projects/AdvanCare/website/` (no interference with `frontend/`, `admin/`, or `backend/`).
+  - **Hero Section (Split-Screen)**: Left column contains the official AdvanCare logo emblem, brand wordmark, tagline ("No Farmer, Fisher, and Barangay Left Behind"), operational gist (56.3% unattended death baseline, ₱300 home & ₱500 CVMC bedside watcher shifts), primary CTAs, and micro-stats ticker; Right column features the interactive **People's Care Fund** donation QR code module (scannable QR Ph, GCash, Maya, and Landbank channels, 1-click account copy, and impact tier switching: ₱300, ₱500, ₱900, ₱1,800, and custom).
+  - **Full Multi-Page Architecture**: Implemented `Navbar` (with links, external app shortcuts, and mobile drawer), `Footer` (with 911 clinical emergency disclaimer and RA 10173 notice), `HomePage`, `AboutPage` (CVMC watcher protocol & international benchmark synthesis), `ServicesPage` (all 6 pillars & 2G SMS keyword reference), `PlansPage` (50/50 LGU subsidy calculator vs. PhilHealth statutory floor), `DonatePage` (audited public ledger), and `ContactPage` (LGU mayor MOU and Caregiver Academy intake).
+  - **Design & Anti-AI-Slop Craft**: Strictly adhered to `tokens.css` (`#F7F9F5` Paper, `#173E37` Ink, `#086B5B` Teal, `#E3F0E8` Mint, `#CBE49C` Lime), local Inter fonts, and inlined Solar Linear vector SVG icons (CC BY 4.0).
+  - Verified production build via `npm run build` (`dist/` generated with zero errors).
 
 ## [2026-10-17] - Service Rating, Unfulfilled Booking Reporting, and Caregiver Booking Flexibility
 - **Completed Service Rating & Feedback**:

@@ -1,3 +1,11 @@
+## [2026-10-18] - Non-emergency transport vehicle choices
+
+- Demo driver vehicles and the admin registration dropdown now match the six mobile booking options: tricycle, multicab/jeepney, shared van, private car, wheelchair-accessible van, and non-emergency stretcher vehicle. Driver-only seed refreshes existing fixture vehicles while preserving assignments.
+
+## [2026-10-18] - Provider display names
+
+- Seeded driver names now use varied first/last names without Demo labels, numbering, or municipality suffixes. Doctor names omit the title because the console supplies “Dr.”. Re-running provider-only seeds refreshes names on matching fixture accounts without replacing assignments or provider records.
+
 ## [2026-10-18] - Demo transport drivers and mobile booking label
 
 - Demo seed adds two available, accredited transport drivers per Cagayan LGU, with fictional contacts and vehicles. `npm run db:seed-demo -- --neon-demo-branch --drivers-only` adds only drivers and can be repeated without duplicating them; existing database safety checks remain.

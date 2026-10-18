@@ -10,11 +10,18 @@ Sustain affordable, reliable care for aging farmers, fishers, and persons with s
 
 Affordability anchor: minimum PhilHealth = ₱500/mo (₱6,000/yr). All advanCARE totals stay below this:
 
-- Platinum: ₱4,200/yr total (₱2,100 LGU + ₱2,100 household)
-- Gold: ₱3,000/yr total (₱1,500 + ₱1,500)
-- Silver: ₱1,800/yr total (₱900 + ₱900, 4Ps/indigents)
+- Platinum: ₱4,200/yr total (₱2,100 LGU + ₱2,100 household) — CVMC Hospital: 1 hr | Barangay Caregiving: 1 hr
+- Gold: ₱3,000/yr total (₱1,500 + ₱1,500) — CVMC Hospital: 1.5 hrs | Barangay Caregiving: 2 hrs
+- Silver: ₱1,800/yr total (₱900 + ₱900, 4Ps/indigents) — CVMC Hospital: 2 hrs | Barangay Caregiving: 3 hrs
 - Community Rate: ₱300/8hrs home-based care (or ₱300/hr for specialized clinical procedures)
 - Institutional Rate: ₱500/8hrs CVMC hospital bedside watcher coverage
+
+### Caregiver Waiting Time / SLA by Tier
+
+| Service | Platinum | Gold | Silver |
+| :--- | :--- | :--- | :--- |
+| **CVMC Hospital Bedside Caregiver** (₱500/8hrs) | **1 hr** waiting time | **1.5 hrs** waiting time | **2 hrs** waiting time |
+| **Barangay Home Caregiving** (₱300/8hrs) | **1 hr** waiting time | **2 hrs** waiting time | **3 hrs** waiting time |
 
 LGU 50% is treated as earned fee-for-coverage, not a donation. If an LGU delays or exits, households downgrade tiers or shift to pay-per-visit instead of losing service.
 
@@ -49,7 +56,7 @@ Prove one repeatable loop before adding services.
 - People: youth cohort onboarding + shadow shifts with BHW/nurse. Tags: personal care, nursing assist, therapy assist, dementia/chronic, post-discharge.
 - Coordination: mobile-first low-bandwidth + SMS fallback. One reusable record per client to kill duplicate intake.
 - Cost: published rates only, no opaque quoting.
-- Access: Silver scheduled care (24-48hr) for remote sitios first. Gold/Platinum SLAs only where density allows: Platinum 1hr city / 3hr rural, Gold 2-3hr city / 3hr+ rural.
+- Access: Tiered caregiver response SLAs: CVMC Hospital Bedside Watcher (Platinum: 1 hr, Gold: 1.5 hrs, Silver: 2 hrs); Barangay Home-Based Caregiving (Platinum: 1 hr, Gold: 2 hrs, Silver: 3 hrs).
 - Health: personal + basic nursing + respite only, plus one formal post-discharge follow-up visit.
 - Weekly review: SLA adherence, no-show rate, repeat-booking rate, continuity (% visits by same caregiver).
 
@@ -107,7 +114,7 @@ Pilot math example: 100 households at Gold mix (~₱300k/yr) + ~40 Community vis
 ## 7. Risks and Fallbacks
 
 - LGU delay/exit → tier downgrade + pay-per-visit fallback; multi-barangay pooling.
-- Distance blows SLA → scheduled-only Silver in farthest sitios, shared routes, honest per-zone SLA.
+- Distance blows SLA → calibrated waiting time targets (CVMC: Plat 1hr, Gold 1.5hr, Silver 2hr; Barangay: Plat 1hr, Gold 2hr, Silver 3hr), shared routes, honest per-zone SLA.
 - Caregiver churn → continuity bonus, repeat assignment, institutional fill-in shifts.
 - Triage liability → protocol-limited scope, escalate to clinic/hospital, nurse oversight.
 - Literacy/connectivity → BHW-assisted, SMS-first; app is enhancement, not requirement.

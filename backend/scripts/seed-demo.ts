@@ -70,19 +70,21 @@ await c.query('BEGIN');
 try {
   if (!driversOnly) {
     const doctors = [
-      ['Dr. Demo Ana Reyes', 'General Practice', 'Tuguegarao City'],
-      ['Dr. Demo Jose Santos', 'Family Medicine', 'Solana'],
-      ['Dr. Demo Elena Garcia', 'Internal Medicine', 'Peñablanca'],
-      ['Dr. Demo Ramon Mendoza', 'General Practice', 'Baggao'],
+      ['Ana Reyes', 'General Practice', 'Tuguegarao City'],
+      ['Jose Santos', 'Family Medicine', 'Solana'],
+      ['Elena Garcia', 'Internal Medicine', 'Peñablanca'],
+      ['Ramon Mendoza', 'General Practice', 'Baggao'],
     ] as const;
     let doctorsMade = 0;
     for (const [index, [fullName, specialty, municipality]] of doctors.entries()) {
       const { rows: [u] } = await c.query(
         `insert into users (phone_number, email, full_name, role)
-         values ($1,$2,$3,'DOCTOR') on conflict (phone_number) do nothing returning id`,
+         values ($1,$2,$3,'DOCTOR') on conflict (phone_number) do update set full_name = excluded.full_name
+         where users.email = excluded.email and users.role = excluded.role
+         returning id, (xmax = 0) as inserted`,
         [`+6390001${String(index + 1).padStart(5, '0')}`, `doctor.${index + 1}@demo.advancare.test`, fullName],
       );
-      if (!u) continue;
+      if (!u?.inserted) continue;
       await c.query(
         `insert into providers (user_id, type, municipality, specialty, license_number, is_available, is_accredited)
          values ($1,'DOCTOR',$2,$3,$4,true,true)`,
@@ -90,29 +92,37 @@ try {
       );
       doctorsMade++;
     }
-    console.log(`Added ${doctorsMade} available, accredited demo TeleHealth doctors (existing demo doctors kept).`);
+    console.log(`Added ${doctorsMade} available, accredited demo TeleHealth doctors (existing demo doctor names refreshed).`);
   }
   if (!doctorsOnly) {
     // Stable demo identities keep repeated driver-only runs from adding duplicates.
+    const vehicles = ['Tricycle', 'Multicab or jeepney', 'Shared van', 'Private car', 'Wheelchair-accessible van', 'Non-emergency stretcher vehicle'] as const;
     let driversMade = 0;
     for (const [index, muni] of CAGAYAN_MUNICIPALITIES.entries()) {
       for (let slot = 0; slot < 2; slot++) {
         const email = `driver.${index + 1}.${slot + 1}@demo.advancare.test`;
         const { rows: [u] } = await c.query(
           `insert into users (phone_number, email, full_name, role)
-           values ($1,$2,$3,'TRANSPORT_DRIVER') on conflict (phone_number) do nothing returning id`,
-          [`+6390000${String(index * 2 + slot + 1).padStart(5, '0')}`, email, `Demo Driver ${FIRST[index % FIRST.length]} ${slot + 1} (${muni})`],
+           values ($1,$2,$3,'TRANSPORT_DRIVER') on conflict (phone_number) do update set full_name = excluded.full_name
+           where users.email = excluded.email and users.role = excluded.role
+           returning id, (xmax = 0) as inserted`,
+          [`+6390000${String(index * 2 + slot + 1).padStart(5, '0')}`, email, `${FIRST[(index * 2 + slot) % FIRST.length]} ${LAST[(Math.floor((index * 2 + slot) / FIRST.length) + (index * 2 + slot) * 7) % LAST.length]}`],
         );
         if (!u) continue;
+        const vehicle = vehicles[(index * 2 + slot) % vehicles.length]!;
+        if (!u.inserted) {
+          await c.query(`update providers set vehicle_type = $1, updated_at = now() where user_id = $2 and type = 'TRANSPORT_DRIVER'`, [vehicle, u.id]);
+          continue;
+        }
         await c.query(
           `insert into providers (user_id, type, municipality, barangay, vehicle_type, plate_number, is_available, is_accredited)
            values ($1,'TRANSPORT_DRIVER',$2,$3,$4,$5,true,true)`,
-          [u.id, muni, PLACES[muni]?.[0] ?? null, slot === 0 ? 'Patient transport van' : 'Wheelchair-accessible van', `DEMO-${index + 1}-${slot + 1}`],
+          [u.id, muni, PLACES[muni]?.[0] ?? null, vehicle, `DEMO-${index + 1}-${slot + 1}`],
         );
         driversMade++;
       }
     }
-    console.log(`Added ${driversMade} available, accredited demo drivers (two per municipality; existing demo drivers kept).`);
+    console.log(`Added ${driversMade} available, accredited demo drivers (two per municipality; existing demo driver names and vehicles refreshed).`);
   }
   if (!driversOnly && !doctorsOnly) {
     const munis = Object.keys(PLACES);

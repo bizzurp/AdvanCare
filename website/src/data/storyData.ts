@@ -16,14 +16,7 @@ export const BARRIERS = [
   { title: 'Fragmented care', body: 'Disparate providers and coordination.' },
 ];
 
-export const PROBLEMS = [
-  { title: 'Hard to find trusted care', body: 'Families struggle to find and match screened caregivers.' },
-  { title: 'Costly and far away', body: 'Care, transport and out-of-hospital costs strain remote households.' },
-  {
-    title: 'Fragmented support',
-    body: 'Booking, records, updates and payments are scattered; care breaks after discharge.',
-  },
-];
+export const PROBLEMS = [];
 
 export const SOLUTION_STEPS = [
   { title: 'Connect in local language', body: 'Link barangay residents to trusted local healthcare and caregiving support.' },
@@ -129,8 +122,6 @@ export const COMPETITORS = {
 export const TEAM = [
   { name: 'Fernando M. Jaminola Jr.', role: 'Assistant Professor', project: 'Program Leader' },
   { name: 'Charmie Calvo, DIT', role: 'University Dean, College of Information and Computing Sciences', project: 'ICT Project Leader' },
-  { name: 'Dr. Rebecca Battung, MD', role: 'Provincial Health Officer', project: 'Healthcare Policy Project Leader' },
-  { name: 'Prof. Sherwin Caacbay', role: 'Program Coordinator, BSIT', project: '' },
   { name: 'Prof. Marvin Uanang', role: 'Campus MIS Head', project: '' },
 ];
 

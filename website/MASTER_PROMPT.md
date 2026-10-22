@@ -1,3 +1,5 @@
+> **Superseded (2026-10-22):** Website content now follows `/Docs` (proposal deck `AdvanCare.pdf`, brochure, two-year Gantt, budget). Where this prompt conflicts with `/Docs` (e.g. 56.3%/31.6% stats, 80/20 split, SLAs, pilot hubs, People's Care Fund ledger, SMS keywords), `/Docs` wins. Content lives in `src/data/*.ts`.
+
 # MASTER PROMPT: Build the Standalone AdvanCare Public Marketing & Donation Website (`website/`)
 
 ## 1. Role, Context & Directory Isolation

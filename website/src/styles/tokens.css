@@ -1,0 +1,50 @@
+/* AdvanCare visual design tokens — Human, earthy, clinical, warm paper aesthetic */
+:root {
+  --advancare-paper: #F7F9F5;
+  --advancare-white: #FFFFFF;
+  --advancare-ink: #173E37;
+  --advancare-muted: #536D65;
+  --advancare-teal: #086B5B;
+  --advancare-deep: #124E43;
+  --advancare-mint: #E3F0E8;
+  --advancare-lime: #CBE49C;
+  --advancare-olive: #697D34;
+  --advancare-line: #D3DFD7;
+  --advancare-control: #80958A;
+  --advancare-gold: #996116;
+  --advancare-goldBg: #FFF1D6;
+  --advancare-red: #A83A32;
+  --advancare-redBg: #FBE9E7;
+  --advancare-blue: #376E85;
+  --brand-blue: #075582;   /* "Advan" */
+  --brand-green: #149361;  /* "Care" */
+
+  --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-80: 80px;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(23, 62, 55, 0.05);
+  --shadow-md: 0 4px 12px -2px rgba(23, 62, 55, 0.08);
+  --shadow-lg: 0 12px 32px -4px rgba(23, 62, 55, 0.1);
+  --shadow-qr: 0 16px 40px -8px rgba(8, 107, 91, 0.16);
+
+  --ease-out-quart: cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-fast: 160ms var(--ease-out-quart);
+  --transition-base: 240ms var(--ease-out-quart);
+}

@@ -15,7 +15,7 @@ export const ServicesPage: React.FC = () => {
             Services
           </span>
           <h1 style={{ fontSize: 'clamp(32px, 4.5vw, 46px)', fontWeight: 800, marginBottom: 16 }}>
-            One closed care loop, built for Cagayan’s barangays
+            One closed care loop, built for barangays in provinces across the country
           </h1>
           <p style={{ fontSize: 17, color: 'var(--advancare-muted)', lineHeight: 1.6 }}>
             Local care, reliable transport, MediBox triage, multi-language TeleHealth, caregivers and discounted supplies, coordinated in one record.

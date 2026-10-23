@@ -11,7 +11,7 @@ export const SolutionSection: React.FC = () => (
           <h2>Connect. Coordinate. Continue care.</h2>
           <p>
             An integrated, community-based ecosystem for accessible, coordinated and sustainable care, linking people,
-            services and communities across Cagayan.
+            services and communities across provinces across the country.
           </p>
         </div>
         <div className="grid-4">

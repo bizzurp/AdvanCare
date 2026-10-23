@@ -25,7 +25,7 @@ export const SOLUTION_STEPS = [
   { title: 'Follow up', body: 'Support continuity of care with reminders, updates and post-visit coordination.' },
   {
     title: 'Improve',
-    body: 'Predictive analytics for Cagayan: analyze 7 years of DOH disease trends to anticipate community health needs.',
+    body: 'Predictive analytics for provinces across the country: analyze 7 years of DOH disease trends to anticipate community health needs.',
   },
 ];
 
@@ -106,9 +106,9 @@ export const COMPETITORS = {
     {
       name: 'AdvanCare',
       values: [
-        'Farmers, fishers, PWDs, low and middle income families in Cagayan',
+        'Farmers, fishers, PWDs, low and middle income families across provinces across the country',
         'Healthcare, livelihood support, medical transportation, insurance guidance, telehealth consultation',
-        'Cagayan Province (can be scaled nationwide)',
+        'Provinces across the country',
         'Yes (youth + elderly + PWDs)',
         'Self-sustaining revenue loops (private market, limited government subsidy)',
         'Strong LGUs, local partners and human capital development',
@@ -118,7 +118,7 @@ export const COMPETITORS = {
 };
 
 export const TEAM = [
-  { name: 'Fernando M. Jaminola Jr.', role: 'Assistant Professor', project: 'Program Leader' },
+  { name: 'Fernando M. Jaminola Jr.', role: 'Assistant Professor', project: 'Program Leader', linkedin: 'https://www.linkedin.com/in/fernando-jr-jaminola-03876361' },
   { name: 'Charmie Calvo, DIT', role: 'University Dean, College of Information and Computing Sciences', project: 'ICT Project Leader' },
   { name: 'Prof. Marvin Uanang', role: 'Campus MIS Head', project: '' },
 ];

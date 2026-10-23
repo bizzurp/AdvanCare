@@ -38,7 +38,7 @@ export const Navbar: React.FC = () => {
               <span style={{ color: 'var(--brand-green)' }}>Care</span>
             </span>
             <span style={{ fontSize: 10, color: 'var(--advancare-muted)', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-              Cagayan Province
+              provinces across the country
             </span>
           </div>
         </Link>

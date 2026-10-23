@@ -18,8 +18,8 @@ export const HomePage: React.FC = () => (
       <div className="container">
         <div className="section-head">
           <span className="kicker">Target market</span>
-          <h2>Serving underserved communities across Cagayan Province</h2>
-          <p>Primary focus: low-income and rural households in Cagayan Province.</p>
+          <h2>Serving underserved communities in provinces across the country</h2>
+          <p>Primary focus: low-income and rural households in provinces across the country.</p>
         </div>
         <div className="grid-4">
           {TARGET_MARKET.map((t) => (

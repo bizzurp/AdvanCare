@@ -37,7 +37,7 @@ export const ProblemSection: React.FC = () => (
               </div>
             </div>
           ))}
-          <p className="source-note">Typical rural healthcare barriers in Cagayan. Illustrative persona based on AdvanCare’s project context.</p>
+          <p className="source-note">Typical rural healthcare barriers in provinces across the country. Illustrative persona based on AdvanCare’s project context.</p>
         </div>
       </div>
     </section>

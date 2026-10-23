@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from '../Icon';
-import { BARRIERS, BASELINE_STATS, JOURNEY, PROBLEMS } from '../../data/storyData';
+import { BARRIERS, BASELINE_STATS, JOURNEY } from '../../data/storyData';
 
 export const ProblemSection: React.FC = () => (
   <>
@@ -58,15 +58,6 @@ export const ProblemSection: React.FC = () => (
               <div className="stat-value" style={{ color: 'var(--advancare-deep)' }}>{s.value}</div>
               <p style={{ marginTop: 8 }}>{s.label}</p>
               <div className="source-note">Source: {s.source}</div>
-            </div>
-          ))}
-        </div>
-        <div className="grid-3">
-          {PROBLEMS.map((p, i) => (
-            <div key={p.title} className="card-base">
-              <span className="step-num" style={{ marginBottom: 12 }}>{i + 1}</span>
-              <h3>{p.title}</h3>
-              <p>{p.body}</p>
             </div>
           ))}
         </div>

@@ -16,8 +16,6 @@ export const BARRIERS = [
   { title: 'Fragmented care', body: 'Disparate providers and coordination.' },
 ];
 
-export const PROBLEMS = [];
-
 export const SOLUTION_STEPS = [
   { title: 'Connect in local language', body: 'Link barangay residents to trusted local healthcare and caregiving support.' },
   {

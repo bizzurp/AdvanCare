@@ -1,0 +1,44 @@
+Tool: Built-in image_gen image editor
+
+Use case: precise-object-edit / productivity-visual.
+EDIT TARGET: image 1, the AdvanCare illustrated market opportunity slide. Image 2 is ONLY a structure/data reference for its table and national nested-circle chart. Produce ONE finished replacement picture for image 1, widescreen 16:9, high-resolution and sharp enough for a defense pitch deck. Do not produce a slide deck, a photograph of a screen, or a second picture.
+
+Preserve image 1's original AdvanCare logo and blue-green brand character, clean white/pale blue background, tropical landscape/leaf details and friendly Filipino healthcare illustration style. Reflow the market content to accommodate the following requested table and national chart on this ONE slide. Keep illustrations modest around lower corners and edges so they never obscure text. Retain the small circled page number 13 at the top right. Preserve the top subscription banner with exact text "₱1,800 yearly" and "₱150 / month". Do NOT retain a standalone "1.2 million people" banner applying to the entire slide; show 1.2 million only as the Cagayan population basis.
+Main heading: "TAM · SAM · SOM"
+Subtitle: "Cagayan Province & Nationwide Market Opportunity"
+
+Layout: Two main columns beneath the header. A readable Cagayan TABLE occupies approximately the left 55%, and the nationwide CONCENTRIC CIRCLES occupy the right 45%. Across the bottom use a clearly labeled nationwide population annotation strip with three readable text columns. Use generous text space, orderly aligned table cells, no illegible microtext. This is a serious presentation with warmth inherited from image 1, not a busy decorative poster.
+
+LEFT COLUMN:
+Heading "Cagayan Province"
+Subheading "Population basis: 1.2 million people"
+A clean professional 5-column table with these EXACT values:
+Header: "Segment" ; "People" ; "Basis" ; "Basic rate" ; "Annual revenue potential"
+Row 1: "TAM" ; "360,000" ; "30% of 1.2M" ; "₱1,800/yr" ; "₱648M"
+Row 2: "SAM" ; "180,000" ; "50% of TAM" ; "₱1,800/yr" ; "₱324M"
+Row 3: "SOM" ; "120,000" ; "10% of 1.2M" ; "₱1,800/yr" ; "₱216M"
+Blue header, subtle blue/teal/green row accents. Important: ₱648M, ₱324M and ₱216M are ANNUAL amounts at ₱1,800 per person per year. Remove "in 2.5 years" from image 1. Under table add the short legible formula "Revenue potential = people × ₱1,800 per year".
+Under that define the acronyms compactly with three lines:
+"TAM  Total Addressable Market"
+"SAM  Serviceable Available Market"
+"SOM  Serviceable Obtainable Market"
+
+RIGHT COLUMN:
+Heading "Nationwide"
+Subheading "TAM = 10% of a 54M planning basis"
+Show three circles nested concentrically, sharing the same geometric center. Outer circle blue, middle circle teal, inner circle green, using white outlines to separate them. The diagram shows hierarchy schematically, not exact areas. Locate text in the visible rings without collisions, like image 2's tiered labels but make circles genuinely concentric.
+Outer band label: "TAM" then "5.40M people" then "₱9.72B / year"
+Middle band label: "SAM" then "2.70M people" then "₱4.86B / year"
+Inner circle label: "SOM" then "1.35M people" then "₱2.43B / year"
+Use restrained leader-line callouts if needed for space. Below circles: "SAM = 50% of TAM" and "SOM = 50% of SAM".
+Do not confuse Cagayan figures with national figures.
+
+BOTTOM STRIP:
+Heading "Nationwide population basis: 5M + 4M + 45M = 54M"
+Three clear annotations with large bold numbers and the exact explanatory text:
+"5M" / "Urban poor in the top 20 cities"
+"4M" / "People facing healthcare barriers in the top 10 provinces"
+"45M" / "Population of the top 20 largest provinces"
+Final modest but readable note: "Planning estimates may overlap. The 54M basis is not a verified unique population. Circles are schematic."
+The 5M, 4M, 45M are population basis inputs, NOT three independent TAM/SAM/SOM circle sizes.
+All wording and amounts must be spelled correctly. No fabricated sources, no extra claims, no expanded unrelated content. Use image 2 only as reference; do not reproduce its camera perspective, screen, cursor or surrounding interface.

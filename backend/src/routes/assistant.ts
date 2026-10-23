@@ -1,9 +1,10 @@
+import { assistantLanguage, safetyReplies } from '../../../shared/assistant-language';
 import { Hono } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 import * as v from 'valibot';
 import { caregiverAvailability, ownShiftSummaries } from '../assistant/context';
 import { askGemini } from '../assistant/gemini';
-import { cleanInput, EMERGENCY_REPLY, finalizeReply, OFF_TOPIC_REPLY } from '../assistant/guard';
+import { cleanInput, finalizeReply } from '../assistant/guard';
 import { ASSISTANT_LINKS, type AssistantLink } from '../assistant/knowledge';
 import { buildSystemPrompt } from '../assistant/prompt';
 import { connectDb } from '../db/client';
@@ -16,6 +17,7 @@ const MAX_TURNS = 12;
 const MAX_MESSAGE_CHARS = 500;
 
 export const ChatRequest = v.strictObject({
+  language: v.optional(v.picklist(['English', 'Tagalog', 'Ilocano'])),
   messages: v.pipe(
     v.array(
       v.strictObject({
@@ -49,8 +51,10 @@ assistant.post(
       if (!success) throw new ApiError(429, 'RATE_LIMITED', 'You are sending messages too quickly. Please wait a minute and try again.');
     }
 
-    const { messages } = c.req.valid('json');
+    const { messages, language: preference } = c.req.valid('json');
+    const language = assistantLanguage(messages, preference);
     const system = buildSystemPrompt({
+      language,
       ...(await loadContext(c.env, userId)),
       today: new Date().toLocaleDateString('en-PH', { timeZone: 'Asia/Manila', dateStyle: 'full' }),
     });
@@ -59,10 +63,10 @@ assistant.post(
     // Metadata only — conversation text is never logged.
     console.log(JSON.stringify({ requestId: c.get('requestId'), assistant: { model, fellBack, allowed: answer.allowed, emergency: answer.emergency, turns: messages.length } }));
 
-    if (answer.emergency) return c.json({ reply: EMERGENCY_REPLY, link: null, emergency: true, allowed: true });
-    if (!answer.allowed || !answer.reply.trim()) return c.json({ reply: OFF_TOPIC_REPLY, link: null, emergency: false, allowed: false });
+    if (answer.emergency) return c.json({ reply: safetyReplies[language].emergency, link: null, emergency: true, allowed: true });
+    if (!answer.allowed || !answer.reply.trim()) return c.json({ reply: safetyReplies[language].refusal, link: null, emergency: false, allowed: false });
 
-    const link = answer.link !== 'none' ? { to: answer.link, label: ASSISTANT_LINKS[answer.link as AssistantLink] } : null;
+    const link = answer.link !== 'none' ? { to: answer.link, label: language === 'Tagalog' ? 'Buksan sa app' : language === 'Ilocano' ? 'Luktan iti app' : ASSISTANT_LINKS[answer.link as AssistantLink] } : null;
     return c.json({ reply: finalizeReply(answer.reply), link, emergency: false, allowed: true });
   },
 );

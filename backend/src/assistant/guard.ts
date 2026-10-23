@@ -1,14 +1,13 @@
+import { safetyReplies } from '../../../shared/assistant-language';
+
 /**
  * Deterministic safety layer around the model. The model is never trusted to enforce
  * these rules alone: refusals and emergency text are written here, not by the model,
  * and every reply is scrubbed before it leaves the API.
  */
 
-export const OFF_TOPIC_REPLY =
-  'I can only help with AdvanCare: our services and prices, care plans, your requests, and how to use the app. What would you like to know about those?';
-
-export const EMERGENCY_REPLY =
-  'If this may be an emergency, call 911 or go to the nearest hospital now. AdvanCare is for scheduled care and cannot respond to emergencies.';
+export const OFF_TOPIC_REPLY = safetyReplies.English.refusal;
+export const EMERGENCY_REPLY = safetyReplies.English.emergency;
 
 export const MAX_REPLY_CHARS = 1200;
 

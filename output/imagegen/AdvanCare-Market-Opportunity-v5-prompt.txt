@@ -1,0 +1,18 @@
+Tool: Built-in image_gen image editor
+
+Use case: precise-object-edit.
+Make ONE very small localized removal in this supplied AdvanCare image. Remove the two-line caption directly BELOW the RIGHT nested circles, including the rounded pale-blue/white pill that contains it:
+"SAM = 50% of TAM"
+"SOM = 50% of SAM (25% of TAM)"
+This caption region is approximately x=989 to 1527 and y=702 to 762 in the 1672×941 image. Replace ONLY this narrow caption/pill region with a seamless continuation of the surrounding pale-blue and tropical illustrated background. Do not leave an empty outlined pill. Preserve the circle boundaries and don't crop the circles. Do not move anything to fill the space.
+
+Keep EVERYTHING else unchanged, especially the latest LEFT CAGAYAN TABLE:
+"Cagayan Province"
+"Population basis: 1,200,000 people"
+Headers Segment / People / Share / Basic Rate / Revenue for 1 year.
+TAM: 120,000 / 10% of 1.2M / ₱1,800/yr / ₱216M
+SAM: 60,000 / 50% of TAM / ₱1,800/yr / ₱108M
+SOM: 30,000 / 50% of SAM (25% of TAM) / ₱1,800/yr / ₱54M.
+DO NOT remove ratios from the LEFT TABLE: the requested removal applies ONLY to the caption beneath the RIGHT circles.
+Keep the original AdvanCare logo, top title, Nationwide Market Opportunity subtitle, price banner, page 13, background and people, the formula below the table, and all nationwide population annotations at the bottom. Keep the RIGHT circles and their labels/amounts exactly: TAM ₱9.72 Billion / year; SAM ₱4.86 Billion / year; SOM ₱2.43 Billion / year.
+Do not restore old national table figures. No new text or content. No red marks. Same dimensions, same typography, same visual appearance except that the specified right-hand caption and its pill have been removed.

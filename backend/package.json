@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
+    "dev:local": "wrangler dev --local --env-file .env.local",
+    "db:migrate:local": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs migrate",
+    "admin:bootstrap:local": "node --env-file=.env.local scripts/bootstrap-admin.ts",
     "build": "tsc --noEmit && wrangler deploy --dry-run --env=\"\" --outdir dist",
     "deploy": "wrangler deploy --env production",
     "typecheck": "tsc --noEmit",

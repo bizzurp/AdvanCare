@@ -25,10 +25,10 @@
             "id": "aebd5e807ad4b806",
             "type": "leaf",
             "state": {
-              "type": "empty",
+              "type": "graph",
               "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
             }
           }
         ],
@@ -201,13 +201,21 @@
   },
   "active": "aebd5e807ad4b806",
   "lastOpenFiles": [
+    "AdvanCare-design-handoff/reference/project-architecture.md",
+    "AdvanCare-design-handoff/reference/Mobile App System Specification.md",
+    "AdvanCare-design-handoff/reference/Implementation Plan.md",
+    "AdvanCare-design-handoff/screens/png/01-welcome.png",
+    "AdvanCare-design-handoff/screens/png/02-sign-in.png",
+    "AdvanCare-design-handoff/CLAUDE-PROMPT.md",
+    "Project Context.md",
+    "AdvanCare Master MOC.md",
+    "Fishbone Diagram.jpeg",
+    "Implementation Plan.md",
     "Architecture/Agentic AI & n8n Workflow Architecture.md",
+    "AdvanCare-design-handoff/reference/design-rationale.md",
     "Research/Auxilio Care - Complex Care & Multi-Payer Model.md",
     "logo/AdvanCare_Logo.png",
     "logo/AdvanCare_Logo.jpg.sb-c2c4fb27-EXeglF",
-    "Implementation Plan.md",
-    "Fishbone Diagram.jpeg",
-    "AdvanCare Master MOC.md",
     "logo/AdvanCare_Logo.jpg",
     "Analysis/Fishbone Root Cause Analysis.md",
     "Analysis",
@@ -221,7 +229,6 @@
     "Research/Centene Corporation - Managed Care & NEMT Model.md",
     "Research/Honor Technology - Care Platform & Logistics Model.md",
     "Research/Homage - Holistic On-Demand Care Model.md",
-    "Research",
-    "Project Context.md"
+    "Research"
   ]
 }

@@ -32,9 +32,9 @@ async function get<T>(path: string, token: string): Promise<T> {
   }
 }
 
-async function post<T>(path: string, body: unknown, token?: string, idempotencyKey?: string, method: 'POST' | 'PATCH' = 'POST'): Promise<T> {
+async function post<T>(path: string, body: unknown, token?: string, idempotencyKey?: string, method: 'POST' | 'PATCH' = 'POST', timeoutMs = 15000): Promise<T> {
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 15000);
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
     const res = await fetch(`${API_BASE}${path}`, {
       method,
@@ -448,8 +448,8 @@ export interface AssistantAnswer {
 }
 
 /** AdvanCare questions; with a session the assistant can also read the account's own booking summaries. */
-export async function askAssistant(turns: AssistantTurn[], token?: string): Promise<AssistantAnswer> {
-  return post<AssistantAnswer>('/api/v1/assistant/chat', { messages: turns.slice(-12) }, token);
+export async function askAssistant(turns: AssistantTurn[], token?: string, language?: 'English' | 'Tagalog' | 'Ilocano'): Promise<AssistantAnswer> {
+  return post<AssistantAnswer>('/api/v1/assistant/chat', { messages: turns.slice(-12), language }, token, undefined, 'POST', 35000);
 }
 
 export function uuid(): string {

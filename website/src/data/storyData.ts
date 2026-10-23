@@ -1,6 +1,6 @@
 // Source: Docs/AdvanCare.pdf (slides 1-7, 9, 11, 13) and Docs/AdvanCare-brochure (2).pdf
 export const TAGLINE =
-  'From access to grassroots affordability to specialized healthcare, NO Cagayano Barangay resident left behind.';
+  'From access to grassroots affordability to specialized healthcare, NO Barangay resident left behind.';
 
 export const BASELINE_STATS = [
   { value: '56%', label: 'of Cagayan deaths in 2020 had no medical attendant', source: 'PSA, 2020' },

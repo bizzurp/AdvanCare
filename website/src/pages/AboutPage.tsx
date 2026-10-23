@@ -13,8 +13,7 @@ export const AboutPage: React.FC = () => (
         </span>
         <h1>AI-enabled healthcare management for grassroots communities</h1>
         <p>
-          AdvanCare is a program of Cagayan State University, in Community &amp; Family Development, with the Province of
-          Cagayan, Philippines. {TAGLINE}
+          AdvanCare is a program of Cagayan State University, in Community &amp; Family Development. {TAGLINE}
         </p>
       </div>
     </section>

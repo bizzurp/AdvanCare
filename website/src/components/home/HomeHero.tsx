@@ -32,7 +32,7 @@ export const HomeHero: React.FC = () => (
 
         <p style={{ fontSize: 'clamp(16px, 1.8vw, 18px)', lineHeight: 1.6, marginBottom: 12 }}>
           Connecting families to accessible, affordable, coordinated care in provinces across the country. AdvanCare is an AI-enabled healthcare
-          management platform for grassroots communities, proposed by Cagayan State University with the Province of Cagayan.
+          management platform for grassroots communities, proposed by Cagayan State University.
         </p>
         <p style={{ fontSize: 15, fontStyle: 'italic', color: 'var(--advancare-deep)', marginBottom: 28 }}>{TAGLINE}</p>
 

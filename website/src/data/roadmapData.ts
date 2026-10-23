@@ -85,19 +85,20 @@ export const BUDGET = {
 };
 
 export const MARKET = {
-  population: '1.2 million people in Cagayan',
+  population: '54 million people nationwide (5M urban poor in the top 20 cities, 4M facing healthcare barriers in the top 10 provinces, 45M in the 20 largest provinces)',
   price: '₱1,800 yearly (₱150 / month)',
   tiers: [
-    { name: 'TAM', full: 'Total Addressable Market', people: '360,000', share: '30% of 1.2 million', value: '₱648M in 2.5 years' },
-    { name: 'SAM', full: 'Serviceable Available Market', people: '180,000', share: '50% of TAM', value: '₱324M in 2.5 years' },
-    { name: 'SOM', full: 'Serviceable Obtainable Market', people: '120,000', share: '10% of 1.2 million', value: '₱216M in 2.5 years' },
+    { name: 'TAM', full: 'Total Addressable Market', people: '5.4M', share: '10% of 54M', value: '₱9.72B / year' },
+    { name: 'SAM', full: 'Serviceable Available Market', people: '2.7M', share: '50% of TAM', value: '₱4.86B / year' },
+    { name: 'SOM', full: 'Serviceable Obtainable Market', people: '1.35M', share: '50% of SAM (25% of TAM)', value: '₱2.43B / year' },
   ],
-  nationwide: 'Potential to expand across all 82 provinces nationwide.',
+  nationwide: 'Modeled on provinces across the country, starting from a Cagayan Province pilot (1.2 million people).',
 };
 
 export const REVENUE_STREAMS = [
   '50% Local Government Unit subsidy',
   'Membership subscription: Silver / Gold / Platinum (₱150 / ₱250 / ₱350 per month)',
+  '10% of 1.2M Cagayan population × ₱3,000/year = ₱360M gross yearly revenue',
   '10% cut on transport bookings',
   '5% commission on caregiver bookings',
   'Banner advertising from healthcare suppliers',
@@ -115,10 +116,11 @@ export const BUSINESS_MODEL = [
       'Tele-consultation and prescriptions',
       'Free membership for 4Ps, paid by LGUs',
       'Discounted vitamins and supplies excluded by PhilHealth YAKAP',
+      'Projected net profit in 2 years = ₱180M',
     ],
   },
   { title: 'Customer relationships', items: ['Care coordination', 'Subscription', 'Family updates', 'Follow-up care'] },
-  { title: 'Channels', items: ['Local Government Units', 'Barangay health workers', 'Partner hospitals', 'Mobile app', 'Pharmacies', 'Caregiver corps'] },
+  { title: 'Channels', items: ['Local Government Units', 'Barangay health workers', 'Partner hospitals', 'Mobile app', 'Pharmacies', 'Caregiver corps', 'Emergency transports'] },
   { title: 'Customer segments', items: ['Aging farmers & fishers', 'People with special needs', 'Remote communities', 'Urban and rural poor needing assistance'] },
   { title: 'Cost structure', items: ['Workforce & training', 'Technology', 'Equipment & supplies', 'Marketing & support'] },
 ];

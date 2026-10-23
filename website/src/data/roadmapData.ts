@@ -97,17 +97,17 @@ export const MARKET = {
 
 export const REVENUE_STREAMS = [
   '50% Local Government Unit subsidy',
-  'Membership subscription: Silver / Gold / Platinum (₱150 / ₱250 / ₱350 per month)',
-  '10% of 1.2M Cagayan population × ₱3,000/year = ₱360M gross yearly revenue',
+  'Monthly subscription Silver',
+  '10% of 1.2M Cagayan population × ₱1,800/year = ₱216M gross yearly revenue',
   '10% cut on transport bookings',
-  '5% commission on caregiver bookings',
+  '10% commission on caregiver bookings',
   'Banner advertising from healthcare suppliers',
 ];
 
 export const BUSINESS_MODEL = [
-  { title: 'Key partners', items: ['Local Government Units', 'Barangay health workers', 'Hospitals', 'DOH & local health offices', 'Doctors, nurses & midwives', 'Transport providers', 'Caregiver pool', 'Pharmacies'] },
-  { title: 'Key activities', items: ['Transportation', 'Caregiver matching', 'Out-of-hospital triage', 'Discounted medical supplies', 'Care record management', 'Tele-consultation'] },
-  { title: 'Key resources', items: ['Mobile platform', 'Caregiver network', 'Care records', 'Telemedicine equipment', 'AI models & DOH data'] },
+  { title: 'Key partners', items: ['Local Government Units', 'Barangay health workers', 'Hospitals', 'DOH & local health offices', 'Doctors, nurses & midwives', 'Transport providers', 'Caregiver pool', 'Pharmacies', 'Advertisers', 'Donors'] },
+  { title: 'Key activities', items: ['Transportation', 'Caregiver matching', 'Out-of-hospital triage', 'Discounted medical supplies', 'Care record management', 'Tele-consultation', 'Donation system'] },
+  { title: 'Key resources', items: ['Mobile platform', 'Caregiver network', 'Care records', 'Telemedicine equipment', 'AI models & DOH data', 'Advertisers, donors'] },
   {
     title: 'Value propositions',
     items: [
@@ -115,8 +115,11 @@ export const BUSINESS_MODEL = [
       'Affordable, coordinated and trusted care',
       'Tele-consultation and prescriptions',
       'Free membership for 4Ps, paid by LGUs',
+      '50% Local Government Unit subsidy',
       'Discounted vitamins and supplies excluded by PhilHealth YAKAP',
-      'Projected net profit in 2 years = ₱180M',
+      'Preposition medical resources based on AI prescriptive analytics',
+      'Donation network',
+      'Projected net profit in 2 years = ₱180M in Cagayan',
     ],
   },
   { title: 'Customer relationships', items: ['Care coordination', 'Subscription', 'Family updates', 'Follow-up care'] },

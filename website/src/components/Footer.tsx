@@ -53,7 +53,7 @@ export const Footer: React.FC = () => {
               </span>
             </div>
             <p style={{ fontSize: 14, color: 'var(--advancare-muted)', lineHeight: 1.6, marginBottom: 16 }}>
-              AI-enabled healthcare management platform for grassroots communities. A program of Cagayan State University with the Province of Cagayan.
+              AI-enabled healthcare management platform for grassroots communities. A program of Cagayan State University.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13 }}>
               <span style={{ color: 'var(--advancare-ink)', fontWeight: 600 }}>Proposed pilot:</span>

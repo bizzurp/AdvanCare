@@ -1,7 +1,6 @@
 import React from 'react';
 import { Icon } from '../components/Icon';
-import { GanttChart } from '../components/GanttChart';
-import { BUDGET, BUSINESS_MODEL, MARKET, PHASES, REVENUE_STREAMS, peso } from '../data/roadmapData';
+import { BUSINESS_MODEL, MARKET, PHASES, REVENUE_STREAMS } from '../data/roadmapData';
 
 export const ProgramPage: React.FC = () => (
   <div className="program-page">
@@ -40,22 +39,11 @@ export const ProgramPage: React.FC = () => (
       </div>
     </section>
 
-    <section className="section-py section-paper">
-      <div className="container">
-        <div className="section-head">
-          <span className="kicker">Schedule</span>
-          <h2>Two-year implementation schedule</h2>
-          <p>Bars show months when any activity in each category is scheduled.</p>
-        </div>
-        <GanttChart />
-      </div>
-    </section>
-
     <section className="section-py section-white">
       <div className="container">
         <div className="section-head">
           <span className="kicker">Market opportunity</span>
-          <h2>Cagayan Province: TAM · SAM · SOM</h2>
+          <h2>Provinces across the country</h2>
           <p>{MARKET.population} at {MARKET.price}. {MARKET.nationwide}</p>
         </div>
         <div className="grid-3">
@@ -63,9 +51,8 @@ export const ProgramPage: React.FC = () => (
             <div key={t.name} className="card-base">
               <span className="kicker">{t.name}</span>
               <p style={{ marginTop: 8 }}>{t.full}</p>
-              <div className="stat-value" style={{ color: 'var(--advancare-deep)', marginTop: 8 }}>{t.people}</div>
-              <p>people · {t.share}</p>
-              <div style={{ fontWeight: 700, color: 'var(--advancare-teal)', marginTop: 8 }}>{t.value}</div>
+              <div className="stat-value" style={{ color: 'var(--advancare-deep)', marginTop: 8 }}>{t.value}</div>
+              <p>{t.people} people · {t.share}</p>
             </div>
           ))}
         </div>
@@ -101,49 +88,5 @@ export const ProgramPage: React.FC = () => (
       </div>
     </section>
 
-    <section className="section-py section-white">
-      <div className="container" style={{ maxWidth: 880 }}>
-        <div className="section-head">
-          <span className="kicker">Budget</span>
-          <h2>Two-year budget: {peso(BUDGET.grandTotal)}</h2>
-          <p>Personal services and maintenance and other operating expenses (MOOE), in Philippine pesos.</p>
-        </div>
-        <div className="data-table-wrap">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th className="num">Year 1</th>
-                <th className="num">Year 2</th>
-              </tr>
-            </thead>
-            <tbody>
-              {BUDGET.lines.map((l) => (
-                <tr key={l.item}>
-                  <td>{l.item}</td>
-                  <td className="num">{l.year1 ? peso(l.year1) : '—'}</td>
-                  <td className="num">{l.year2 ? peso(l.year2) : '—'}</td>
-                </tr>
-              ))}
-              <tr>
-                <th scope="row">Subtotal, personal services</th>
-                <td className="num">{peso(BUDGET.personalServices.year1)}</td>
-                <td className="num">{peso(BUDGET.personalServices.year2)}</td>
-              </tr>
-              <tr>
-                <th scope="row">Subtotal, MOOE</th>
-                <td className="num">{peso(BUDGET.mooe.year1)}</td>
-                <td className="num">{peso(BUDGET.mooe.year2)}</td>
-              </tr>
-              <tr className="highlight">
-                <th scope="row">Yearly total</th>
-                <td className="num"><strong>{peso(BUDGET.yearly.year1)}</strong></td>
-                <td className="num"><strong>{peso(BUDGET.yearly.year2)}</strong></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
   </div>
 );

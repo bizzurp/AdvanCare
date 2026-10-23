@@ -1,0 +1,21 @@
+Tool: Built-in image_gen image editor
+
+Use case: precise-object-edit.
+Edit the attached marked-up AdvanCare nationwide market opportunity image. The red strokes are the user's editing annotations: REMOVE the text and legend elements they cross out, then remove ALL red strokes. Produce one clean finished image, same widescreen dimensions and same design.
+
+Make ONLY these removals:
+1. Remove the line "TAM = 10% of 54M" directly below the Nationwide heading, above the large blue circle.
+2. Inside the blue TAM circle, remove ONLY the line "5,400,000 people". Keep "TAM" and "₱9.72 Billion / year".
+3. Inside the teal SAM circle, remove ONLY the line "2,700,000 people". Keep "SAM" and "₱4.86 Billion / year".
+4. Inside the green SOM circle, remove ONLY the line "1,350,000 people". Keep "SOM" and "₱2.43 Billion / year".
+5. Remove the ENTIRE three-row acronym-definition legend below the left table's revenue formula. This means remove all three TAM/SAM/SOM colored pills, all three corresponding full-name definitions, and the three pale rounded horizontal legend row backgrounds. Restore a clean pale background in that area. Keep the Filipino people illustration nearby exactly as it is. Keep the formula row "Revenue potential = people × ₱1,800 per year".
+6. Remove the entire small bottom disclaimer text "Planning estimates may overlap. The 54M basis is not a verified unique population. Circles are schematic." and its empty pale-blue footer strip, replacing that region with matching surrounding background.
+7. Remove every red editing stroke without leaving artifacts.
+
+STRICT INVARIANTS: Preserve all other artwork, original AdvanCare logo, headers, price banner, page number, landscapes, people, table, table data, circles, remaining circle labels and the bottom three population annotations. Do not change any remaining number or wording. Do not remove "SAM = 50% of TAM" or "SOM = 50% of SAM (25% of TAM)" below the circles. Do not remove the Nationwide population basis heading or the 5M, 4M, 45M explanatory annotations. Do not add any new text. Do not redesign the slide.
+The unchanged table must still read:
+Segment / People / Share / Basic Rate / Revenue for 1 year
+TAM / 5,400,000 / 10% of 54M / ₱1,800/yr / ₱9.72B
+SAM / 2,700,000 / 50% of TAM / ₱1,800/yr / ₱4.86B
+SOM / 1,350,000 / 50% of SAM (25% of TAM) / ₱1,800/yr / ₱2.43B.
+Match the existing clean typography, spacing, colors, gradients and illustration style. The final image has no red marks and none of the crossed-out text.

@@ -20,6 +20,8 @@ ADMIN_APP_URL = "http://localhost:5176"
 
 # remote = true: `wrangler dev` reads the real dev bucket, the same one presigned
 # uploads write to. Tests (vitest) keep using a local simulated bucket.
+# If the Cloudflare remote proxy is unreachable, use `npm run dev:local` for
+# auth/admin development. Its local bucket cannot read real presigned uploads.
 [[r2_buckets]]
 binding = "UPLOADS"
 bucket_name = "advancare-uploads-dev"

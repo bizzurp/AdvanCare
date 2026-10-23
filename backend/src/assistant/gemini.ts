@@ -55,6 +55,10 @@ export async function askGemini(env: Bindings, system: string, turns: Turn[]): P
     try {
       return { answer: await callModel(key, model, system, turns), model, fellBack: i > 0 };
     } catch (err) {
+      // Only known failure categories/statuses: never provider bodies, keys or conversations.
+      const message = err instanceof Error ? err.message : '';
+      const reason = /^(?:[1-5][0-9]{2}|location_unsupported|invalid_request|network|unparsable|schema)$/.test(message) ? message : 'unknown';
+      console.warn(JSON.stringify({ assistantProvider: { model, reason } }));
       if (!(err instanceof RetryableError) || i === models.length - 1) break;
     }
   }
@@ -83,6 +87,12 @@ async function callModel(key: string, model: string, system: string, turns: Turn
     throw new RetryableError('network');
   }
   if (res.status === 429 || res.status >= 500) throw new RetryableError(String(res.status));
+  if (res.status === 400 || res.status === 404) {
+    // Model/region availability can differ; allow the configured fallback model.
+    const error = await res.json().catch(() => null) as { error?: { message?: string } } | null;
+    const message = error?.error?.message ?? '';
+    throw new RetryableError(/location.*not supported/i.test(message) ? 'location_unsupported' : String(res.status));
+  }
   if (!res.ok) throw new Error(String(res.status));
 
   const data = (await res.json().catch(() => null)) as {

@@ -188,3 +188,49 @@ describe('assistant: input and output helpers', () => {
     expect(redact('A home caregiver is ₱300 for 8 hours (₱240 to the caregiver).')).toBe('A home caregiver is ₱300 for 8 hours (₱240 to the caregiver).');
   });
 });
+
+describe('assistant: same-language responses', () => {
+  it.each([
+    ['Magkano po ang caregiver?', 'Tagalog'],
+    ['Mano ti bayad ti caregiver?', 'Ilocano'],
+    ['How much is a caregiver?', 'English'],
+  ])('uses the latest question language for %s', async (text, language) => {
+    const calls = mockGemini(answer({}));
+    const res = await ask(text);
+    expect(res.status).toBe(200);
+    expect(calls[0]!.body.systemInstruction.parts[0].text).toContain(`ambiguous questions use ${language}`);
+  });
+
+  it.each([
+    ['Hindi po ako makahinga', 'Tagalog', 'tumawag sa 911'],
+    ['Saan ak a makanges', 'Ilocano', 'tumawag iti 911'],
+  ])('uses fixed translated emergency text for %s', async (text, _language, expected) => {
+    mockGemini(answer({ emergency: true, reply: 'unsafe advice' }));
+    const body = await (await ask(text)).json<any>();
+    expect(body.reply).toContain(expected);
+    expect(body.reply).not.toContain('unsafe advice');
+  });
+
+  it('translates fixed refusals', async () => {
+    mockGemini(answer({ allowed: false }));
+    const body = await (await ask('Ano po ang politika?')).json<any>();
+    expect(body.reply).toContain('Makakatulong lang ako');
+  });
+
+  it('uses the preference for ambiguous messages', async () => {
+    const calls = mockGemini(answer({}));
+    await app.request(URL_CHAT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', text: 'Hi' }], language: 'Ilocano' }) }, testEnv(), createExecutionContext());
+    expect(calls[0]!.body.systemInstruction.parts[0].text).toContain('ambiguous questions use Ilocano');
+  });
+});
+
+
+describe('assistant: provider model compatibility', () => {
+  it.each([400, 404])('tries the fallback when the primary model returns %s', async (status) => {
+    const calls = mockGemini(new Response('{"error":{"message":"Model unavailable"}}', { status }), answer({ reply: 'Fallback works' }));
+    const res = await ask('Help');
+    expect(res.status).toBe(200);
+    expect((await res.json<any>()).reply).toBe('Fallback works');
+    expect(calls).toHaveLength(2);
+  });
+});

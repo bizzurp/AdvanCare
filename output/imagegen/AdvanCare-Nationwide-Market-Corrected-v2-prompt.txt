@@ -1,0 +1,41 @@
+Tool: Built-in image_gen image editor
+
+Edit ONLY image 1. Image 2 is the user's authoritative numeric reference. The user has explicitly chosen that the TABLE in image 1 must ALSO use the SECOND image's nationwide data. The revised first image must show nationwide data in BOTH the left table and right circles. Make one corrected widescreen 16:9 image. Preserve the existing image 1 AdvanCare logo, colors, typography style, tropical illustrated landscape, Filipino people, top subscription price banner, overall layout, and bottom population annotations. Change only the market labels, table data and circle numeric labels needed for this correction. The second reference photograph is not an edit target and must not appear in the output.
+
+CRITICAL DATA: Use the following exact full numbers, commas, monetary amounts, shares, and period. Do not abbreviate people counts to 5.4M, 2.7M or 1.35M anywhere. Do not use any Cagayan-specific numbers (1.2 million, 360,000, 180,000, 120,000, ₱648M, ₱324M or ₱216M). These data are now explicitly nationwide, so do not label the new table Cagayan Province.
+
+Header: keep "AdvanCare", "TAM · SAM · SOM", "₱1,800 yearly", "₱150 / month", circled slide number 13.
+Replace subtitle "Cagayan Province & Nationwide Market Opportunity" with "Nationwide Market Opportunity".
+
+LEFT TABLE SECTION:
+Heading: "National Target Pool Breakdown"
+Subheading: "5,400,000 total potential users"
+Table must have the following FIVE columns and THREE data rows, faithfully matching image 2. Each field below is separated by a semicolon:
+Header: "Segment" ; "People" ; "Share" ; "Basic Rate" ; "Revenue for 1 year"
+Row 1: "TAM" ; "5,400,000" ; "10% of 54M" ; "₱1,800/yr" ; "₱9.72B"
+Row 2: "SAM" ; "2,700,000" ; "50% of TAM" ; "₱1,800/yr" ; "₱4.86B"
+Row 3: "SOM" ; "1,350,000" ; "50% of SAM (25% of TAM)" ; "₱1,800/yr" ; "₱2.43B"
+The final row's Share cell may wrap onto two lines so all its wording fits. Slightly adjust table column widths to fit the full population counts. Every number must be legible.
+Retain formula beneath table: "Revenue potential = people × ₱1,800 per year".
+Retain acronym definitions beneath:
+"TAM  Total Addressable Market"
+"SAM  Serviceable Available Market"
+"SOM  Serviceable Obtainable Market"
+
+RIGHT CIRCLES:
+Heading "Nationwide"
+Subheading "TAM = 10% of 54M"
+Preserve the reference's nested circle composition with blue TAM outside, teal SAM in the middle, green SOM inside, clear white outlines. They are schematic.
+Outer TAM: "TAM" then "5,400,000 people" then "₱9.72 Billion / year"
+Middle SAM: "SAM" then "2,700,000 people" then "₱4.86 Billion / year"
+Inner SOM: "SOM" then "1,350,000 people" then "₱2.43 Billion / year"
+Fit these complete strings cleanly, allowing more space for labels if necessary. Do not crop, overlap or replace digits. Keep the relationship text below the circles "SAM = 50% of TAM" and "SOM = 50% of SAM (25% of TAM)".
+
+BOTTOM ANNOTATIONS: Retain these exact user-provided population inputs and heading.
+"Nationwide population basis: 5M + 4M + 45M = 54M"
+"5M" — "Urban poor in the top 20 cities"
+"4M" — "People facing healthcare barriers in the top 10 provinces"
+"45M" — "Population of the top 20 largest provinces"
+Retain small note: "Planning estimates may overlap. The 54M basis is not a verified unique population. Circles are schematic."
+
+Final critical check before rendering: both left table and right circles must have TAM 5,400,000 and ₱9.72B; SAM 2,700,000 and ₱4.86B; SOM 1,350,000 and ₱2.43B. All revenue is for 1 year. Do not introduce alternative calculations, sources, numbers, extra slides, photographic perspective, screen UI or a cursor.

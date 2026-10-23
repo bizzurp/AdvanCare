@@ -1,0 +1,26 @@
+Tool: Built-in image_gen image editor
+
+Use case: precise-object-edit.
+Edit the supplied AdvanCare infographic. Make a tightly localized change ONLY to the LEFT TABLE and its heading/subheading immediately above it. Preserve absolutely everything else in the image, including its overall widescreen size, existing logo, main title and subtitle, subscription price banner, page number, background, illustrations, RIGHT nationwide circle diagram and ALL its text and amounts, formula BELOW the left table, and BOTTOM nationwide population annotations. Do not redesign or regenerate unrelated portions.
+
+The ONLY authorized change region is the left table/header, approximately x=125 to 963 and y=225 to 589 on the 1672×941 image. The rounded panel's overall dimensions and style must remain. Keep the existing blue table header, column layout, font styles, white/cyan rows, gridlines and colored TAM/SAM/SOM cells.
+
+Replace the left table heading "National Target Pool Breakdown" with "Cagayan Province".
+Replace its subheading "5,400,000 total potential users" with "Population basis: 1,200,000 people".
+Keep the same five table column headers:
+"Segment" ; "People" ; "Share" ; "Basic Rate" ; "Revenue for 1 year"
+
+Replace all THREE data rows with EXACTLY:
+"TAM" ; "120,000" ; "10% of 1.2M" ; "₱1,800/yr" ; "₱216M"
+"SAM" ; "60,000" ; "50% of TAM" ; "₱1,800/yr" ; "₱108M"
+"SOM" ; "30,000" ; "50% of SAM (25% of TAM)" ; "₱1,800/yr" ; "₱54M"
+
+The distribution is 10% of the Cagayan population for TAM, then 50% of TAM for SAM, then 50% of SAM for SOM. All revenue values are for ONE YEAR at ₱1,800 per person. The numbers above are final; do not replace them with the old figures or divide by 2.5. The SOM share cell can retain its existing two-line wrap. Make text crisp, correctly spelled, aligned and readable.
+
+STRICT PRESERVATION:
+- Keep the main "Nationwide Market Opportunity" subtitle exactly as it is because the user requested the rest stay unchanged.
+- Keep the existing formula below the table exactly: "Revenue potential = people × ₱1,800 per year".
+- Keep the RIGHT Nationwide diagram exactly unchanged: TAM ₱9.72 Billion / year; SAM ₱4.86 Billion / year; SOM ₱2.43 Billion / year. Keep its SAM/SOM ratio caption.
+- Keep the bottom "Nationwide population basis: 5M + 4M + 45M = 54M" and all 5M/4M/45M explanatory annotations unchanged.
+- Keep the removed acronym legend, circle population counts and bottom disclaimer absent.
+- Add no new graphics, notes, disclaimers, formulas or decorations. Edit only the left table and its two identifying heading lines.

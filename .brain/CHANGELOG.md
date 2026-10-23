@@ -14,6 +14,16 @@
 
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-10-22] - Website realigned to `/Docs`
+- Website content now comes from the proposal deck, brochure, two-year Gantt and budget in `/Docs` (ADR-017). Content data: `website/src/data/{storyData,roadmapData,plansData,servicesData,faqData}.ts`.
+- Home: brochure hero ("Care closer to every community"), lived patient experience, problem (56% / 57 yrs / 31% with sources), four-step solution, five-part closed care loop, process map, target market, plans, FAQ.
+- About: project team, "what makes us different", competitive analysis vs PhilHealth, Maxicare and Metrobank. International benchmarks removed from the site.
+- Plans: deck tier table (transport and caregiver SLAs, funding sources, unemployed 65+), proposed 50% LGU subsidy note. PhilHealth-floor framing and "annual savings" figure removed.
+- New `/program` page: phases, 24-month Gantt with research track and decision gates, TAM/SAM/SOM, business model canvas, ₱21,640,319 budget.
+- Services follow the care loop plus caregivers and supplies; revenue streams replace the 80/20 explorer; SMS keyword table removed.
+- Donate: fake payment accounts, decorative QR and fabricated transparency ledger removed; pledges go to the program leader by email. Contact uses the brochure contact and address.
+- Pilot shown as 2 remote barangays in Peñablanca (30-50 households); municipality directory removed. `MASTER_PROMPT.md` marked superseded. Build and type check pass.
+
 ## [2026-10-17] - Standalone Public Marketing & Social-Impact Website (`website/`)
 - **Standalone Marketing & Donation Website Built (`website/`)**:
   - Implemented completely isolated Vite + React 18 + TypeScript web app in `/Users/mclein/Documents/Developer/Personal_Projects/AdvanCare/website/` (no interference with `frontend/`, `admin/`, or `backend/`).

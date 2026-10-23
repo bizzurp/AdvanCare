@@ -50,6 +50,11 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 - ⬜ Offline: encrypted on-device storage (ADV-FE-001).
 - ✅ Standalone public marketing & donation website built in `website/` (Vite + React + TS, Hero with brand gist & donation QR code to help the poor, 50/50 LGU plans, audited transparency ledger, 29 LGUs directory; production build verified in `dist/`) (2026-10-17).
 
+- ✅ Website content realigned to `/Docs` (deck, brochure, Gantt, budget); new Program & roadmap page; fake ledger, payment accounts and QR removed (2026-10-22, ADR-017).
+- [ ] Confirm with Fernando Jaminola Jr.: caregiver revenue model (5% commission per `/Docs` vs ADR-002 80/20 enforced in DB); Gold transport SLA (deck says urban 2 h / rural 1 h); real donation channels before any payment details go on the site.
+- [ ] Align app-side copy with `/Docs` once confirmed: `backend/src/assistant/knowledge.ts` (plan SLAs, stats), frontend plan screens.
+- [ ] Deploy the updated `website/` (`npm run build`, then publish `dist/`); the contact form is still not wired to any backend.
+
 ### Later (not needed for the prototype)
 - ⬜ GCash/Maya online payments · SMS codes and SMS keyword booking · push notifications · n8n automations (matching, summaries, reports) · NEMT trip tracking/maps (PostGIS) · Tagalog/Ilocano/Ybanag translations.
 - 👤 Non-code: LGU MOU, caregiver recruitment & 40-hour training, CVMC coordination letter, Data Privacy Act review of consent wording, care hotline number.

@@ -1,3 +1,5 @@
+import { localAnswer, reply, copy, type Msg } from '../services/assistant-replies';
+import { assistantLanguage, type AssistantLanguage } from '../../../shared/assistant-language';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon, type IconName } from '../components/Icon';
@@ -5,56 +7,11 @@ import { PageHeader, Screen } from '../components/ui';
 import { askAssistant, type AssistantTurn } from '../services/api';
 import { useApp } from '../state/AppState';
 
-interface Msg {
-  from: 'user' | 'bot';
-  text: string;
-  link?: { to: string; label: string };
-}
-
-type Ctx = { name: string; weekCount: number; active: number };
-
-/**
- * Answered on the device, never sent to the AI: possible emergencies (instant, works
- * offline) and questions about the person's own data, which only exists on this phone.
- */
-function localAnswer(text: string, ctx: Ctx): Msg | null {
-  const t = text.toLowerCase();
-  if (/(emergenc|chest pain|can'?t breathe|cannot breathe|unconscious|bleeding|stroke|seizure|saklolo|hindi makahinga)/.test(t))
-    return { from: 'bot', text: 'If this may be an emergency, call 911 or go to the nearest hospital now.' };
-  if (/\b(status|track)\b|\bmy (requests?|bookings?)\b/.test(t))
-    return { from: 'bot', text: `You have ${ctx.active} active request${ctx.active === 1 ? '' : 's'}.`, link: { to: '/requests', label: 'Track requests' } };
-  if (/\b(my|this week'?s?) (report|usage|summary)\b|service usage/.test(t))
-    return { from: 'bot', text: `You have ${ctx.weekCount} service record${ctx.weekCount === 1 ? '' : 's'} in the last 7 days.`, link: { to: '/reports/trends', label: 'View report' } };
-  if (/\bmy (profile|address|family)\b/.test(t)) return { from: 'bot', text: `Here is ${ctx.name}’s profile and circle of care.`, link: { to: '/profile', label: 'Open profile' } };
-  return null;
-}
-
-/**
- * Shortcut answers used when the AI assistant can't be reached (offline, rate limited). It only
- * routes to app sections and summarises the person's own data; it never gives medical advice.
- */
-function reply(text: string, ctx: Ctx): Msg {
-  const t = text.toLowerCase();
-  if (/(emergenc|chest pain|can'?t breathe|unconscious|bleeding)/.test(t))
-    return { from: 'bot', text: 'If this may be an emergency, call 911 or go to the nearest hospital now.' };
-  if (/(report|usage|summary|trend)/.test(t))
-    return { from: 'bot', text: `You have ${ctx.weekCount} service record${ctx.weekCount === 1 ? '' : 's'} in the last 7 days.`, link: { to: '/reports/trends', label: 'View report' } };
-  if (/(status|track|request)/.test(t)) return { from: 'bot', text: `You have ${ctx.active} active request${ctx.active === 1 ? '' : 's'}.`, link: { to: '/requests', label: 'Track requests' } };
-  if (/(doctor|consult|telehealth|gp)/.test(t)) return { from: 'bot', text: 'You can book a TeleHealth consultation with a general practitioner.', link: { to: '/services/telehealth', label: 'Book TeleHealth' } };
-  if (/(rhu|dentist|dental|midwife|nurse|prenatal)/.test(t)) return { from: 'bot', text: 'Your Rural Health Unit offers doctor, dentist, nurse, and midwife services.', link: { to: '/services/rhu', label: 'Open RHU services' } };
-  if (/(transport|ride|vehicle|tricycle|van)/.test(t)) return { from: 'bot', text: 'You can book a public or private vehicle for a scheduled visit.', link: { to: '/services/transport', label: 'Book transport' } };
-  if (/(caregiver|watcher|cvmc|bantay)/.test(t)) return { from: 'bot', text: 'Home caregivers are ₱300 and CVMC caregivers ₱500 for an 8-hour shift.', link: { to: '/services', label: 'Request a caregiver' } };
-  if (/(sick|symptom|fever|pain|cough|assess|triage)/.test(t))
-    return { from: 'bot', text: 'I can’t give medical advice. You can send an assessment for a clinician to review.', link: { to: '/services/triage', label: 'Start an assessment' } };
-  if (/(profile|client|family|address)/.test(t)) return { from: 'bot', text: `Here is ${ctx.name}’s profile and circle of care.`, link: { to: '/profile', label: 'Open profile' } };
-  if (/(plan|member|subsid|silver|gold|platinum)/.test(t)) return { from: 'bot', text: 'Plans are Silver, Gold, and Platinum, with half paid by your LGU.', link: { to: '/plans', label: 'See plans' } };
-  return { from: 'bot', text: 'I can help you find services, requests, reports, your profile, and plans. Try one of the shortcuts above.' };
-}
-
 export function Assistant() {
-  const { profile, requests, session } = useApp();
+  const { profile, requests, session, prefs } = useApp();
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState('');
+  const [replyLanguage, setReplyLanguage] = useState<AssistantLanguage>('English');
   const [thinking, setThinking] = useState(false);
   const end = useRef<HTMLDivElement>(null);
   const weekAgo = Date.now() - 7 * 864e5;
@@ -72,7 +29,9 @@ export function Assistant() {
     const text = raw.trim();
     if (!text || thinking) return;
     setInput('');
-    const local = localAnswer(text, ctx);
+    const language = assistantLanguage([...msgs.map((m) => ({ role: m.from === 'user' ? 'user' : 'assistant', text: m.text })), { role: 'user', text }], prefs.language);
+    setReplyLanguage(language);
+    const local = localAnswer(text, ctx, language);
     if (local) {
       setMsgs((m) => [...m, { from: 'user', text }, local]);
       return;
@@ -82,11 +41,11 @@ export function Assistant() {
     setMsgs((m) => [...m, { from: 'user', text }]);
     setThinking(true);
     try {
-      const a = await askAssistant(history, session?.accessToken);
+      const a = await askAssistant(history, session?.accessToken, language);
       setMsgs((m) => [...m, { from: 'bot', text: a.reply, link: a.link ?? undefined }]);
     } catch {
       // Still help: point to the right part of the app.
-      setMsgs((m) => [...m, reply(text, ctx)]);
+      setMsgs((m) => [...m, reply(text, ctx, language)]);
     } finally {
       setThinking(false);
     }
@@ -136,7 +95,7 @@ export function Assistant() {
           {thinking && (
             <div className="bubble bot row gap-8" role="status">
               <span className="spinner" aria-hidden="true" />
-              Thinking…
+              {copy[replyLanguage].thinking(ctx)}
             </div>
           )}
           {/* Keeps the newest message clear of the sticky input and bottom nav when scrolled into view. */}

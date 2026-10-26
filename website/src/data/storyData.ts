@@ -1,4 +1,8 @@
 // Source: Docs/AdvanCare.pdf (slides 1-7, 9, 11, 13) and Docs/AdvanCare-brochure (2).pdf
+import photoJaminola from '../assets/teams/Sir Jaminola.png';
+import photoCalvo from "../assets/teams/Ma'am Charmie.jpg";
+import photoUanang from '../assets/teams/Sir Marvin.jpg';
+
 export const TAGLINE =
   'From access to grassroots affordability to specialized healthcare, NO Barangay resident left behind.';
 
@@ -118,9 +122,9 @@ export const COMPETITORS = {
 };
 
 export const TEAM = [
-  { name: 'Fernando M. Jaminola Jr.', role: 'Assistant Professor', project: 'Program Leader', linkedin: 'https://www.linkedin.com/in/fernando-jr-jaminola-03876361' },
-  { name: 'Charmie Calvo, DIT', role: 'University Dean, College of Information and Computing Sciences', project: 'ICT Project Leader' },
-  { name: 'Prof. Marvin Uanang', role: 'Campus MIS Head', project: '' },
+  { name: 'Fernando M. Jaminola Jr.', role: 'Assistant Professor', project: 'Program Leader', photo: photoJaminola, linkedin: 'https://www.linkedin.com/in/fernando-jr-jaminola-03876361' },
+  { name: 'Charmie Calvo, DIT', role: 'University Dean, College of Information and Computing Sciences', project: 'ICT Project Leader', photo: photoCalvo },
+  { name: 'Prof. Marvin Uanang', role: 'Campus MIS Head', project: '', photo: photoUanang, photoScale: 1.4 },
 ];
 
 export const CONTACT = {

@@ -27,6 +27,31 @@ export const AboutPage: React.FC = () => (
         <div className="grid-3">
           {TEAM.map((m) => (
             <div key={m.name} className="card-base" style={{ padding: 24 }}>
+              {m.photo && (
+                <div
+                  style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    marginBottom: 14,
+                    border: '1px solid var(--advancare-line)',
+                  }}
+                >
+                  <img
+                    src={m.photo}
+                    alt={m.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      objectPosition: 'center',
+                      transform: m.photoScale ? `scale(${m.photoScale})` : undefined,
+                      transformOrigin: 'center',
+                    }}
+                  />
+                </div>
+              )}
               <h3>{m.name}</h3>
               <p>{m.role}</p>
               {m.project && (

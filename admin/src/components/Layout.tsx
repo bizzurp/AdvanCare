@@ -96,7 +96,7 @@ export function Layout() {
             );
           })}
         </nav>
-        <p className="sidebar-note">Caregiver bookings are under Requests; TeleHealth, RHU, Triage, Prescriptions and Transport are under Service requests.</p>
+        <p className="sidebar-note">Caregiver bookings are under Requests; TeleHealth, RHU, Triage, Prescriptions, Transport and Pharmacy & supplies orders are under Service requests.</p>
       </aside>
       <div className="main-col">
         <header className="topbar">

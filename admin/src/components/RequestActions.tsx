@@ -17,7 +17,6 @@ export function RequestActions({ detail, onChanged }: { detail: RequestDetail; o
   const s = r.status;
   const can = {
     assign: ['REQUESTED', 'MATCHING', 'ESCALATED', 'CONFIRMED'].includes(s),
-    matching: s === 'REQUESTED',
     escalate: ['REQUESTED', 'MATCHING', 'CONFIRMED'].includes(s),
     cancel: ['REQUESTED', 'MATCHING', 'CONFIRMED', 'ESCALATED'].includes(s),
     unassign: ['CONFIRMED', 'ESCALATED'].includes(s) && !!detail.caregiver,
@@ -28,43 +27,35 @@ export function RequestActions({ detail, onChanged }: { detail: RequestDetail; o
     setOpen(null);
     onChanged(msg);
   };
-  const quick = useAction();
+  // One highlighted next step: assign → (caregiver clocks in/out in the app) → payment → payout.
+  const next: Open = !detail.caregiver && can.assign ? 'assign' : can.payment ? 'payment' : can.payout ? 'payout' : null;
 
   if (!Object.values(can).some(Boolean)) return null;
   return (
     <section className="card">
-      <h2>Actions</h2>
+      <h2>Next step</h2>
       <div className="row gap8 wrap">
-        {can.assign ? <Button onClick={() => setOpen('assign')}>{detail.caregiver ? 'Change caregiver' : 'Assign caregiver'}</Button> : null}
-        {can.matching ? (
-          <Button
-            variant="secondary"
-            busy={quick.busy}
-            onClick={async () => {
-              if (await quick.run(() => api.requestAction(r.id, { action: 'matching' }))) done('Moved to matching. The family still sees “awaiting confirmation”.');
-            }}
-          >
-            Start matching
-          </Button>
-        ) : null}
-        {can.payment ? (
-          <Button variant="secondary" onClick={() => setOpen('payment')}>
-            Record payment
-          </Button>
-        ) : null}
-        {can.payout ? (
-          <Button variant="secondary" onClick={() => setOpen('payout')}>
-            Mark payout sent
+        {next === 'assign' ? <Button onClick={() => setOpen('assign')}>Assign caregiver</Button> : null}
+        {next === 'payment' ? <Button onClick={() => setOpen('payment')}>Record payment</Button> : null}
+        {next === 'payout' ? <Button onClick={() => setOpen('payout')}>Mark payout sent</Button> : null}
+        {can.assign && detail.caregiver ? (
+          <Button variant="secondary" onClick={() => setOpen('assign')}>
+            Change caregiver
           </Button>
         ) : null}
         {can.unassign ? (
           <Button variant="secondary" onClick={() => setOpen('unassign')}>
-            Unassign
+            Remove caregiver
+          </Button>
+        ) : null}
+        {can.payout && next !== 'payout' ? (
+          <Button variant="secondary" onClick={() => setOpen('payout')}>
+            Mark payout sent
           </Button>
         ) : null}
         {can.escalate ? (
-          <Button variant="danger" onClick={() => setOpen('escalate')}>
-            Escalate
+          <Button variant="secondary" onClick={() => setOpen('escalate')}>
+            Flag for coordinator
           </Button>
         ) : null}
         {can.cancel ? (
@@ -73,18 +64,17 @@ export function RequestActions({ detail, onChanged }: { detail: RequestDetail; o
           </Button>
         ) : null}
       </div>
-      <ErrorNotice error={quick.error} />
 
       {open === 'assign' ? <AssignModal requestId={r.id} onClose={() => setOpen(null)} onDone={done} /> : null}
       {open === 'escalate' ? (
         <ReasonModal
-          title="Escalate this request"
+          title="Flag for a coordinator"
           body="Use this when no caregiver can be found in time or something needs a coordinator’s attention. The family isn’t told the reason."
-          cta="Escalate"
+          cta="Flag"
           danger
           onClose={() => setOpen(null)}
           run={(reason) => api.requestAction(r.id, { action: 'escalate', reason })}
-          onDone={() => done('Escalated.')}
+          onDone={() => done('Flagged for a coordinator.')}
         />
       ) : null}
       {open === 'cancel' ? (
@@ -100,13 +90,13 @@ export function RequestActions({ detail, onChanged }: { detail: RequestDetail; o
       ) : null}
       {open === 'unassign' ? (
         <ReasonModal
-          title="Unassign the caregiver"
+          title="Remove the caregiver"
           body="The request goes back to matching so you can choose someone else."
-          cta="Unassign"
+          cta="Remove caregiver"
           optional
           onClose={() => setOpen(null)}
           run={(reason) => api.requestAction(r.id, { action: 'unassign', reason: reason || undefined })}
-          onDone={() => done('Caregiver unassigned. Choose someone else.')}
+          onDone={() => done('Caregiver removed. Assign someone else.')}
         />
       ) : null}
       {open === 'payment' ? <PaymentModal requestId={r.id} amount={r.grossRate} onClose={() => setOpen(null)} onDone={() => done('Payment recorded.')} /> : null}

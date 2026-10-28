@@ -28,10 +28,14 @@ export interface Bindings {
   ADMIN_APP_URL?: string;
   /** 32+ random bytes, base64 (secret). Encrypts TOTP secrets and signs sign-in challenges. */
   STAFF_ENCRYPTION_KEY?: string;
-  /** Staff sign-in attempts per IP and per email (wrangler.toml [[ratelimits]]). */
+  /** Staff sign-in attempts per email (wrangler.toml [[ratelimits]]). */
   ADMIN_LOGIN_LIMITER?: RateLimit;
-  /** App sign-in code requests/attempts per IP and per email (wrangler.toml [[ratelimits]]). */
+  /** Staff sign-in attempts per IP; generous so a shared network isn't locked out. */
+  ADMIN_LOGIN_IP_LIMITER?: RateLimit;
+  /** App sign-in code requests/attempts per email (wrangler.toml [[ratelimits]]). */
   CLIENT_AUTH_LIMITER?: RateLimit;
+  /** App sign-in requests per IP; generous so many phones on one Wi-Fi can sign in together. */
+  CLIENT_AUTH_IP_LIMITER?: RateLimit;
   /** Outgoing email (sign-in codes). Gmail: smtp.gmail.com, 465, the address, and an App Password (secret). */
   SMTP_HOST?: string;
   SMTP_PORT?: string;

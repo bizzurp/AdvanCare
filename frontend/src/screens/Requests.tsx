@@ -141,6 +141,7 @@ const STEPS: Record<ServiceKind, string[]> = {
   triage: ['Assessment sent', 'Clinician review', 'Referral decision', 'Follow-up'],
   prescription: ['Requested', 'Doctor review', 'Ready for pickup or delivery', 'Received'],
   transport: ['Requested', 'Driver and vehicle assigned', 'On the way', 'Arrived'],
+  supplies: ['Order sent', 'Price and stock confirmed', 'Ready for pickup or delivery', 'Received'],
   'home-caregiver': ['Requested', 'Caregiver assigned', 'Shift in progress', 'Shift completed · care notes'],
   'cvmc-caregiver': ['Requested', 'Caregiver assigned', 'Shift in progress', 'Shift completed · care notes'],
 };

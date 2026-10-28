@@ -55,6 +55,9 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 - [ ] Align app-side copy with `/Docs` once confirmed: `backend/src/assistant/knowledge.ts` (plan SLAs, stats), frontend plan screens.
 - [ ] Deploy the updated `website/` (`npm run build`, then publish `dist/`); the contact form is still not wired to any backend.
 
+- ⬜ Deploy the 2026-10-28 changes (migration 0007 on the demo branch, API, app and console Pages); see CHANGELOG.
+- 👤 Confirm real partner-pharmacy prices and member discount (pilot estimates: 20% off, `frontend/src/data/catalog.ts`).
+
 ### Later (not needed for the prototype)
 - ⬜ GCash/Maya online payments · SMS codes and SMS keyword booking · push notifications · n8n automations (matching, summaries, reports) · NEMT trip tracking/maps (PostGIS) · Tagalog/Ilocano/Ybanag translations.
 - 👤 Non-code: LGU MOU, caregiver recruitment & 40-hour training, CVMC coordination letter, Data Privacy Act review of consent wording, care hotline number.

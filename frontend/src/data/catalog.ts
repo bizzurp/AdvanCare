@@ -79,6 +79,7 @@ export const SERVICES: ServiceDef[] = [
   { kind: 'rhu', title: 'RHU services', desc: 'Doctor, dentist, nurse, or midwife at your RHU', icon: 'medical-kit', path: '/services/rhu', group: 'consult' },
   { kind: 'triage', title: 'Triage & referral', desc: 'Get assessed and referred to the right facility', icon: 'heart-pulse', path: '/services/triage', group: 'consult' },
   { kind: 'prescription', title: 'Medical prescription', desc: 'Request a prescription from your doctor', icon: 'document-medicine', path: '/services/prescription', group: 'consult' },
+  { kind: 'supplies', title: 'Discounted pharmacy & supplies', desc: 'Vitamins, medicines and care supplies at member prices', icon: 'document-medicine', path: '/services/supplies', group: 'consult' },
   { kind: 'transport', title: 'Non-emergency transport', desc: 'Public or private vehicle to your next visit', icon: 'bus', path: '/services/transport', group: 'travel' },
   { kind: 'home-caregiver', title: 'Home-based caregiver', desc: `${peso(300)} for an 8-hour visit`, icon: 'user-heart', path: '/services/home-caregiver', group: 'care' },
   { kind: 'cvmc-caregiver', title: 'Hospital institutional caregiver', desc: `${peso(500)} for an 8-hour visit`, icon: 'hospital', path: '/services/cvmc-caregiver', group: 'care' },
@@ -129,6 +130,48 @@ export const VEHICLES: Record<VehicleCategory, { id: string; title: string; desc
   ],
 };
 
+// ---------- Discounted pharmacy & supplies ----------
+// Website: "Discounted Medical Supplies · member discounts · through partner pharmacies",
+// covering items outside PhilHealth YAKAP. Prices are pilot estimates until partner pharmacy
+// rates are signed; the care team confirms the final price before anyone pays.
+export type SupplyCategory = 'vitamins' | 'maintenance' | 'care';
+
+export interface SupplyItem {
+  id: string;
+  name: string;
+  pack: string;
+  category: SupplyCategory;
+  /** Estimated regular pharmacy price (₱). */
+  price: number;
+  /** Needs a valid prescription before the pharmacy can release it. */
+  rx?: boolean;
+}
+
+export const MEMBER_DISCOUNT = 0.2;
+export const memberPrice = (price: number) => Math.round(price * (1 - MEMBER_DISCOUNT));
+
+export const SUPPLY_CATEGORIES: { id: SupplyCategory; label: string }[] = [
+  { id: 'vitamins', label: 'Vitamins' },
+  { id: 'maintenance', label: 'Medicines' },
+  { id: 'care', label: 'Care supplies' },
+];
+
+export const SUPPLIES: SupplyItem[] = [
+  { id: 'multivit-iron', name: 'Multivitamins + iron', pack: '30 tablets', category: 'vitamins', price: 250 },
+  { id: 'vit-b-complex', name: 'Vitamin B complex', pack: '30 tablets', category: 'vitamins', price: 180 },
+  { id: 'calcium-d', name: 'Calcium + vitamin D', pack: '30 tablets', category: 'vitamins', price: 320 },
+  { id: 'ascorbic-500', name: 'Ascorbic acid 500 mg', pack: '100 tablets', category: 'vitamins', price: 200 },
+  { id: 'amlodipine-5', name: 'Amlodipine 5 mg (generic)', pack: '30 tablets', category: 'maintenance', price: 150, rx: true },
+  { id: 'losartan-50', name: 'Losartan 50 mg (generic)', pack: '30 tablets', category: 'maintenance', price: 300, rx: true },
+  { id: 'metformin-500', name: 'Metformin 500 mg (generic)', pack: '30 tablets', category: 'maintenance', price: 120, rx: true },
+  { id: 'adult-diapers', name: 'Adult diapers (M or L)', pack: 'Pack of 10', category: 'care', price: 350 },
+  { id: 'underpads', name: 'Disposable underpads', pack: 'Pack of 10', category: 'care', price: 220 },
+  { id: 'glucose-strips', name: 'Blood glucose test strips', pack: '25 strips', category: 'care', price: 650 },
+  { id: 'bp-monitor', name: 'Digital blood pressure monitor', pack: '1 unit', category: 'care', price: 1800 },
+  { id: 'wound-kit', name: 'Sterile gauze & dressing kit', pack: '1 kit', category: 'care', price: 150 },
+  { id: 'gloves', name: 'Disposable gloves', pack: 'Box of 100', category: 'care', price: 280 },
+];
+
 // ---------- Facilities (Triage / Transport destinations) ----------
 export type FacilityLevel = 'RHU' | 'DISTRICT' | 'CVMC' | 'PRIVATE';
 
@@ -160,6 +203,7 @@ export const DEPENDENCIES = {
   triage:
     'Approved triage protocol is missing. AdvanCare does not assign urgency or a destination automatically; a clinician must review every assessment.',
   transport: 'Your request goes to the care team, who confirm the vehicle, pickup time and fare here.',
+  supplies: 'Your order goes to the care team, who confirm stock and the final member price with the partner pharmacy before you pay. Medicines marked Rx need a valid prescription.',
   prescription: 'Your request and photo go to the care team for review. DoH Yakap pickup or delivery is arranged by the team for now.',
   caregiver: 'Your booking goes to the care team, who assign an accredited caregiver and confirm here. You can change or cancel it until a caregiver is assigned.',
   facilities: 'Facility directory (district hospitals, private clinics) needs a verified list for the pilot area.',

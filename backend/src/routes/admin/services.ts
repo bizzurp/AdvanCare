@@ -19,7 +19,7 @@ const handler = alias(users, 'handler');
 const assignedProv = alias(providers, 'assigned_prov');
 const assignedUser = alias(users, 'assigned_user');
 
-const KIND_LABEL: Record<string, string> = { telehealth: 'TeleHealth consult', rhu: 'RHU service', triage: 'Triage & referral', prescription: 'Prescription', transport: 'Transport' };
+const KIND_LABEL: Record<string, string> = { telehealth: 'TeleHealth consult', rhu: 'RHU service', triage: 'Triage & referral', prescription: 'Prescription', transport: 'Transport', supplies: 'Pharmacy & supplies' };
 
 /** Staff inbox for the other services (P2). Scoped by the client's municipality; changes audited. */
 export const adminServices = new Hono<AppEnv>();

@@ -175,7 +175,7 @@ export function todayManila(offsetDays = 0): string {
   return new Date(Date.now() + 8 * 3600_000 + offsetDays * 86400_000).toISOString().slice(0, 10);
 }
 
-export const SERVICE_KIND_LABEL: Record<string, string> = { telehealth: 'TeleHealth', rhu: 'RHU service', triage: 'Triage & referral', prescription: 'Prescription', transport: 'Transport' };
+export const SERVICE_KIND_LABEL: Record<string, string> = { telehealth: 'TeleHealth', rhu: 'RHU service', triage: 'Triage & referral', prescription: 'Prescription', transport: 'Transport', supplies: 'Pharmacy & supplies' };
 
 export const SERVICE_STATUS: Record<string, { label: string; tone: Tone }> = {
   SUBMITTED: { label: 'New', tone: 'warn' },

@@ -13,6 +13,7 @@ export const ASSISTANT_LINKS = {
   '/services/triage': 'Start an assessment',
   '/services/prescription': 'Request a prescription',
   '/services/transport': 'Book transport',
+  '/services/supplies': 'Order medicines & supplies',
   '/services/home-caregiver': 'Request a home caregiver',
   '/services/cvmc-caregiver': 'Request a CVMC caregiver',
   '/requests': 'Track your requests',
@@ -36,6 +37,7 @@ SERVICES (Services tab)
 - RHU services: physician, dentist, nurse or midwife at the Rural Health Unit, at the RHU or as a home visit request.
 - Triage & referral: describe a health concern; a clinician reviews every assessment. The app does not decide urgency or destination by itself.
 - Medical prescription: request a prescription refill from your doctor (photo or file upload).
+- Discounted pharmacy & supplies: order vitamins, maintenance medicines and care supplies (e.g. adult diapers, BP monitor, glucose test strips) at a member discount, including items outside PhilHealth YAKAP. Prices in the app are estimates; the care team confirms the final price with the partner pharmacy before payment. Pick up at the barangay health center or home delivery.
 - Non-emergency transport: public (tricycle, multicab/jeepney, shared van) or private (car, wheelchair-accessible van, non-emergency stretcher vehicle). Fares are quoted by the care team.
 
 CARE PLANS (More > Care plans). Half is paid by the household, half by the LGU subsidy.
@@ -45,7 +47,7 @@ CARE PLANS (More > Care plans). Half is paid by the household, half by the LGU s
 - Payment options: GCash, Maya, bank transfer, cash at the barangay hall, credit or debit card (for family abroad). LGU subsidy needs verification by the BHW or municipal health office.
 
 USING THE APP
-- Sign in with your mobile number and a 6-digit SMS code. A Barangay Health Worker can register a client who has no phone.
+- Sign in with your email address and a 6-digit code sent by email. A Barangay Health Worker can register a client who has no phone.
 - Track, reschedule or cancel requests in "Your requests". Statuses: Saved on device, Waiting to send, Sent (awaiting confirmation), Confirmed, In progress, Completed, Cancelled.
 - If you are offline, new requests are saved and sent automatically when you reconnect.
 - Reports: service records (export as PDF or CSV) and service trends.
@@ -53,8 +55,8 @@ USING THE APP
 - Settings: language, larger text, notifications.
 
 NOT CONNECTED YET (say so honestly if asked)
-- Bookings are not yet sent to real providers in this pilot build; nothing is confirmed until the care team confirms it.
-- TeleHealth, RHU appointments, transport, prescription fulfilment, payments and SMS are still being connected.
+- Every booking goes to the AdvanCare care team, who confirm it in the app; nothing is confirmed until they do.
+- Online payments and SMS are not connected yet; payment is arranged with the care team.
 - Tagalog, Ilocano and Ybanag screens are not available yet (the assistant may still reply in those languages).
 
 EMERGENCIES

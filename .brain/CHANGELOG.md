@@ -1,3 +1,10 @@
+## [2026-10-28] - Discounted pharmacy & supplies, simpler staff actions, shared-network sign-in
+
+- New service `supplies` (app: Services → "Discounted pharmacy & supplies", `/services/supplies`): vitamins, generic maintenance medicines (Rx) and care supplies at a 20% member price, quantities, pickup/delivery, optional prescription photo for Rx items. Goes through the service-request inbox. Prices are pilot estimates in `frontend/src/data/catalog.ts` (`SUPPLIES`, `MEMBER_DISCOUNT`); staff confirm the final price. Migration `0007_discounted_supplies` widens the `service_requests_kind` CHECK.
+- Staff console: service requests show one next step per service (e.g. "Assign driver & pickup time" → "Mark trip done"; "Confirm order & delivery date" → "Mark delivered / picked up"); "Start review" removed (server still accepts IN_REVIEW). Caregiver bookings: "Start matching" removed, "Escalate"/"Unassign" renamed "Flag for coordinator"/"Remove caregiver". Provider card hidden for services without providers. Overview lists service requests waiting for staff. Fixed: console ignored the app's "Label: value" detail lines.
+- Sign-in rate limits split: strict per email (10/min, unchanged) and generous per IP (app 200/min, staff 100/min; new bindings `CLIENT_AUTH_IP_LIMITER` 1004, `ADMIN_LOGIN_IP_LIMITER` 1005) so many phones on one Wi-Fi don't lock each other out. Sessions were never IP- or device-bound.
+- Care Assistant knowledge: added supplies, email sign-in, and that bookings do reach the care team.
+
 ## [2026-10-18] - Non-emergency transport vehicle choices
 
 - Demo driver vehicles and the admin registration dropdown now match the six mobile booking options: tricycle, multicab/jeepney, shared van, private car, wheelchair-accessible van, and non-emergency stretcher vehicle. Driver-only seed refreshes existing fixture vehicles while preserving assignments.

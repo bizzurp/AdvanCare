@@ -50,6 +50,13 @@
       "when": 1792162796013,
       "tag": "0006_confused_scalphunter",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793181580301,
+      "tag": "0007_discounted_supplies",
+      "breakpoints": true
     }
   ]
 }

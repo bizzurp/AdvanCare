@@ -27,7 +27,7 @@ export function Services() {
         title="Service requests"
         subtitle={
           <>
-            TeleHealth, RHU, Triage, Prescriptions and Transport · <ScopeNote municipalities={me.municipalities} />
+            TeleHealth, RHU, Triage, Prescriptions, Transport and Pharmacy & supplies · <ScopeNote municipalities={me.municipalities} />
           </>
         }
       />
@@ -138,6 +138,10 @@ function DetailsList({ details }: { details: Record<string, unknown> }) {
     for (const item of details.shown) {
       if (item && typeof item === 'object' && 'label' in item && 'value' in item) {
         rows.push({ label: String((item as { label: unknown }).label), value: String((item as { value: unknown }).value) });
+      } else if (typeof item === 'string') {
+        // The app sends "Label: value" lines.
+        const at = item.indexOf(': ');
+        rows.push(at > 0 ? { label: item.slice(0, at), value: item.slice(at + 2) } : { label: 'Detail', value: item });
       }
     }
   }
@@ -166,7 +170,6 @@ export function ServiceDetailPage() {
   const detail = useLoad(() => api.service(id), [id]);
   const [open, setOpen] = useState<null | 'schedule' | 'complete' | 'cancel' | 'assign'>(null);
   const [flash, setFlash] = useState<string | null>(null);
-  const quick = useAction();
   const file = useAction();
 
   if (detail.loading && !detail.data) return <Loading />;
@@ -179,7 +182,10 @@ export function ServiceDetailPage() {
   };
   const openStatuses: ServiceStatus[] = ['SUBMITTED', 'IN_REVIEW', 'SCHEDULED'];
   const isOpen = openStatuses.includes(r.status);
-  const canAssign = isOpen && (r.kind === 'transport' || r.kind === 'telehealth');
+  const hasProvider = r.kind === 'transport' || r.kind === 'telehealth';
+  const canAssign = isOpen && hasProvider;
+  const scheduled = r.status === 'SCHEDULED';
+  const flow = SERVICE_FLOW[r.kind] ?? SERVICE_FLOW.rhu!;
 
   return (
     <>
@@ -206,43 +212,22 @@ export function ServiceDetailPage() {
 
       {isOpen ? (
         <section className="card">
-          <h2>Actions</h2>
+          <h2>Next step</h2>
           <div className="row gap8 wrap">
-            {canAssign ? (
-              <Button onClick={() => setOpen('assign')}>
-                {assignedProvider
-                  ? r.kind === 'telehealth'
-                    ? 'Change doctor'
-                    : 'Change driver'
-                  : r.kind === 'telehealth'
-                    ? 'Assign doctor'
-                    : 'Assign driver'}
-              </Button>
-            ) : null}
-            {r.status === 'SUBMITTED' ? (
-              <Button
-                variant="secondary"
-                busy={quick.busy}
-                onClick={async () => {
-                  if (await quick.run(() => api.serviceStatus(r.id, { status: 'IN_REVIEW' }))) done('Marked in review.');
-                }}
-              >
-                Start review
-              </Button>
-            ) : null}
-            <Button variant={canAssign ? 'secondary' : 'primary'} onClick={() => setOpen('schedule')}>
-              {r.status === 'SCHEDULED' ? 'Reschedule' : 'Schedule'}
-            </Button>
-            {r.status !== 'SUBMITTED' ? (
-              <Button variant="secondary" onClick={() => setOpen('complete')}>
-                Mark completed
-              </Button>
-            ) : null}
+            {!scheduled ? (
+              <Button onClick={() => setOpen(canAssign ? 'assign' : 'schedule')}>{flow.confirm}</Button>
+            ) : (
+              <>
+                <Button onClick={() => setOpen('complete')}>{flow.complete}</Button>
+                <Button variant="secondary" onClick={() => setOpen(canAssign ? 'assign' : 'schedule')}>
+                  {flow.change}
+                </Button>
+              </>
+            )}
             <Button variant="danger" onClick={() => setOpen('cancel')}>
-              Cancel
+              Cancel request
             </Button>
           </div>
-          <ErrorNotice error={quick.error} />
         </section>
       ) : null}
 
@@ -275,58 +260,62 @@ export function ServiceDetailPage() {
         </section>
 
         <section className="card">
-          <div className="card-head">
-            <h2>{r.kind === 'telehealth' ? 'Assigned Doctor' : r.kind === 'transport' ? 'Assigned Driver' : 'Assigned Provider'}</h2>
-            {assignedProvider ? (
-              <Link to={`/providers/${assignedProvider.id}`} className="link-arrow">
-                Open profile <Icon name="alt-arrow-right" size={16} />
-              </Link>
-            ) : null}
-          </div>
-          {assignedProvider ? (
-            <dl className="facts">
-              <dt>Name</dt>
-              <dd>{assignedProvider.type === 'DOCTOR' ? `Dr. ${assignedProvider.fullName}` : assignedProvider.fullName}</dd>
-              {assignedProvider.type === 'DOCTOR' ? (
-                <>
-                  <dt>Specialty</dt>
-                  <dd>{assignedProvider.specialty ?? 'General Practice'}</dd>
-                  {assignedProvider.licenseNumber ? (
+          {hasProvider || assignedProvider ? (
+            <>
+              <div className="card-head">
+                <h2>{r.kind === 'telehealth' ? 'Assigned Doctor' : r.kind === 'transport' ? 'Assigned Driver' : 'Assigned Provider'}</h2>
+                {assignedProvider ? (
+                  <Link to={`/providers/${assignedProvider.id}`} className="link-arrow">
+                    Open profile <Icon name="alt-arrow-right" size={16} />
+                  </Link>
+                ) : null}
+              </div>
+              {assignedProvider ? (
+                <dl className="facts">
+                  <dt>Name</dt>
+                  <dd>{assignedProvider.type === 'DOCTOR' ? `Dr. ${assignedProvider.fullName}` : assignedProvider.fullName}</dd>
+                  {assignedProvider.type === 'DOCTOR' ? (
                     <>
-                      <dt>PRC License</dt>
-                      <dd>{assignedProvider.licenseNumber}</dd>
+                      <dt>Specialty</dt>
+                      <dd>{assignedProvider.specialty ?? 'General Practice'}</dd>
+                      {assignedProvider.licenseNumber ? (
+                        <>
+                          <dt>PRC License</dt>
+                          <dd>{assignedProvider.licenseNumber}</dd>
+                        </>
+                      ) : null}
                     </>
-                  ) : null}
-                </>
+                  ) : (
+                    <>
+                      <dt>Vehicle</dt>
+                      <dd>{assignedProvider.vehicleType ?? 'Transport Vehicle'}</dd>
+                      {assignedProvider.plateNumber ? (
+                        <>
+                          <dt>Plate number</dt>
+                          <dd>{assignedProvider.plateNumber}</dd>
+                        </>
+                      ) : null}
+                    </>
+                  )}
+                  <dt>Contact</dt>
+                  <dd>{assignedProvider.phone ?? '—'}</dd>
+                  <dt>Municipality</dt>
+                  <dd>{assignedProvider.municipality}</dd>
+                </dl>
               ) : (
-                <>
-                  <dt>Vehicle</dt>
-                  <dd>{assignedProvider.vehicleType ?? 'Transport Vehicle'}</dd>
-                  {assignedProvider.plateNumber ? (
-                    <>
-                      <dt>Plate number</dt>
-                      <dd>{assignedProvider.plateNumber}</dd>
-                    </>
+                <p className="muted">
+                  No {r.kind === 'telehealth' ? 'doctor' : r.kind === 'transport' ? 'driver' : 'provider'} assigned yet.{' '}
+                  {canAssign ? (
+                    <button type="button" className="link-btn" onClick={() => setOpen('assign')}>
+                      Assign now
+                    </button>
                   ) : null}
-                </>
+                </p>
               )}
-              <dt>Contact</dt>
-              <dd>{assignedProvider.phone ?? '—'}</dd>
-              <dt>Municipality</dt>
-              <dd>{assignedProvider.municipality}</dd>
-            </dl>
-          ) : (
-            <p className="muted">
-              No {r.kind === 'telehealth' ? 'doctor' : r.kind === 'transport' ? 'driver' : 'provider'} assigned yet.{' '}
-              {canAssign ? (
-                <button type="button" className="link-btn" onClick={() => setOpen('assign')}>
-                  Assign now
-                </button>
-              ) : null}
-            </p>
-          )}
+            </>
+          ) : null}
 
-          <h2 className="mt16">Client</h2>
+          <h2 className={hasProvider || assignedProvider ? 'mt16' : undefined}>Client</h2>
           <dl className="facts">
             <dt>Name</dt>
             <dd>
@@ -389,6 +378,19 @@ export function ServiceDetailPage() {
     </>
   );
 }
+
+/**
+ * One path per service: confirm (assigning a doctor/driver also schedules) → mark done.
+ * Labels say what each button does for that service.
+ */
+const SERVICE_FLOW: Record<string, { confirm: string; change: string; complete: string; done: string; when: string; note: string }> = {
+  telehealth: { confirm: 'Assign doctor & time', change: 'Change doctor or time', complete: 'Mark consult done', done: 'Consult marked done.', when: 'Consult date and time', note: 'e.g. Dr. Reyes will call at this time. Have the BP readings ready.' },
+  transport: { confirm: 'Assign driver & pickup time', change: 'Change driver or time', complete: 'Mark trip done', done: 'Trip marked done.', when: 'Pickup date and time', note: 'e.g. The driver will wait at the chapel landmark.' },
+  rhu: { confirm: 'Schedule RHU visit', change: 'Reschedule visit', complete: 'Mark visit done', done: 'Visit marked done.', when: 'Visit date and time', note: 'e.g. Bring your PhilHealth ID to the RHU.' },
+  triage: { confirm: 'Schedule clinician review', change: 'Reschedule review', complete: 'Mark reviewed', done: 'Marked reviewed.', when: 'Review date and time', note: 'e.g. A nurse will call you to ask a few questions.' },
+  prescription: { confirm: 'Confirm & set release date', change: 'Change release date', complete: 'Mark released to family', done: 'Marked released.', when: 'Pickup or delivery date and time', note: 'e.g. Ready for pickup at the barangay health center.' },
+  supplies: { confirm: 'Confirm order & delivery date', change: 'Change delivery date', complete: 'Mark delivered / picked up', done: 'Order marked delivered.', when: 'Pickup or delivery date and time', note: 'e.g. Final price ₱640, pay on pickup. Losartan needs your prescription.' },
+};
 
 /** datetime-local value in Manila time, e.g. 2026-10-18T14:00. */
 function toLocalInput(iso: string | null): string {
@@ -556,9 +558,11 @@ function StatusModal({ detail, mode, onClose, onDone }: { detail: ServiceDetail;
   const [note, setNote] = useState(r.staffNote ?? '');
   const action = useAction();
   const schedule = mode === 'schedule';
+  const flow = SERVICE_FLOW[r.kind] ?? SERVICE_FLOW.rhu!;
+  const title = schedule ? (r.status === 'SCHEDULED' ? flow.change : flow.confirm) : flow.complete;
   return (
     <Modal
-      title={schedule ? `Schedule ${r.kindLabel.toLowerCase()}` : 'Mark as completed'}
+      title={title}
       onClose={onClose}
       footer={
         <>
@@ -572,18 +576,18 @@ function StatusModal({ detail, mode, onClose, onDone }: { detail: ServiceDetail;
               const res = await action.run(() =>
                 api.serviceStatus(r.id, { status: schedule ? 'SCHEDULED' : 'COMPLETED', ...(schedule ? { scheduledAt: new Date(`${when}:00+08:00`).toISOString() } : {}), note: note.trim() }),
               );
-              if (res) onDone(schedule ? `Scheduled${res.familyEmail === 'sent' ? '. The family was emailed' : ''}.` : 'Marked completed.');
+              if (res) onDone(schedule ? `Confirmed for ${dateTime(new Date(`${when}:00+08:00`).toISOString())}${res.familyEmail === 'sent' ? '. The family was emailed' : ''}.` : flow.done);
             }}
           >
-            {schedule ? 'Schedule' : 'Mark completed'}
+            {title}
           </Button>
         </>
       }
     >
-      {schedule ? <Field label="Date and time (Philippine time)" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} required hint={r.preferredAt ? `The family asked for ${dateTime(r.preferredAt)}.` : undefined} /> : null}
+      {schedule ? <Field label={`${flow.when} (Philippine time)`} type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} required hint={r.preferredAt ? `The family asked for ${dateTime(r.preferredAt)}.` : undefined} /> : null}
       <div className="field">
         <label htmlFor="family-note">Note for the family (shown in the app)</label>
-        <textarea id="family-note" className="input" rows={3} maxLength={500} value={note} onChange={(e) => setNote(e.target.value)} placeholder="e.g. Dr. Reyes will call at this time. Have the BP readings ready." />
+        <textarea id="family-note" className="input" rows={3} maxLength={500} value={note} onChange={(e) => setNote(e.target.value)} placeholder={flow.note} />
       </div>
       <ErrorNotice error={action.error} />
     </Modal>

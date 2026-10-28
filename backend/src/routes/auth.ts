@@ -36,11 +36,17 @@ export function generateCode(): string {
 
 export const codeHash = (email: string, code: string) => sha256Hex(`${email}:${code}`);
 
+/**
+ * Strict per email; generous per IP, because a whole barangay hall or venue shares one
+ * Wi-Fi/mobile IP and must not lock each other out. Per-code attempt caps still apply.
+ */
 async function limit(c: Context<AppEnv>, email: string) {
-  const limiter = c.env.CLIENT_AUTH_LIMITER;
-  if (!limiter) return;
-  for (const key of [`ip:${c.req.header('CF-Connecting-IP') ?? 'local'}`, `email:${email}`]) {
-    if (!(await limiter.limit({ key: `client-auth:${key}` })).success) {
+  const checks: [RateLimit | undefined, string][] = [
+    [c.env.CLIENT_AUTH_IP_LIMITER, `ip:${c.req.header('CF-Connecting-IP') ?? 'local'}`],
+    [c.env.CLIENT_AUTH_LIMITER, `email:${email}`],
+  ];
+  for (const [limiter, key] of checks) {
+    if (limiter && !(await limiter.limit({ key: `client-auth:${key}` })).success) {
       throw new ApiError(429, 'RATE_LIMITED', 'Too many tries. Please wait a minute and try again.');
     }
   }

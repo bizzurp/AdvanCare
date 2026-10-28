@@ -7,7 +7,7 @@ import { Icon } from '../components/Icon';
 import { MunicipalityFilter, CAGAYAN_MUNICIPALITIES } from '../components/MunicipalityFilter';
 import { ScopeNote, StatusBadge } from '../components/ops';
 import { Badge, Button, ErrorNotice, Loading, Modal, Notice, PageHeader, useLoad } from '../components/ui';
-import { actionLabel, clock, day, dateTime, isFailureAction, money, num, personName, relative, scopeLabel, TIER_LABEL, todayManila, waitedFor } from '../format';
+import { actionLabel, clock, day, dateTime, isFailureAction, money, num, personName, relative, scopeLabel, SERVICE_KIND_LABEL, SERVICE_STATUS, TIER_LABEL, todayManila, waitedFor } from '../format';
 import { AssignProviderModal } from './Services';
 
 function greeting(): string {
@@ -67,6 +67,7 @@ export function Home() {
     () => (isSuper ? api.services({ kind: 'telehealth', status: 'OPEN', page: '1' }) : Promise.resolve(null)),
     [isSuper],
   );
+  const services = useLoad(() => api.services({ status: 'OPEN', page: '1' }), []);
   const assignDetail = useLoad(
     () => (assignModalId ? api.service(assignModalId) : Promise.resolve(null)),
     [assignModalId],
@@ -120,7 +121,7 @@ export function Home() {
             availableMunicipalities={availableMunicipalities}
           />
         ) : null}
-        <Button variant="quiet" onClick={() => void overview.reload()} busy={overview.loading && !!o}>
+        <Button variant="quiet" onClick={() => { void overview.reload(); void services.reload(); }} busy={overview.loading && !!o}>
           Refresh
         </Button>
       </div>
@@ -153,9 +154,9 @@ export function Home() {
           <div className="grid-detail">
             <section className="card">
               <div className="card-head">
-                <h2>Needs attention</h2>
+                <h2>Caregiver bookings needing a caregiver</h2>
                 <Link to="/requests?status=OPEN" className="link-arrow">
-                  Open requests <Icon name="alt-arrow-right" size={16} />
+                  All bookings <Icon name="alt-arrow-right" size={16} />
                 </Link>
               </div>
               <AttentionList waiting={o.alerts.waiting} escalated={o.alerts.escalated} />
@@ -175,6 +176,16 @@ export function Home() {
               />
             </section>
           </div>
+
+          <section className="card">
+            <div className="card-head">
+              <h2>Service requests waiting for staff</h2>
+              <Link to="/services?status=OPEN" className="link-arrow">
+                All service requests <Icon name="alt-arrow-right" size={16} />
+              </Link>
+            </div>
+            <WaitingServices rows={services.data?.requests} loading={services.loading} error={services.error} />
+          </section>
 
           <section className="card">
             <div className="card-head">
@@ -353,6 +364,7 @@ export function Home() {
             setAssignModalId(null);
             void telehealthQueue.reload();
             void overview.reload();
+            void services.reload();
           }}
         />
       ) : null}
@@ -367,6 +379,35 @@ function Kpi({ label, value, to, sub, tone }: { label: string; value: number | s
       <span className="kpi-value">{typeof value === 'number' ? num(value) : value}</span>
       {sub ? <span className="kpi-sub">{sub}</span> : null}
     </Link>
+  );
+}
+
+/** TeleHealth, RHU, Triage, Prescription, Transport and Pharmacy requests nobody has confirmed yet. */
+function WaitingServices({ rows, loading, error }: { rows: ServiceRow[] | undefined; loading: boolean; error: unknown }) {
+  if (loading && !rows) return <Loading />;
+  if (error) return <ErrorNotice error={error} />;
+  const waiting = (rows ?? []).filter((r) => r.status === 'SUBMITTED' || r.status === 'IN_REVIEW');
+  if (!waiting.length) return <p className="muted">Nothing waiting. Every service request is confirmed or closed.</p>;
+  return (
+    <ul className="list">
+      {waiting.map((r) => (
+        <li key={r.id}>
+          <Link to={`/services/${r.id}`} className="list-row attention-row">
+            <span className="attention-main">
+              <b>
+                {SERVICE_KIND_LABEL[r.kind] ?? r.kind} · {r.client.name}
+              </b>
+              <span className="muted small">
+                {r.summary ?? r.ref} · Brgy. {r.barangay}, {r.municipality}
+                {r.preferredAt ? ` · wants ${dateTime(r.preferredAt)}` : ''}
+              </span>
+            </span>
+            <Badge tone="warn">Waiting {waitedFor(r.createdAt)}</Badge>
+            <Icon name="alt-arrow-right" size={16} />
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -512,7 +553,7 @@ function TelehealthQueueSection({
                       <Link to={`/services/${r.id}`} className="strong-link">
                         {r.ref}
                       </Link>
-                      <span className="cell-sub">{r.status}</span>
+                      <span className="cell-sub">{SERVICE_STATUS[r.status]?.label ?? r.status}</span>
                     </td>
                     <td>{r.client.name}</td>
                     <td>{r.municipality}</td>

@@ -1,0 +1,2 @@
+ALTER TABLE "service_requests" DROP CONSTRAINT "service_requests_kind";--> statement-breakpoint
+ALTER TABLE "service_requests" ADD CONSTRAINT "service_requests_kind" CHECK ("service_requests"."kind" IN ('telehealth', 'rhu', 'triage', 'prescription', 'transport', 'supplies'));

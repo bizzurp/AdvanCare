@@ -6,7 +6,50 @@
   "hideUnresolved": false,
   "showOrphans": true,
   "collapse-color-groups": true,
-  "colorGroups": [],
+  "colorGroups": [
+    {
+      "query": "file:\"AdvanCare Master MOC\" OR file:\"Project Context\" OR file:\"Implementation Plan\"",
+      "color": {
+        "a": 1,
+        "rgb": 5483807
+      }
+    },
+    {
+      "query": "path:\"AdvanCare-design-handoff\"",
+      "color": {
+        "a": 1,
+        "rgb": 6871334
+      }
+    },
+    {
+      "query": "path:\"Research\"",
+      "color": {
+        "a": 1,
+        "rgb": 4512038
+      }
+    },
+    {
+      "query": "path:\"Product\"",
+      "color": {
+        "a": 1,
+        "rgb": 9165094
+      }
+    },
+    {
+      "query": "path:\"Architecture\"",
+      "color": {
+        "a": 1,
+        "rgb": 9232986
+      }
+    },
+    {
+      "query": "path:\"Analysis\"",
+      "color": {
+        "a": 1,
+        "rgb": 7463514
+      }
+    }
+  ],
   "collapse-display": true,
   "showArrow": false,
   "textFadeMultiplier": 0,

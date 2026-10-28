@@ -1,1 +1,9 @@
-{}
+{
+  "userIgnoreFilters": [
+    "AdvanCare-design-handoff/reference/Implementation Plan.md",
+    "AdvanCare-design-handoff/reference/Mobile App System Specification.md",
+    "AdvanCare-design-handoff/reference/Reporting Engine & Dashboard Specifications.md",
+    "AdvanCare-design-handoff/reference/Service Catalog & Caregiver Operations.md",
+    "AdvanCare-design-handoff/assets/"
+  ]
+}

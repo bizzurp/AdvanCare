@@ -16,6 +16,7 @@ export type IconName =
   | 'check-circle'
   | 'document-text'
   | 'eye'
+  | 'eye-closed'
   | 'home-angle'
   | 'map-point'
   | 'menu-dots'

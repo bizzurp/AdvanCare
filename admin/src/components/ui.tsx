@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode } from 'react';
 import { ApiError } from '../api';
+import { Icon } from './Icon';
 
 export function Button({ variant = 'primary', busy, children, ...rest }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'quiet' | 'danger'; busy?: boolean }) {
   return (
@@ -12,10 +13,31 @@ export function Button({ variant = 'primary', busy, children, ...rest }: ButtonH
 
 export function Field({ label, hint, error, ...input }: InputHTMLAttributes<HTMLInputElement> & { label: string; hint?: ReactNode; error?: string }) {
   const id = useId();
+  const [shown, setShown] = useState(false);
+  const isPassword = input.type === 'password';
+  const field = (
+    <input
+      id={id}
+      className="input"
+      aria-invalid={!!error || undefined}
+      aria-describedby={hint || error ? `${id}-note` : undefined}
+      {...input}
+      type={isPassword && shown ? 'text' : input.type}
+    />
+  );
   return (
     <div className={`field ${error ? 'has-error' : ''}`}>
       <label htmlFor={id}>{label}</label>
-      <input id={id} className="input" aria-invalid={!!error || undefined} aria-describedby={hint || error ? `${id}-note` : undefined} {...input} />
+      {isPassword ? (
+        <div className="input-wrap">
+          {field}
+          <button type="button" className="input-reveal" aria-label={shown ? 'Hide password' : 'Show password'} aria-pressed={shown} onClick={() => setShown((s) => !s)}>
+            <Icon name={shown ? 'eye-closed' : 'eye'} size={18} />
+          </button>
+        </div>
+      ) : (
+        field
+      )}
       {error ? (
         <p className="field-error" id={`${id}-note`}>
           {error}

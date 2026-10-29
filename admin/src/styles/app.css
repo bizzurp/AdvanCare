@@ -729,6 +729,33 @@ textarea.input {
   border-color: var(--teal);
   box-shadow: 0 0 0 3px rgba(8, 107, 91, 0.15);
 }
+.input-wrap {
+  position: relative;
+}
+.input-wrap .input {
+  padding-right: 44px;
+}
+.input-reveal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: var(--input-r);
+}
+.input-reveal:hover {
+  color: var(--ink);
+}
+.input-reveal:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: -4px;
+}
 .has-error .input {
   border-color: var(--red);
 }

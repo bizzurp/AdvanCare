@@ -1,4 +1,5 @@
 from pathlib import Path
+from os import environ
 from PIL import Image, ImageOps
 from reportlab.pdfgen import canvas
 from reportlab.lib.colors import HexColor, Color
@@ -11,7 +12,8 @@ from reportlab.lib.enums import TA_LEFT
 
 ROOT=Path('/Users/mclein/Documents/Developer/Personal_Projects/AdvanCare')
 OUT=ROOT/'output/pdf'; TMP=ROOT/'tmp/pdfs/brochure'
-FONTS=Path(TMP/'fonts')
+# Set ADVANCARE_FONT_DIR to the directory containing the four font files below.
+FONTS=Path(environ.get('ADVANCARE_FONT_DIR', str(TMP/'fonts')))
 for name,file in [('Body','InstrumentSans-Regular.ttf'),('Bold','InstrumentSans-Bold.ttf'),('Display','BricolageGrotesque-Bold.ttf'),('Serif','Lora-Italic.ttf')]:
  pdfmetrics.registerFont(TTFont(name,str(FONTS/file)))
 OUT.mkdir(exist_ok=True,parents=True)

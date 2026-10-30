@@ -14,7 +14,7 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 
 ### Demo environment (2026-10-16)
 - ✅ Neon branch `demo-advancare` (Advancare project) seeded with fictional data; `backend/.env` currently points at it (production lines kept as comments). Switch back before real use; delete the branch to remove all demo data.
-- ⬜ Demo Admin invites from the seed: Solana one used for testing (password set during testing, can be reset via console → Reset 2-step / new invite); Tuguegarao one unused (expires ~2026-10-18).
+- ⬜ Demo Admin invites from the seed: Solana one used for testing (password already set, can be reset via console → Reset 2-step / new invite); Tuguegarao one unused (expires ~2026-10-18).
 
 ### P2 — Every service reaches staff
 - ✅ `service_requests` table + API for TeleHealth, RHU services, Triage, Prescription (with uploaded photo), Transport (2026-10-16).

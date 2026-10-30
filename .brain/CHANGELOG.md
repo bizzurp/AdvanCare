@@ -1,3 +1,8 @@
+## [2026-10-30] - Provider-neutral repository handoff
+
+- Renamed the UI implementation brief to `IMPLEMENTATION-BRIEF.md`, refreshed handoff links and checksums, and removed obsolete assistant-specific references from project notes.
+- Brochure generation reads fonts from `ADVANCARE_FONT_DIR` (defaults to `tmp/pdfs/brochure/fonts`) instead of a machine-specific plugin installation. Required files: `InstrumentSans-Regular.ttf`, `InstrumentSans-Bold.ttf`, `BricolageGrotesque-Bold.ttf`, and `Lora-Italic.ttf`.
+
 ## [2026-10-28] - Discounted pharmacy & supplies, simpler staff actions, shared-network sign-in
 
 - New service `supplies` (app: Services → "Discounted pharmacy & supplies", `/services/supplies`): vitamins, generic maintenance medicines (Rx) and care supplies at a 20% member price, quantities, pickup/delivery, optional prescription photo for Rx items. Goes through the service-request inbox. Prices are pilot estimates in `frontend/src/data/catalog.ts` (`SUPPLIES`, `MEMBER_DISCOUNT`); staff confirm the final price. Migration `0007_discounted_supplies` widens the `service_requests_kind` CHECK.

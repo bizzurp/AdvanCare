@@ -1,4 +1,4 @@
-# Implementation Brief
+# AdvanCare UI Implementation Brief
 
 Build the AdvanCare app UI using /Users/mclein/Documents/Developer/Personal_Projects/AdvanCare/design-handoff as the visual reference folder. If it has not been moved there yet, the same package is available at /Users/mclein/Documents/Codex/2026-10-15/referenced-chatgpt-conversation-this-is-an/outputs/AdvanCare-design-handoff. Use the complete package. First read START-HERE.md, IMPLEMENTATION-NOTES.md, COMPONENTS.md, FLOWS-AND-MOTION.md, and design-system/tokens.json. Inspect the PNG screen renders and use spec/native-node-tree.json for exact text, spacing, layout, and component details. The local .fig file preserves the editable Figma source.
 

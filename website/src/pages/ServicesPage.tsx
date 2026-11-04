@@ -8,7 +8,7 @@ export const ServicesPage: React.FC = () => {
   return (
     <div className="services-page">
       {/* Hero */}
-      <section style={{ padding: '64px 0 48px 0', backgroundColor: 'var(--advancare-paper)', borderBottom: '1px solid var(--advancare-line)' }}>
+      <section className="hero-surface" style={{ padding: '64px 0 48px 0', backgroundColor: 'var(--advancare-paper)', borderBottom: '1px solid var(--advancare-line)' }}>
         <div className="container" style={{ maxWidth: 840 }}>
           <span className="kicker" style={{ marginBottom: 12 }}>
             <Icon name="medical-kit" size={14} />

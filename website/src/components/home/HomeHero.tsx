@@ -5,7 +5,7 @@ import { BASELINE_STATS, TAGLINE } from '../../data/storyData';
 import emblemLogo from '../../assets/logo-emblem.png';
 
 export const HomeHero: React.FC = () => (
-  <section style={{ padding: '64px 0 80px', background: 'var(--advancare-paper)', borderBottom: '1px solid var(--advancare-line)' }}>
+  <section className="hero-surface" style={{ padding: '64px 0 80px', background: 'var(--advancare-paper)', borderBottom: '1px solid var(--advancare-line)' }}>
     <div className="container split-2">
       <div>
         <span className="kicker">

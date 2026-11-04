@@ -1,10 +1,29 @@
-import React, { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { Icon } from './Icon';
 import emblemLogo from '../assets/logo-emblem.png';
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { pathname } = useLocation();
+
+  // Lift the header off the page once content scrolls under it
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Close the mobile menu on navigation and on Escape
+  useEffect(() => setMobileMenuOpen(false), [pathname]);
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setMobileMenuOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileMenuOpen]);
 
   const navLinks = [
     { label: 'Home', path: '/' },
@@ -18,6 +37,8 @@ export const Navbar: React.FC = () => {
 
   return (
     <header
+      className="site-header"
+      data-scrolled={scrolled ? '' : undefined}
       style={{
         position: 'sticky',
         top: 0,
@@ -30,7 +51,7 @@ export const Navbar: React.FC = () => {
     >
       <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72 }}>
         {/* Brand Lockup */}
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <Link to="/" className="brand-lockup" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <img src={emblemLogo} alt="AdvanCare Emblem" style={{ width: 34, height: 34, objectFit: 'contain' }} />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
@@ -56,13 +77,13 @@ export const Navbar: React.FC = () => {
             <NavLink
               key={link.path}
               to={link.path}
+              end={link.path === '/'}
+              className="nav-link"
               style={({ isActive }) => ({
                 fontSize: 14,
                 fontWeight: isActive ? 600 : 500,
                 color: isActive ? 'var(--advancare-teal)' : 'var(--advancare-ink)',
-                borderBottom: isActive ? '2px solid var(--advancare-teal)' : '2px solid transparent',
                 paddingBottom: 4,
-                transition: 'color var(--transition-fast)',
               })}
             >
               {link.label}
@@ -101,6 +122,8 @@ export const Navbar: React.FC = () => {
             }}
             className="mobile-menu-toggle"
             aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-drawer"
           >
             <Icon name={mobileMenuOpen ? 'alt-arrow-down' : 'menu-dots'} size={20} />
           </button>
@@ -108,17 +131,16 @@ export const Navbar: React.FC = () => {
       </div>
 
       {/* Mobile Drawer */}
-      {mobileMenuOpen && (
+      <div id="mobile-drawer" className="mobile-drawer" data-open={mobileMenuOpen ? '' : undefined} aria-hidden={!mobileMenuOpen}>
+        <div className="mobile-drawer-inner">
         <div
           style={{
             backgroundColor: 'var(--advancare-paper)',
-            borderBottom: '1px solid var(--advancare-line)',
             padding: '16px 24px',
             display: 'flex',
             flexDirection: 'column',
             gap: 14,
           }}
-          className="mobile-drawer"
         >
           {navLinks.map((link) => (
             <NavLink
@@ -156,7 +178,8 @@ export const Navbar: React.FC = () => {
             </a>
           </div>
         </div>
-      )}
+        </div>
+      </div>
 
       {/* Responsive Inline CSS for Navbar */}
       <style>{`

@@ -15,7 +15,7 @@ export const ContactPage: React.FC = () => {
   return (
     <div className="contact-page">
       {/* Header */}
-      <section style={{ padding: '64px 0 48px 0', backgroundColor: 'var(--advancare-paper)', borderBottom: '1px solid var(--advancare-line)' }}>
+      <section className="hero-surface" style={{ padding: '64px 0 48px 0', backgroundColor: 'var(--advancare-paper)', borderBottom: '1px solid var(--advancare-line)' }}>
         <div className="container" style={{ maxWidth: 840 }}>
           <span className="kicker" style={{ marginBottom: 12 }}>
             <Icon name="chat-round-dots" size={14} />
@@ -47,6 +47,8 @@ export const ContactPage: React.FC = () => {
               {/* Tab Selector */}
               <div style={{ display: 'flex', gap: 6, marginBottom: 24, borderBottom: '1px solid var(--advancare-line)', paddingBottom: 12 }}>
                 <button
+                  className="ac-toggle"
+                  aria-pressed={tab === 'lgu'}
                   onClick={() => setTab('lgu')}
                   style={{
                     padding: '8px 16px',
@@ -60,6 +62,8 @@ export const ContactPage: React.FC = () => {
                   LGU Mayors & Health Boards
                 </button>
                 <button
+                  className="ac-toggle"
+                  aria-pressed={tab === 'caregiver'}
                   onClick={() => setTab('caregiver')}
                   style={{
                     padding: '8px 16px',
@@ -73,6 +77,8 @@ export const ContactPage: React.FC = () => {
                   Caregivers & Providers
                 </button>
                 <button
+                  className="ac-toggle"
+                  aria-pressed={tab === 'general'}
                   onClick={() => setTab('general')}
                   style={{
                     padding: '8px 16px',
@@ -88,7 +94,7 @@ export const ContactPage: React.FC = () => {
               </div>
 
               {submitted ? (
-                <div style={{ background: 'var(--advancare-mint)', padding: 32, borderRadius: 16, textAlign: 'center', border: '1px solid rgba(8, 107, 91, 0.2)' }}>
+                <div className="ac-swap" style={{ background: 'var(--advancare-mint)', padding: 32, borderRadius: 16, textAlign: 'center', border: '1px solid rgba(8, 107, 91, 0.2)' }}>
                   <Icon name="check-circle" size={40} color="var(--advancare-teal)" />
                   <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--advancare-deep)', marginTop: 12, marginBottom: 6 }}>
                     Inquiry Received

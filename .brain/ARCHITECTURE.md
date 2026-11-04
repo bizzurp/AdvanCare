@@ -150,4 +150,5 @@ Local Mac development (2026-10-19): from `backend/`, `npm run dev:local` runs Wr
 - Standalone Vite + React 18 + TypeScript site, isolated from `frontend/`, `admin/` and `backend/`. Routes: `/`, `/about`, `/services`, `/plans`, `/program`, `/donate`, `/contact`.
 - All program content is data in `src/data/`: `storyData.ts` (stats, journey, solution, care loop, target market, team, competitors, contact), `roadmapData.ts` (phases, Gantt, gates, budget, TAM/SAM/SOM, business model, revenue), `plansData.ts`, `servicesData.ts`, `faqData.ts`. Each file names its `/Docs` source; edit data there, not in page JSX.
 - Shared layout classes (`page-hero`, `section-head`, `data-table`, `split-2`, `step-num`) are in `src/styles/main.css`. `GanttChart` renders the 24-month schedule from `GANTT`.
+- Motion: `src/styles/motion.css` + `src/components/MotionLayer.tsx` (reveal targets come from `REVEAL_SELECTORS`; new blocks using shared classes animate automatically). Preloader lives in `index.html`.
 - No backend: the contact form only shows a local confirmation, and donations are pledges by email. `npm run build` runs `tsc -b` then emits `dist/`.

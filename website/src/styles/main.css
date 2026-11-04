@@ -2,6 +2,8 @@
 @import '@fontsource/inter/400.css';
 @import '@fontsource/inter/500.css';
 @import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/inter/800.css';
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -109,7 +111,6 @@ p {
   border-radius: var(--radius-md);
   font-size: 15px;
   font-weight: 600;
-  transition: all var(--transition-fast);
   white-space: nowrap;
 }
 
@@ -118,21 +119,23 @@ p {
   color: #FFFFFF;
 }
 
-.btn-primary:hover {
-  background: var(--advancare-deep);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
 .btn-secondary {
   background: #FFFFFF;
   color: var(--advancare-ink);
   border: 1px solid var(--advancare-line);
 }
 
-.btn-secondary:hover {
-  border-color: var(--advancare-control);
-  background: var(--advancare-paper);
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    background: var(--advancare-deep);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--advancare-control);
+    background: var(--advancare-paper);
+  }
 }
 
 .btn-pill {

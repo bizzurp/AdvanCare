@@ -16,16 +16,21 @@ export const FAQAccordion: React.FC = () => {
         return (
           <div
             key={item.question}
+            className="faq-item"
+            data-open={isOpen ? '' : undefined}
             style={{
               backgroundColor: '#FFFFFF',
               borderRadius: 14,
               border: isOpen ? '1.5px solid var(--advancare-teal)' : '1px solid var(--advancare-line)',
               overflow: 'hidden',
-              transition: 'border-color 160ms ease',
+              transition: 'border-color 200ms ease, box-shadow 240ms var(--ease-out)',
             }}
           >
             <button
+              className="faq-trigger"
               onClick={() => toggle(idx)}
+              aria-controls={`faq-panel-${idx}`}
+              id={`faq-trigger-${idx}`}
               style={{
                 width: '100%',
                 padding: '20px 24px',
@@ -43,7 +48,8 @@ export const FAQAccordion: React.FC = () => {
               <span
                 style={{
                   transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 200ms ease',
+                  transition: 'transform 300ms var(--ease-out), color 200ms ease',
+                  display: 'inline-flex',
                   color: isOpen ? 'var(--advancare-teal)' : 'var(--advancare-control)',
                   flexShrink: 0,
                 }}
@@ -51,7 +57,14 @@ export const FAQAccordion: React.FC = () => {
                 <Icon name="alt-arrow-down" size={18} />
               </span>
             </button>
-            {isOpen && (
+            <div
+              id={`faq-panel-${idx}`}
+              role="region"
+              aria-labelledby={`faq-trigger-${idx}`}
+              aria-hidden={!isOpen}
+              className="faq-panel"
+            >
+              <div className="faq-panel-inner">
               <div
                 style={{
                   padding: '0 24px 20px 24px',
@@ -63,7 +76,8 @@ export const FAQAccordion: React.FC = () => {
               >
                 {item.answer}
               </div>
-            )}
+              </div>
+            </div>
           </div>
         );
       })}

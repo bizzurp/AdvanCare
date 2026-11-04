@@ -29,6 +29,12 @@
 
 # advanCARE: Changelog (Operational Brain)
 
+## [2026-11-04] - Website motion & UI polish (no content changes)
+- Preloader (inline in `website/index.html`, hidden from `src/main.tsx` after app + fonts + load; 0.8 s min, 4 s max).
+- `src/components/MotionLayer.tsx`: scroll-reveal fade-up on shared layout classes (staggered, fires once), scroll progress bar, back-to-top button. Route fade via `RouteView` in `App.tsx`; route changes jump to top instantly.
+- `src/styles/motion.css`: easing tokens, hover-gated card/button states, animated nav underline, header shadow on scroll, animated mobile drawer and FAQ accordion, form focus rings, anchor offset for the sticky header, reduced-motion and print fallbacks. Inter 700/800 now loaded (headings were faux-bold).
+- Note: `website/node_modules` is committed with Windows-only esbuild/rollup binaries, so `npm run dev` fails on macOS.
+
 ## [2026-10-22] - Website realigned to `/Docs`
 - Website content now comes from the proposal deck, brochure, two-year Gantt and budget in `/Docs` (ADR-017). Content data: `website/src/data/{storyData,roadmapData,plansData,servicesData,faqData}.ts`.
 - Home: brochure hero ("Care closer to every community"), lived patient experience, problem (56% / 57 yrs / 31% with sources), four-step solution, five-part closed care loop, process map, target market, plans, FAQ.

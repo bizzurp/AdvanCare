@@ -99,6 +99,7 @@ export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = 
             return (
               <button
                 key={tier.id}
+                className="ac-toggle"
                 onClick={() => setSelectedTier(tier)}
                 aria-pressed={isSelected}
                 style={{
@@ -119,6 +120,8 @@ export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = 
         </div>
 
         <div
+          key={selectedTier.id}
+          className="ac-swap"
           style={{
             background: 'var(--advancare-paper)',
             borderRadius: 10,
@@ -163,7 +166,7 @@ export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = 
             className="btn btn-pill btn-secondary"
             style={{ padding: '6px 14px', fontSize: 12, flexShrink: 0 }}
           >
-            {copied ? 'Copied' : 'Copy'}
+            <span key={copied ? 'copied' : 'copy'} className="ac-swap">{copied ? 'Copied' : 'Copy'}</span>
           </button>
         </div>
 

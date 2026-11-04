@@ -9,6 +9,7 @@ import { PlansPage } from './pages/PlansPage';
 import { ProgramPage } from './pages/ProgramPage';
 import { DonatePage } from './pages/DonatePage';
 import { ContactPage } from './pages/ContactPage';
+import { MotionLayer } from './components/MotionLayer';
 
 // Scroll to top or anchor on route change
 function ScrollToTop() {
@@ -22,19 +23,32 @@ function ScrollToTop() {
         return;
       }
     }
-    window.scrollTo(0, 0);
+    // Jump instantly: a new page should not visibly scroll up from the old position.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [pathname, hash]);
 
   return null;
+}
+
+// Re-keys the page on navigation so each route fades in.
+function RouteView({ children }: { children: React.ReactNode }) {
+  const { pathname } = useLocation();
+  return (
+    <div key={pathname} className="route-view">
+      {children}
+    </div>
+  );
 }
 
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <MotionLayer />
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Navbar />
         <main style={{ flex: 1 }}>
+          <RouteView>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
@@ -46,6 +60,7 @@ export const App: React.FC = () => {
             {/* Fallback to Home */}
             <Route path="*" element={<HomePage />} />
           </Routes>
+          </RouteView>
         </main>
         <Footer />
       </div>

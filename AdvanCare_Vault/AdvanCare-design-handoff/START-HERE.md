@@ -1,6 +1,10 @@
 # AdvanCare design handoff
 
+<<<<<<< HEAD
 Start with `CLAUDE-PROMPT.md`. This package contains the completed AdvanCare visual direction, 29 screen designs, shared components, official updated transparent logo, and implementation guidance.
+=======
+Start with `IMPLEMENTATION-BRIEF.md`. This package contains the completed AdvanCare visual direction, 29 screen designs, shared components, official updated transparent logo, and implementation guidance.
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
 
 ## Where to look
 

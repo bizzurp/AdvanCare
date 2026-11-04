@@ -1,10 +1,12 @@
 // Source: Docs/AdvanCare.pdf (slides 6, 8, 11, 13 and 15)
+// Updated 2026-11-04: descriptions, rates, and highlights aligned with AdvanCare_Brochure_Rural.pdf (panels B–F)
 export interface ServicePillar {
   id: string;
+  badge: string;              // letter badge A–F matching brochure
   name: string;
   rate: string;
   payoutBreakdown?: string;
-  badge: string;
+  badgeLabel: string;
   description: string;
   sla: string;
   icon: string;
@@ -14,61 +16,31 @@ export interface ServicePillar {
 
 export const SERVICE_PILLARS: ServicePillar[] = [
   {
-    id: 'rhu-services',
-    name: 'RHU / Barangay-led Initiatives',
-    rate: 'Delivered with RHU and barangay teams',
-    badge: 'Local care',
+    id: 'care-assistant',
+    badge: 'A',
+    name: 'Care Assistant',
+    rate: '₱300 per 8 hrs (home-based) · ₱500 per 8 hrs (hospital)',
+    payoutBreakdown: '5% booking commission funds coordination',
+    badgeLabel: 'Caregiving',
     description:
-      'Local health teams, mobile checkups, basic care and health education in your community. RHU and barangay teams connect residents to care.',
-    sla: 'Scheduled with the local RHU',
-    icon: 'medical-kit',
+      'A caregiver for your home or hospital stay, hired by the shift, matched to the patient\'s needs by Artificial Intelligence (AI).',
+    sla: 'Platinum: 1 hr · Gold: 1 hr 30 mins hospital / 2 hrs barangay · Silver: 2 hrs hospital / 3 hrs barangay',
+    icon: 'user-heart',
     highlights: [
-      'Mobile checkups and basic care in the barangay',
-      'Health education led by barangay health workers',
-      'Referral from the barangay to the Rural Health Unit',
+      '₱300 per 8 hrs: home-based caregiver (Barangay level care)',
+      '₱500 per 8 hrs: Nationally-Certified Caregiver (Hospital-endorsed)',
+      'Caregiver matching from a local caregiver pool, powered by AI',
     ],
-    scope: 'Rural Health Units and barangay health centers',
-  },
-  {
-    id: 'nemt-transport',
-    name: 'Reliable Non-Emergency Transport',
-    rate: 'Response time set by plan tier',
-    payoutBreakdown: '10% booking fee funds coordination',
-    badge: 'Transport',
-    description:
-      'Scheduled, non-emergency rides connect home and health facilities, helping patients reach clinics and hospitals safely and on time.',
-    sla: 'Platinum: 1 hr urban / 2 hrs rural · Gold: 2 hrs urban / 1 hr rural · Silver: 3 hrs urban / 4 hrs rural',
-    icon: 'tricycle',
-    highlights: [
-      'Scheduled rides from home to RHU, clinic or hospital',
-      'Pooled transport providers per municipality',
-      'Not an ambulance service. For emergencies, call 911.',
-    ],
-    scope: 'Transport pool across participating LGUs',
-  },
-  {
-    id: 'medibox',
-    name: 'Out-of-Hospital Triage: MediBox',
-    rate: 'Included in all plans',
-    badge: 'Triage',
-    description:
-      'Health workers assess patients early and guide the next step to the right level of care. Each MediBox is a portable telehealth suitcase for assessment in the community.',
-    sla: 'Brought to the patient by health workers',
-    icon: 'heart-pulse',
-    highlights: [
-      'Early assessment at home or in the barangay',
-      'Guides the patient to the right level of care',
-      '25 MediBox sets planned, 10 paired with Starlink and gensets',
-    ],
-    scope: 'Remote barangays without reliable connectivity',
+    scope: 'Home care and hospital bedside care',
   },
   {
     id: 'telehealth',
-    name: 'Multi-Language TeleHealth',
+    badge: 'B',
+    name: 'TeleHealth',
     rate: 'Included in all plans',
-    badge: 'Remote consult',
+    badgeLabel: 'Remote consult',
     description:
-      'Remote consultation, connectivity to specialists and health professional support, anytime, anywhere. Telehealth doctors provide consultations and prescriptions.',
+      'See and talk to a health worker on a video or phone call. Get advice without traveling.',
     sla: 'Booked through the app or with a health worker',
     icon: 'stethoscope',
     highlights: [
@@ -79,37 +51,90 @@ export const SERVICE_PILLARS: ServicePillar[] = [
     scope: 'Open to members in every participating municipality',
   },
   {
-    id: 'caregivers',
-    name: 'Home and Hospital Caregivers',
-    rate: '₱300 barangay · ₱500 clinical/hospital (per 8 hrs)',
-    payoutBreakdown: '5% booking commission funds coordination',
-    badge: 'Caregiving',
+    id: 'medibox',
+    badge: 'C',
+    name: 'MediBox',
+    rate: 'Included in all plans',
+    badgeLabel: 'Triage',
     description:
-      'Screened youth community caregivers provide home care and CVMC bedside care. Youth earn a livelihood while elders share knowledge with the next generation.',
-    sla: 'Platinum: 1 hr · Gold: 1 hr 30 mins (hospital) / 2 hrs (barangay) · Silver: 2 hrs (hospital) / 3 hrs (barangay)',
-    icon: 'user-heart',
+      'A small health-check kit for your home, barangay, or disaster area. It sends your results to your health worker.',
+    sla: 'Brought to the patient by health workers',
+    icon: 'heart-pulse',
     highlights: [
-      'Barangay-level caregiver: ₱300 per 8 hours',
-      'Clinical or hospital-level caregiver: ₱500 per 8 hours',
-      'Caregiver matching from a local caregiver pool',
+      'Early assessment at home or in the barangay',
+      'Sends results directly to your health worker',
+      '25 MediBox sets planned, 10 paired with Starlink and gensets',
     ],
-    scope: 'Home care and hospital bedside care',
+    scope: 'Remote barangays without reliable connectivity',
+  },
+  {
+    id: 'nemt-transport',
+    badge: 'D',
+    name: 'Non-Emergency Medical Transport (NEMT)',
+    rate: 'Response time set by plan tier',
+    payoutBreakdown: '10% booking fee funds coordination',
+    badgeLabel: 'Transport',
+    description:
+      'Booked rides to and from the health facility. We match you with the nearest ride, powered by AI on the least-cost route to minimize fuel.',
+    sla: 'Platinum: 1 hr urban / 2 hrs rural · Gold: 2 hrs urban / 3 hrs rural · Silver: 3 hrs urban / 4 hrs rural',
+    icon: 'tricycle',
+    highlights: [
+      'Scheduled rides from home to RHU, clinic or hospital',
+      'AI-powered matching to the nearest available transport',
+      'Not an ambulance service. For emergencies, call 911.',
+    ],
+    scope: 'Transport pool across participating LGUs',
   },
   {
     id: 'rx-logistics',
+    badge: 'E',
     name: 'Discounted Medical Supplies',
     rate: 'Member discounts',
-    badge: 'Supplies',
+    badgeLabel: 'Supplies',
     description:
-      'Affordable medicines and care essentials, including discounted vitamins and supplies not covered by PhilHealth YAKAP.',
+      'Vitamins & supplies not covered by PhilHealth YAKAP. Prepositioned supplies based on local epidemic data.',
     sla: 'Through partner pharmacies',
     icon: 'document-medicine',
     highlights: [
       'Discounts on vitamins and medical supplies in every plan',
       'Covers supplies outside PhilHealth YAKAP',
-      'Delivered through partner pharmacies',
+      'Prepositioned based on DOH epidemiological trends',
     ],
     scope: 'Partner pharmacies',
+  },
+  {
+    id: 'donor-network',
+    badge: 'F',
+    name: 'Donor Network',
+    rate: 'Community-funded',
+    badgeLabel: 'Donors',
+    description:
+      'Individuals and private donors who fund subscriptions and supplies for families in need.',
+    sla: 'Coordinated through the program office',
+    icon: 'heart-pulse',
+    highlights: [
+      'Community donations fund care shifts for indigent households',
+      'Sponsors can target specific municipalities or service types',
+      'Transparent ledger: funds go directly to caregivers and supplies',
+    ],
+    scope: 'Open to individual, corporate, and OFW diaspora donors',
+  },
+  {
+    id: 'rhu-services',
+    badge: '',
+    name: 'RHU / Barangay-led Initiatives',
+    rate: 'Delivered with RHU and barangay teams',
+    badgeLabel: 'Local care',
+    description:
+      'Local health teams, mobile checkups, basic care and health education in your community. RHU and barangay teams connect residents to care.',
+    sla: 'Scheduled with the local RHU',
+    icon: 'medical-kit',
+    highlights: [
+      'Mobile checkups and basic care in the barangay',
+      'Health education led by barangay health workers',
+      'Referral from the barangay to the Rural Health Unit',
+    ],
+    scope: 'Rural Health Units and barangay health centers',
   },
 ];
 

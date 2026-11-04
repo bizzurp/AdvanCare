@@ -3,7 +3,7 @@
 > **Platform:** advanCARE — AI-Enabled Grassroots Healthcare Ecosystem  
 > **Mission:** "No Farmer, Fisher, and Barangay Left Behind" — Cagayan Province, Philippines  
 > **Vault Type:** Obsidian Operational & Conceptual Project Brain  
-> **Visual Assets:** [[AdvanCare_Logo.jpg]] | [[Fishbone Diagram.jpeg]]
+> **Visual Assets:** [[AdvanCare_Logo.png]] | [[Fishbone Diagram.jpeg]]
 
 ---
 
@@ -61,10 +61,20 @@ graph TD
   5. *CVMC Institutional Caregiver (₱500 / 8 hrs)*
 - **[[Service Catalog & Caregiver Operations]]**: Unit economics (80% caregiver payout / 20% platform margin), caregiver vetting & badges (`BADGE_ADL`, `BADGE_DEMENTIA`, `BADGE_CVMC_WATCHER`), and Cagayan Valley Medical Center bedside watcher protocols.
 - **[[Reporting Engine & Dashboard Specifications]]**: Real-time tabular ledgers, trend graphs, and role-based dashboards (Family/OFW, Municipal LGU, Executive Operations).
+- **[[Admin Dashboard & Staff Accounts Plan]]**: Separate desktop `admin/` web app and Admin / Super Admin staff accounts for running operations (requests, caregiver assignment, payment reconciliation).
 
 ### 04. AI Systems, Workflows, & Data Infrastructure
 - **[[Agentic AI & n8n Workflow Architecture]]**: Event-driven multi-agent orchestration in n8n (Triage Agent, Smart Matching Agent, Tele-Consult Routing Agent, Rx Logistics Agent, NEMT Logistics Agent, Care Note Summarizer Agent, and LGU Billing Agent).
 - **[[Data Models & Entity Schemas]]**: Complete PostgreSQL schemas, PostGIS spatial queries, ERD, and webhook JSON contracts.
+
+### 05. Design Handoff Package
+- **[[START-HERE]]**: Entry point to the completed visual direction, 29 screen designs, shared components and logo.
+- **[[IMPLEMENTATION-BRIEF]]**: Implementation brief for building the designed screens as real components and routes.
+- **[[COMPONENTS]]**: Reusable component map taken from the Figma component tree.
+- **[[FLOWS-AND-MOTION]]**: Screen flows and motion guidance.
+- **[[IMPLEMENTATION-NOTES]]**: Business content differences to reconcile and remaining screens.
+- **[[design-rationale]]**: "Refined care" visual direction and the reasoning behind it.
+- Brain snapshots bundled with the handoff: [[project-project_context]], [[project-architecture]], [[project-decisions]].
 
 ---
 

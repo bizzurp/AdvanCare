@@ -276,7 +276,11 @@ export interface PaymentRow extends PaymentLite {
 
 export type ExportTable = 'requests' | 'payouts' | 'payments';
 
+<<<<<<< HEAD
 export type ServiceKind = 'telehealth' | 'rhu' | 'triage' | 'prescription' | 'transport';
+=======
+export type ServiceKind = 'telehealth' | 'rhu' | 'triage' | 'prescription' | 'transport' | 'supplies';
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
 export type ServiceStatus = 'SUBMITTED' | 'IN_REVIEW' | 'SCHEDULED' | 'COMPLETED' | 'CANCELLED';
 
 export type ProviderType = 'DOCTOR' | 'TRANSPORT_DRIVER';

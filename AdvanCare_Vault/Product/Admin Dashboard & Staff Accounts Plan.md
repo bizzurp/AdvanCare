@@ -123,7 +123,11 @@ Not shown until their backend modules exist (no empty pages): NEMT trips, TeleHe
   - CLI and migration: `backend/scripts/bootstrap-admin.ts`, `backend/drizzle/0001_*.sql`
 - **Modified:**
   - Backend: `backend/src/db/schema.ts`, `backend/src/env.ts`, `backend/src/index.ts` (mount `/admin`), `backend/src/middleware/cors.ts` (credentials for `ADMIN_ORIGINS`), `backend/wrangler.toml` (`ADMIN_LOGIN_LIMITER`, `ADMIN_ORIGINS`), `backend/.env.example` (`STAFF_ENCRYPTION_KEY`)
+<<<<<<< HEAD
   - Frontend: `frontend/src/screens/Reports.tsx` + `Account.tsx` (remove the demo coordinator dashboard and role switch), `.claude/launch.json` (`advancare-admin`)
+=======
+  - Frontend: `frontend/src/screens/Reports.tsx` + `Account.tsx` (remove the demo coordinator dashboard and role switch)
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
   - Brain docs: ADR-011 (staff accounts, RBAC, municipality scope, audit) and ADR-012 (separate admin app) in `.brain/DECISIONS.md`; update ARCHITECTURE, TODO and CHANGELOG
 - **Deployment:** `admin/` as a Cloudflare static site on its own subdomain; optionally Cloudflare Access in front as a second lock in production.
 

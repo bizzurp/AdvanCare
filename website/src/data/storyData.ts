@@ -6,13 +6,69 @@ import photoUanang from '../assets/teams/Sir Marvin.jpg';
 export const TAGLINE =
   'From access to grassroots affordability to specialized healthcare, NO Barangay resident left behind.';
 
-export const BASELINE_STATS = [
-  { value: '56%', label: 'of Cagayan deaths in 2020 had no medical attendant', source: 'PSA, 2020' },
-  { value: '57 yrs', label: 'median age of Filipino farmers', source: 'DA via PCO' },
-  { value: '31%', label: 'of farmers lived in poverty in 2018', source: 'PSA, 2018' },
+// Source: Docs/AdvanCare_Profile_V3.docx (section 2, Vision, Mission and Goals)
+export const VISION =
+  'Healthier communities and stronger futures, with no Barangay resident left behind.';
+
+export const MISSION =
+  'To connect barangay residents to trusted local healthcare and caregiving support, and to carry them through a complete care journey, from first contact and affordable subscription to transport, triage, telehealth and follow-up care.';
+
+export const CORE_VALUES = [
+  'Inclusive and accessible',
+  'Affordable and sustainable',
+  'Responsive and reliable',
+  'Healthier communities, stronger futures',
 ];
 
-export const JOURNEY = ['Patient', 'Tricycle / Kuliglig', 'Rural Health Unit', 'Pharmacy / Medicines'];
+export const GOALS = [
+  {
+    title: 'Tele-consult and virtual triage',
+    tagline: 'Resource dematerialization',
+    points: [
+      'Replace patient physical travel with remote consultation.',
+      'Reduce disposable masks and PPE.',
+      'Reduce paperwork through digital records.',
+      'Cloud and software circularity: AI-driven diagnostics maximize the efficiency of remote consults.',
+    ],
+  },
+  {
+    title: 'MediBox',
+    tagline: 'Telemetry bridging telehealth, RHU and home care',
+    points: [
+      'Hardware-as-a-service: shared assets rather than permanently owned equipment, for optimal utilization.',
+      'Designed for disassembly and refurbishment: a closed-loop supply chain of modular electronic components and sensors.',
+      'E-waste stewardship: responsible end-of-life handling of devices.',
+    ],
+  },
+  {
+    title: 'Patient transport',
+    tagline: 'Shared and smart mobility',
+    points: [
+      'Shift from underutilized vehicles to a shared, high-efficiency network.',
+      'Asset sharing: pool patient transfers across multiple locations to reduce idle fleet time.',
+      'Optimal routing: AI-driven geo-referencing and routing algorithms match patients with the nearest available transport, minimizing CO₂ emissions and fuel use.',
+    ],
+  },
+  {
+    title: 'Biomaterials and safe waste management',
+    tagline: 'Reusable and safe',
+    points: [
+      'Use biomaterials and reusable consumables in patient care.',
+      'Apply safe waste management for hazardous medical waste.',
+      'Use recycled components and integrate them back into safe, specialized municipal waste cycles.',
+    ],
+  },
+];
+
+export const BASELINE_STATS = [
+  { value: '56%', label: 'of Cagayan deaths in 2020 had no medical attendant', source: 'PSA, 2020' },
+  { value: '57 years', label: 'Median age of Filipino farmers', source: 'DA via PCO' },
+  { value: '31%', label: 'Farmers in poverty in 2018', source: 'PSA, 2018' },
+];
+
+export const JOURNEY = ['Patient', 'Tricycle / kuliglig', 'Rural Health Unit', 'Medicines'];
+
+export const PATIENT_QUOTE = '"Access, affordability, and follow-up must work together."';
 
 export const BARRIERS = [
   { title: 'Long travel', body: 'Mode, distance and cost create risks.' },

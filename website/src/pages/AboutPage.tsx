@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../components/Icon';
-import { COMPETITORS, DIFFERENTIATORS, TAGLINE, TEAM } from '../data/storyData';
+import { COMPETITORS, CORE_VALUES, DIFFERENTIATORS, GOALS, MISSION, TAGLINE, TEAM, VISION } from '../data/storyData';
 
 export const AboutPage: React.FC = () => (
   <div className="about-page">
@@ -15,6 +15,73 @@ export const AboutPage: React.FC = () => (
         <p>
           AdvanCare is a program of Cagayan State University, in Community &amp; Family Development. {TAGLINE}
         </p>
+      </div>
+    </section>
+
+    <section className="section-py section-white">
+      <div className="container">
+        <div className="section-head">
+          <span className="kicker">Vision &amp; mission</span>
+          <h2>Why AdvanCare exists</h2>
+        </div>
+        <div className="grid-2" style={{ marginBottom: 24, alignItems: 'stretch' }}>
+          <div className="card-base" style={{ padding: 28, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <span className="kicker">
+              <Icon name="eye" size={14} />
+              Vision
+            </span>
+            <p style={{ fontSize: 18, lineHeight: 1.6, color: 'var(--advancare-ink)', margin: 0 }}>{VISION}</p>
+          </div>
+          <div className="card-base" style={{ padding: 28, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <span className="kicker">
+              <Icon name="heart-pulse" size={14} />
+              Mission
+            </span>
+            <p style={{ fontSize: 18, lineHeight: 1.6, color: 'var(--advancare-ink)', margin: 0 }}>{MISSION}</p>
+          </div>
+        </div>
+        <div className="card-base" style={{ padding: 28 }}>
+          <span className="kicker" style={{ marginBottom: 12 }}>
+            <Icon name="shield-check" size={14} />
+            Core values
+          </span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+            {CORE_VALUES.map((v) => (
+              <span
+                key={v}
+                style={{ fontSize: 14, fontWeight: 600, background: 'var(--advancare-mint)', color: 'var(--advancare-deep)', padding: '8px 16px', borderRadius: 9999 }}
+              >
+                {v}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section className="section-py section-paper">
+      <div className="container">
+        <div className="section-head">
+          <span className="kicker">Goals</span>
+          <h2>Circular and sustainable care</h2>
+          <p>Four commitments that keep care accessible today and resource-wise for the long term.</p>
+        </div>
+        <div className="grid-2">
+          {GOALS.map((g) => (
+            <div key={g.title} className="card-base" style={{ padding: 24 }}>
+              <h3>{g.title}</h3>
+              <p style={{ fontStyle: 'italic', color: 'var(--advancare-deep)', marginBottom: 12 }}>{g.tagline}</p>
+              <ul className="list-check">
+                {g.points.map((p) => (
+                  <li key={p} style={{ fontSize: 14 }}>
+                    <Icon name="check-circle" size={16} color="var(--advancare-teal)" />
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
 

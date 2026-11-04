@@ -523,7 +523,11 @@ export const clientSessions = pgTable(
 // service-specific details as JSON. Staff move them along and can leave a note the family sees.
 // No urgency or clinical routing is computed (triage is collected for clinician review only).
 
+<<<<<<< HEAD
 export const SERVICE_KINDS = ['telehealth', 'rhu', 'triage', 'prescription', 'transport'] as const;
+=======
+export const SERVICE_KINDS = ['telehealth', 'rhu', 'triage', 'prescription', 'transport', 'supplies'] as const;
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
 export const SERVICE_STATUSES = ['SUBMITTED', 'IN_REVIEW', 'SCHEDULED', 'COMPLETED', 'CANCELLED'] as const;
 
 export const serviceRequests = pgTable(
@@ -556,7 +560,11 @@ export const serviceRequests = pgTable(
     index('service_requests_client_idx').on(t.clientId),
     index('service_requests_status_created_idx').on(t.status, t.createdAt),
     index('service_requests_assigned_provider_idx').on(t.assignedProviderId),
+<<<<<<< HEAD
     check('service_requests_kind', sql`${t.kind} IN ('telehealth', 'rhu', 'triage', 'prescription', 'transport')`),
+=======
+    check('service_requests_kind', sql`${t.kind} IN ('telehealth', 'rhu', 'triage', 'prescription', 'transport', 'supplies')`),
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
     check('service_requests_status', sql`${t.status} IN ('SUBMITTED', 'IN_REVIEW', 'SCHEDULED', 'COMPLETED', 'CANCELLED')`),
     check('service_requests_scheduled_has_time', sql`${t.status} <> 'SCHEDULED' OR ${t.scheduledAt} IS NOT NULL`),
   ],

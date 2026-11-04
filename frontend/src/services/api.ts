@@ -192,8 +192,13 @@ const CONTRACTS: Partial<Record<ServiceKind, Contract>> = {
   }),
 };
 
+<<<<<<< HEAD
 /** TeleHealth, RHU, Triage, Prescription and Transport go to the service-request inbox (P2). */
 const SERVICE_KINDS: ServiceKind[] = ['telehealth', 'rhu', 'triage', 'prescription', 'transport'];
+=======
+/** TeleHealth, RHU, Triage, Prescription, Transport and Supplies go to the service-request inbox (P2). */
+const SERVICE_KINDS: ServiceKind[] = ['telehealth', 'rhu', 'triage', 'prescription', 'transport', 'supplies'];
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
 export const isServiceKind = (k: ServiceKind) => SERVICE_KINDS.includes(k);
 
 export function serviceBody(req: ServiceRequest) {

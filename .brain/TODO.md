@@ -14,7 +14,11 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 
 ### Demo environment (2026-10-16)
 - ✅ Neon branch `demo-advancare` (Advancare project) seeded with fictional data; `backend/.env` currently points at it (production lines kept as comments). Switch back before real use; delete the branch to remove all demo data.
+<<<<<<< HEAD
 - ⬜ Demo Admin invites from the seed: Solana one used for testing (password set by Claude, can be reset via console → Reset 2-step / new invite); Tuguegarao one unused (expires ~2026-10-18).
+=======
+- ⬜ Demo Admin invites from the seed: Solana one used for testing (password already set, can be reset via console → Reset 2-step / new invite); Tuguegarao one unused (expires ~2026-10-18).
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
 
 ### P2 — Every service reaches staff
 - ✅ `service_requests` table + API for TeleHealth, RHU services, Triage, Prescription (with uploaded photo), Transport (2026-10-16).
@@ -55,6 +59,12 @@ Order = build order. ✅ done · ⬜ to do · 👤 needs the owner (account, dec
 - [ ] Align app-side copy with `/Docs` once confirmed: `backend/src/assistant/knowledge.ts` (plan SLAs, stats), frontend plan screens.
 - [ ] Deploy the updated `website/` (`npm run build`, then publish `dist/`); the contact form is still not wired to any backend.
 
+<<<<<<< HEAD
+=======
+- ⬜ Deploy the 2026-10-28 changes (migration 0007 on the demo branch, API, app and console Pages); see CHANGELOG.
+- 👤 Confirm real partner-pharmacy prices and member discount (pilot estimates: 20% off, `frontend/src/data/catalog.ts`).
+
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
 ### Later (not needed for the prototype)
 - ⬜ GCash/Maya online payments · SMS codes and SMS keyword booking · push notifications · n8n automations (matching, summaries, reports) · NEMT trip tracking/maps (PostGIS) · Tagalog/Ilocano/Ybanag translations.
 - 👤 Non-code: LGU MOU, caregiver recruitment & 40-hour training, CVMC coordination letter, Data Privacy Act review of consent wording, care hotline number.

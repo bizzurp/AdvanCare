@@ -12,6 +12,10 @@ import { CaregiverRequest, EditVisit, Prescription, PrescriptionReview, Transpor
 import { RequestDetail, RequestReceived, RequestsList } from './screens/Requests';
 import { Dashboard, ExportReport, PrintRecords, Reports, ServiceRecords, ServiceTrends } from './screens/Reports';
 import { Assistant } from './screens/Assistant';
+<<<<<<< HEAD
+=======
+import { Supplies } from './screens/Supplies';
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 /** Moves focus to the new screen's heading and resets scroll after navigation. */
@@ -108,6 +112,10 @@ export default function App() {
           <Route path="/services/prescription" element={<Prescription />} />
           <Route path="/services/prescription/review" element={<PrescriptionReview />} />
           <Route path="/services/transport" element={<Transport />} />
+<<<<<<< HEAD
+=======
+          <Route path="/services/supplies" element={<Supplies />} />
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
           <Route path="/services/home-caregiver" element={<CaregiverRequest kind="home-caregiver" key="home" />} />
           <Route path="/services/cvmc-caregiver" element={<CaregiverRequest kind="cvmc-caregiver" key="cvmc" />} />
           <Route path="/services/:kind/visit" element={<EditVisit />} />

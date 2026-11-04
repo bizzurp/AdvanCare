@@ -6,6 +6,10 @@ export type ServiceKind =
   | 'triage'
   | 'prescription'
   | 'transport'
+<<<<<<< HEAD
+=======
+  | 'supplies'
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
   | 'home-caregiver'
   | 'cvmc-caregiver';
 

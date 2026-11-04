@@ -15,8 +15,8 @@ export const PlansPage: React.FC = () => (
         </span>
         <h1>Accessible care for every family</h1>
         <p>
-          Three yearly plans: Silver, Gold and Platinum. Under the proposed 50% LGU subsidy, households pay ₱75 to ₱175 a
-          month.
+          Three yearly plans: Silver (₱150/mo), Gold (₱250/mo), and Platinum (₱350/mo). Under the proposed 50% LGU
+          subsidy, households pay ₱75 to ₱175 a month.
         </p>
       </div>
     </section>
@@ -40,7 +40,7 @@ export const PlansPage: React.FC = () => (
                 <th>Feature</th>
                 {CARE_PLANS.map((p) => (
                   <th key={p.id}>
-                    {p.name} · {peso(p.totalAnnual)}/yr ({peso(p.totalMonthly)}/mo)
+                    {p.name} · {peso(p.totalMonthly)}/mo ({peso(p.totalAnnual)}/yr)
                   </th>
                 ))}
               </tr>
@@ -55,6 +55,12 @@ export const PlansPage: React.FC = () => (
                 </tr>
               ))}
               <tr>
+                <th scope="row">Daily rate per household</th>
+                {CARE_PLANS.map((p) => (
+                  <td key={p.id}>{p.dailyRate}</td>
+                ))}
+              </tr>
+              <tr>
                 <th scope="row">Non-emergency medical transport SLA</th>
                 {CARE_PLANS.map((p) => (
                   <td key={p.id}>Urban {p.transportSla.urban} · Rural {p.transportSla.rural}</td>
@@ -67,21 +73,21 @@ export const PlansPage: React.FC = () => (
                 ))}
               </tr>
               <tr>
-                <th scope="row">Source of public funds or private donors</th>
+                <th scope="row">Discount*</th>
                 {CARE_PLANS.map((p) => (
-                  <td key={p.id}>{p.funding}</td>
+                  <td key={p.id}>{p.discountNote}</td>
+                ))}
+              </tr>
+              <tr>
+                <th scope="row">Best for</th>
+                {CARE_PLANS.map((p) => (
+                  <td key={p.id}>{p.bestFor}</td>
                 ))}
               </tr>
               <tr>
                 <th scope="row">Unemployed 65+</th>
                 {CARE_PLANS.map((p) => (
                   <td key={p.id}>{p.unemployedSeniors ? 'Covered' : 'Not covered'}</td>
-                ))}
-              </tr>
-              <tr>
-                <th scope="row">Household share (with 50% LGU subsidy)</th>
-                {CARE_PLANS.map((p) => (
-                  <td key={p.id}>{peso(p.householdOopMonthly)} / month</td>
                 ))}
               </tr>
             </tbody>

@@ -206,7 +206,11 @@
     "AdvanCare-design-handoff/reference/Implementation Plan.md",
     "AdvanCare-design-handoff/screens/png/01-welcome.png",
     "AdvanCare-design-handoff/screens/png/02-sign-in.png",
+<<<<<<< HEAD
     "AdvanCare-design-handoff/CLAUDE-PROMPT.md",
+=======
+    "AdvanCare-design-handoff/IMPLEMENTATION-BRIEF.md",
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
     "Project Context.md",
     "AdvanCare Master MOC.md",
     "Fishbone Diagram.jpeg",

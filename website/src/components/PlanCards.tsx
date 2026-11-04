@@ -17,16 +17,19 @@ export const PlanCards: React.FC = () => (
             <h3 style={{ fontSize: 22, fontWeight: 800 }}>{plan.name}</h3>
             <p style={{ fontSize: 13 }}>{plan.tagline}</p>
           </div>
+
+          {/* Primary price — full monthly rate as shown in brochure */}
           <div style={{ paddingBottom: 16, borderBottom: '1px solid var(--advancare-line)' }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-              <span className="stat-value">{peso(plan.totalAnnual)}</span>
-              <span style={{ fontSize: 14, color: 'var(--advancare-muted)' }}>/ year</span>
+              <span className="stat-value" style={{ fontSize: 36 }}>{peso(plan.totalMonthly)}</span>
+              <span style={{ fontSize: 14, color: 'var(--advancare-muted)' }}>/ month</span>
             </div>
-            <div style={{ fontSize: 13, color: 'var(--advancare-muted)' }}>{peso(plan.totalMonthly)} / month equivalent</div>
+            <div style={{ fontSize: 13, color: 'var(--advancare-muted)' }}>{peso(plan.totalAnnual)} / year</div>
             <div style={{ fontSize: 13, color: 'var(--advancare-teal)', fontWeight: 700, marginTop: 4 }}>
-              Household share: {peso(plan.householdOopMonthly)} / month*
+              Household share (with LGU subsidy): {peso(plan.householdOopMonthly)} / month*
             </div>
           </div>
+
           <ul className="list-check">
             <li>
               <Icon name="tricycle" size={16} color="var(--advancare-teal)" />
@@ -37,12 +40,16 @@ export const PlanCards: React.FC = () => (
               <span><strong>Caregiver SLA:</strong> hospital {plan.caregiverSla.hospital}, barangay {plan.caregiverSla.barangay}</span>
             </li>
             <li>
+              <Icon name="calendar" size={16} color="var(--advancare-teal)" />
+              <span><strong>Daily rate per household:</strong> {plan.dailyRate}</span>
+            </li>
+            <li>
               <Icon name="shield-check" size={16} color="var(--advancare-teal)" />
-              <span><strong>Funding:</strong> {plan.funding}</span>
+              <span><strong>Discount:</strong> {plan.discountNote}</span>
             </li>
             <li>
               <Icon name="users-group-rounded" size={16} color="var(--advancare-teal)" />
-              <span>Unemployed 65+ covered: <strong>{plan.unemployedSeniors ? 'Yes' : 'No'}</strong></span>
+              <span><strong>Best for:</strong> {plan.bestFor}</span>
             </li>
           </ul>
         </div>

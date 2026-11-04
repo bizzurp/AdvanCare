@@ -1,1 +1,13 @@
-{}
+{
+  "userIgnoreFilters": [
+    "/node_modules/",
+    "/(^|\\/)(Pods|DerivedData|build|dist)\\//",
+    "/CapApp-SPM\\//",
+    "/src\\/assets\\/icons\\//",
+    "AdvanCare_Vault/AdvanCare-design-handoff/reference/Implementation Plan.md",
+    "AdvanCare_Vault/AdvanCare-design-handoff/reference/Mobile App System Specification.md",
+    "AdvanCare_Vault/AdvanCare-design-handoff/reference/Reporting Engine & Dashboard Specifications.md",
+    "AdvanCare_Vault/AdvanCare-design-handoff/reference/Service Catalog & Caregiver Operations.md",
+    "AdvanCare_Vault/AdvanCare-design-handoff/assets/"
+  ]
+}

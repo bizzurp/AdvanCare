@@ -427,7 +427,11 @@ export function ServiceTrends() {
 // ---------------- 15 / Dashboard (coordinator / LGU) ----------------
 const DONUT: { kinds: ServiceKind[]; label: string; color: string }[] = [
   { kinds: ['telehealth', 'rhu', 'triage'], label: 'Consultation', color: '#086B5B' },
+<<<<<<< HEAD
   { kinds: ['prescription'], label: 'Prescription', color: '#376E85' },
+=======
+  { kinds: ['prescription', 'supplies'], label: 'Pharmacy', color: '#376E85' },
+>>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
   { kinds: ['transport'], label: 'Transport', color: '#697D34' },
   { kinds: ['home-caregiver'], label: 'Home care', color: '#996116' },
   { kinds: ['cvmc-caregiver'], label: 'CVMC care', color: '#536D65' },

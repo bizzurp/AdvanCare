@@ -57,7 +57,14 @@ export const ServicesPage: React.FC = () => {
                       <Icon name={s.icon} size={22} />
                     </span>
                     <div>
-                      <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--advancare-ink)' }}>{s.name}</h2>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                        {s.badge && (
+                          <span style={{ fontSize: 11, fontWeight: 800, background: 'var(--advancare-deep)', color: '#FFFFFF', width: 20, height: 20, borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {s.badge}
+                          </span>
+                        )}
+                        <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--advancare-ink)' }}>{s.name}</h2>
+                      </div>
                       <span style={{ fontSize: 12, color: 'var(--advancare-muted)', fontWeight: 600 }}>{s.scope}</span>
                     </div>
                   </div>

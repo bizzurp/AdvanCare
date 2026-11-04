@@ -36,11 +36,6 @@ button:focus-visible,
   background-color: rgba(247, 249, 245, 0.97) !important;
 }
 
-.brand-lockup img { transition: transform 400ms var(--ease-out); }
-@media (hover: hover) and (pointer: fine) {
-  .brand-lockup:hover img { transform: rotate(-6deg) scale(1.05); }
-}
-
 /* Active link underline grows from the left; hover previews it */
 .nav-link {
   position: relative;
@@ -119,33 +114,15 @@ button:focus-visible,
   .btn:hover > span:last-child:not(:first-child) { transform: translate(2px, -2px); }
 }
 
-/* ---------- Cards ---------- */
-@media (hover: hover) and (pointer: fine) {
-  .card-base:hover { transform: translateY(-3px); }
-}
-
-/* Icon tiles and step numbers respond to their card */
-.card-base .step-num,
-.card-base .icon-svg {
-  transition: transform 300ms var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-  .card-base:hover .step-num { transform: scale(1.08); }
-}
+/* ---------- Cards ----------
+   Cards here are not links, so they keep still on hover: movement would promise a click. */
+.card-base:hover { border-color: transparent; box-shadow: none; }
 
 /* ---------- Tables ---------- */
 .data-table tbody tr { transition: background-color 160ms ease; }
 @media (hover: hover) and (pointer: fine) {
   .data-table tbody tr:hover > * { background-color: rgba(227, 240, 232, 0.45); }
   .data-table tbody tr:hover > .highlight { background-color: var(--advancare-mint); }
-}
-
-/* Journey pills */
-.journey span.stop {
-  transition: border-color 200ms ease, background-color 200ms ease, transform 240ms var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-  .journey span.stop:hover { border-color: var(--advancare-teal); transform: translateY(-1px); }
 }
 
 /* ---------- Form fields (Contact) ---------- */
@@ -208,7 +185,6 @@ button:focus-visible,
   transition: opacity 200ms var(--ease-out);
 }
 .faq-item[data-open] .faq-panel-inner { opacity: 1; transition-delay: 60ms; }
-.faq-item[data-open] { box-shadow: var(--shadow-md); }
 .faq-trigger span:first-child { transition: color 200ms ease; }
 @media (hover: hover) and (pointer: fine) {
   .faq-item:not([data-open]):hover { border-color: var(--advancare-control) !important; }
@@ -244,7 +220,7 @@ button:focus-visible,
   inset: 0 0 auto 0;
   height: 3px;
   z-index: 101;
-  background: linear-gradient(90deg, var(--advancare-teal), var(--brand-green));
+  background: var(--advancare-teal);
   transform-origin: 0 50%;
   transform: scaleX(0);
   pointer-events: none;
@@ -284,60 +260,6 @@ button:focus-visible,
 }
 .back-to-top .icon-svg { transform: rotate(180deg); }
 
-/* ---------- Hero surface ---------- */
-.hero-surface,
-.page-hero {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-}
-.hero-surface::before,
-.hero-surface::after,
-.page-hero::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(8px);
-}
-.hero-surface::before,
-.page-hero::before {
-  width: 620px;
-  height: 620px;
-  top: -260px;
-  right: -140px;
-  background: radial-gradient(closest-side, rgba(203, 228, 156, 0.45), rgba(203, 228, 156, 0));
-  animation: ac-drift 18s ease-in-out infinite alternate;
-}
-.hero-surface::after {
-  width: 520px;
-  height: 520px;
-  bottom: -280px;
-  left: -160px;
-  background: radial-gradient(closest-side, rgba(227, 240, 232, 0.9), rgba(227, 240, 232, 0));
-  animation: ac-drift 22s ease-in-out infinite alternate-reverse;
-}
-@keyframes ac-drift {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-40px, 30px, 0); }
-}
-
-/* Live dot in kickers */
-.kicker-dot { position: relative; }
-.kicker-dot::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: var(--advancare-teal);
-  animation: ac-ping 2.4s var(--ease-out) infinite;
-}
-@keyframes ac-ping {
-  0% { transform: scale(1); opacity: 0.55; }
-  70%, 100% { transform: scale(2.6); opacity: 0; }
-}
-
 /* Floating donation card in the home hero */
 @media (min-width: 961px) {
   #hero-donation-card { align-self: center; }
@@ -349,16 +271,9 @@ button:focus-visible,
   [data-reveal] { transform: none; transition: opacity 300ms ease; }
   .route-view { animation-duration: 200ms; }
   .ac-swap { animation: none; }
-  .hero-surface::before,
-  .hero-surface::after,
-  .page-hero::before,
-  .kicker-dot::after { animation: none; }
-  .card-base:hover,
-  .journey span.stop:hover,
   .btn:hover > span:last-child:not(:first-child) { transform: none !important; }
   .back-to-top { transform: none; }
   .mobile-drawer > .mobile-drawer-inner { transform: none; }
-  .brand-lockup:hover img { transform: none; }
 }
 
 @media print {

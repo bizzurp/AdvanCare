@@ -15,12 +15,8 @@ export const ContactPage: React.FC = () => {
   return (
     <div className="contact-page">
       {/* Header */}
-      <section className="hero-surface" style={{ padding: '64px 0 48px 0', backgroundColor: 'var(--advancare-paper)', borderBottom: '1px solid var(--advancare-line)' }}>
+      <section style={{ padding: '64px 0 48px 0', backgroundColor: 'var(--advancare-paper)' }}>
         <div className="container" style={{ maxWidth: 840 }}>
-          <span className="kicker" style={{ marginBottom: 12 }}>
-            <Icon name="chat-round-dots" size={14} />
-            Connect & Partner
-          </span>
           <h1 style={{ fontSize: 'clamp(32px, 4.5vw, 46px)', fontWeight: 800, marginBottom: 16 }}>
             Partner with AdvanCare
           </h1>
@@ -31,7 +27,7 @@ export const ContactPage: React.FC = () => {
       </section>
 
       {/* Main Content & Form */}
-      <section className="section-py" style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid var(--advancare-line)' }}>
+      <section className="section-py" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="container" style={{ maxWidth: 960 }}>
           <div
             style={{

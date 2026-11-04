@@ -41,7 +41,7 @@ const DONATION_TIERS: DonationTier[] = [
   },
 ];
 
-export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = ({ className = '', isHero = false }) => {
+export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = ({ className = '' }) => {
   const [selectedTier, setSelectedTier] = useState<DonationTier>(DONATION_TIERS[0]);
   const [copied, setCopied] = useState<boolean>(false);
 
@@ -61,8 +61,8 @@ export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = 
       style={{
         background: '#FFFFFF',
         borderRadius: 20,
-        border: '1px solid var(--advancare-line)',
-        boxShadow: isHero ? 'var(--shadow-qr)' : 'var(--shadow-md)',
+        border: 'none',
+        boxShadow: 'none',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
@@ -76,7 +76,7 @@ export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = 
           display: 'flex',
           alignItems: 'center',
           gap: 6,
-          fontSize: 12,
+          fontSize: 13,
           fontWeight: 600,
           color: 'var(--advancare-gold)',
           letterSpacing: '0.04em',
@@ -133,7 +133,7 @@ export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = 
           <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--advancare-deep)', marginBottom: 2 }}>
             {selectedTier.impactTitle}
           </div>
-          <p style={{ fontSize: 12, margin: 0, lineHeight: 1.4 }}>{selectedTier.impactDesc}</p>
+          <p style={{ fontSize: 13, margin: 0, lineHeight: 1.4 }}>{selectedTier.impactDesc}</p>
         </div>
 
         <a href={mailto} className="btn btn-primary btn-pill" style={{ marginBottom: 12 }}>
@@ -154,7 +154,7 @@ export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = 
           }}
         >
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 11, textTransform: 'uppercase', fontWeight: 600, color: 'var(--advancare-muted)' }}>
+            <div style={{ fontSize: 13, textTransform: 'uppercase', fontWeight: 600, color: 'var(--advancare-muted)' }}>
               {CONTACT.person}
             </div>
             <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--advancare-ink)', overflowWrap: 'anywhere' }}>
@@ -164,13 +164,13 @@ export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = 
           <button
             onClick={handleCopy}
             className="btn btn-pill btn-secondary"
-            style={{ padding: '6px 14px', fontSize: 12, flexShrink: 0 }}
+            style={{ padding: '6px 14px', fontSize: 13, flexShrink: 0 }}
           >
             <span key={copied ? 'copied' : 'copy'} className="ac-swap">{copied ? 'Copied' : 'Copy'}</span>
           </button>
         </div>
 
-        <p style={{ fontSize: 11, lineHeight: 1.4, margin: 0, display: 'flex', gap: 8 }}>
+        <p style={{ fontSize: 13, lineHeight: 1.4, margin: 0, display: 'flex', gap: 8 }}>
           <Icon name="shield-check" size={16} color="var(--advancare-teal)" />
           <span>Payment channels will be shared by the program office when you pledge. AdvanCare does not collect payments on this site.</span>
         </p>

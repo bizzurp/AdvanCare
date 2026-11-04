@@ -34,6 +34,7 @@
 - `src/components/MotionLayer.tsx`: scroll-reveal fade-up on shared layout classes (staggered, fires once), scroll progress bar, back-to-top button. Route fade via `RouteView` in `App.tsx`; route changes jump to top instantly.
 - `src/styles/motion.css`: easing tokens, hover-gated card/button states, animated nav underline, header shadow on scroll, animated mobile drawer and FAQ accordion, form focus rings, anchor offset for the sticky header, reduced-motion and print fallbacks. Inter 700/800 now loaded (headings were faux-bold).
 - Note: `website/node_modules` is committed with Windows-only esbuild/rollup binaries, so `npm run dev` fails on macOS.
+- Design pass (impeccable + taste skills, text unchanged except labels): removed 17 redundant kicker labels (page-hero labels, labels repeating their heading); kept ones restyled as plain teal labels with a short marker. Card grids replaced by varied layouts in `main.css` (`stat-row`, `panel-cols`, `step-flow`, `rule-cols`, `stack-list`, `loop-split`, `value-band`); cards use a tone step instead of 1px outlines; section dividers and resting shadows removed; text below 13px raised. Team photos centred per person via `photoCrop` in `storyData.ts` (`.team-photo`).
 
 ## [2026-10-22] - Website realigned to `/Docs`
 - Website content now comes from the proposal deck, brochure, two-year Gantt and budget in `/Docs` (ADR-017). Content data: `website/src/data/{storyData,roadmapData,plansData,servicesData,faqData}.ts`.

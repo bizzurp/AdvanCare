@@ -17,13 +17,12 @@ export const HomePage: React.FC = () => (
     <section className="section-py section-paper">
       <div className="container">
         <div className="section-head">
-          <span className="kicker">Target market</span>
           <h2>Serving underserved communities in provinces across the country</h2>
           <p>Primary focus: low-income and rural households in provinces across the country.</p>
         </div>
-        <div className="grid-4">
+        <div className="grid-4 rule-cols">
           {TARGET_MARKET.map((t) => (
-            <div key={t.title} className="card-base" style={{ padding: 24 }}>
+            <div key={t.title}>
               <Icon name={t.icon} size={28} color="var(--advancare-teal)" />
               <h3 style={{ marginTop: 12 }}>{t.title}</h3>
               <p>{t.body}</p>
@@ -47,7 +46,6 @@ export const HomePage: React.FC = () => (
     <section className="section-py section-paper">
       <div className="container" style={{ maxWidth: 880 }}>
         <div className="section-head">
-          <span className="kicker">Questions</span>
           <h2>Frequently asked questions</h2>
         </div>
         <FAQAccordion />

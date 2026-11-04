@@ -6,10 +6,6 @@ export const DonatePage: React.FC = () => (
   <div className="donate-page">
     <section className="page-hero">
       <div className="container">
-        <span className="kicker">
-          <Icon name="heart-pulse" size={14} />
-          Donor network
-        </span>
         <h1>Community support for families who need it most</h1>
         <p>
           In the AdvanCare care loop, a donor network of community supporters helps cover care for households that cannot pay

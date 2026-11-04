@@ -178,9 +178,9 @@ export const COMPETITORS = {
 };
 
 export const TEAM = [
-  { name: 'Fernando M. Jaminola Jr.', role: 'Assistant Professor', project: 'Program Leader', photo: photoJaminola, linkedin: 'https://www.linkedin.com/in/fernando-jr-jaminola-03876361' },
-  { name: 'Charmie Calvo, DIT', role: 'University Dean, College of Information and Computing Sciences', project: 'ICT Project Leader', photo: photoCalvo },
-  { name: 'Prof. Marvin Uanang', role: 'Campus MIS Head', project: '', photo: photoUanang, photoScale: 1.4 },
+  { name: 'Fernando M. Jaminola Jr.', role: 'Assistant Professor', project: 'Program Leader', photo: photoJaminola, photoCrop: { w: 180, x: 52, y: 27 }, linkedin: 'https://www.linkedin.com/in/fernando-jr-jaminola-03876361' },
+  { name: 'Charmie Calvo, DIT', role: 'University Dean, College of Information and Computing Sciences', project: 'ICT Project Leader', photo: photoCalvo, photoCrop: { w: 145, x: 48, y: 26 } },
+  { name: 'Prof. Marvin Uanang', role: 'Campus MIS Head', project: '', photo: photoUanang, photoCrop: { w: 186, x: 51, y: 24 } },
 ];
 
 export const CONTACT = {

@@ -8,7 +8,6 @@ export const Footer: React.FC = () => {
     <footer
       style={{
         backgroundColor: '#FFFFFF',
-        borderTop: '1px solid var(--advancare-line)',
         paddingTop: 64,
         paddingBottom: 40,
         marginTop: 'auto',
@@ -161,7 +160,7 @@ export const Footer: React.FC = () => {
                 <span>↗</span>
               </a>
             </div>
-            <div style={{ fontSize: 12, color: 'var(--advancare-muted)', lineHeight: 1.5 }}>
+            <div style={{ fontSize: 13, color: 'var(--advancare-muted)', lineHeight: 1.5 }}>
               Adheres to Republic Act No. 10173 (Philippine Data Privacy Act of 2012). Clinical data is role-restricted.
             </div>
           </div>
@@ -170,7 +169,6 @@ export const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div
           style={{
-            borderTop: '1px solid var(--advancare-line)',
             paddingTop: 24,
             display: 'flex',
             flexWrap: 'wrap',

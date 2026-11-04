@@ -30,9 +30,9 @@ export const ProblemSection: React.FC = () => (
             Source-slide illustrations show a typical rural persona; they are not photographs of an identified patient.
           </p>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="stack-list">
           {BARRIERS.map((b, i) => (
-            <div key={b.title} className="card-base" style={{ display: 'flex', gap: 14, padding: 24 }}>
+            <div key={b.title}>
               <span className="step-num">{i + 1}</span>
               <div>
                 <h3>{b.title}</h3>
@@ -53,9 +53,9 @@ export const ProblemSection: React.FC = () => (
             In most rural barangays and urban poor districts, care can be hard to access, afford, and coordinate.
           </p>
         </div>
-        <div className="grid-3" style={{ marginBottom: 24 }}>
+        <div className="stat-row">
           {BASELINE_STATS.map((s) => (
-            <div key={s.value} className="card-base">
+            <div key={s.value}>
               <div className="stat-value" style={{ color: 'var(--advancare-deep)' }}>{s.value}</div>
               <p style={{ marginTop: 8 }}>{s.label}</p>
               <div className="source-note">Source: {s.source}</div>

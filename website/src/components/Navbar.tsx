@@ -46,12 +46,11 @@ export const Navbar: React.FC = () => {
         backgroundColor: 'rgba(247, 249, 245, 0.92)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        borderBottom: '1px solid var(--advancare-line)',
       }}
     >
       <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72 }}>
         {/* Brand Lockup */}
-        <Link to="/" className="brand-lockup" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <img src={emblemLogo} alt="AdvanCare Emblem" style={{ width: 34, height: 34, objectFit: 'contain' }} />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.1 }}>

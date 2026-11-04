@@ -21,7 +21,7 @@ export const FAQAccordion: React.FC = () => {
             style={{
               backgroundColor: '#FFFFFF',
               borderRadius: 14,
-              border: isOpen ? '1.5px solid var(--advancare-teal)' : '1px solid var(--advancare-line)',
+              border: isOpen ? '1px solid var(--advancare-teal)' : '1px solid transparent',
               overflow: 'hidden',
               transition: 'border-color 200ms ease, box-shadow 240ms var(--ease-out)',
             }}

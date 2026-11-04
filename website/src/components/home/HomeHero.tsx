@@ -5,13 +5,9 @@ import { BASELINE_STATS, TAGLINE } from '../../data/storyData';
 import emblemLogo from '../../assets/logo-emblem.png';
 
 export const HomeHero: React.FC = () => (
-  <section className="hero-surface" style={{ padding: '64px 0 80px', background: 'var(--advancare-paper)', borderBottom: '1px solid var(--advancare-line)' }}>
+  <section style={{ padding: '64px 0 80px', background: 'var(--advancare-paper)' }}>
     <div className="container split-2">
       <div>
-        <span className="kicker">
-          <span className="kicker-dot" />
-          AI-enabled healthcare management · provinces across the country
-        </span>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, margin: '20px 0' }}>
           <img src={emblemLogo} alt="" style={{ width: 52, height: 52, objectFit: 'contain' }} />
@@ -26,7 +22,7 @@ export const HomeHero: React.FC = () => (
           </div>
         </div>
 
-        <h1 style={{ fontSize: 'clamp(34px, 5vw, 52px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.025em', marginBottom: 20 }}>
+        <h1 style={{ fontSize: 'clamp(38px, 4.6vw, 64px)', fontWeight: 800, lineHeight: 1.04, letterSpacing: '-0.035em', marginBottom: 20 }}>
           Care closer to every community.
         </h1>
 
@@ -45,13 +41,13 @@ export const HomeHero: React.FC = () => (
           </Link>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 16, paddingTop: 24, borderTop: '1px solid var(--advancare-line)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 16, paddingTop: 8 }}>
           {BASELINE_STATS.map((s) => (
             <div key={s.value}>
               <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--advancare-teal)' }} className="tabular">
                 {s.value}
               </div>
-              <div style={{ fontSize: 12, color: 'var(--advancare-muted)', lineHeight: 1.3 }}>{s.label}</div>
+              <div style={{ fontSize: 13, color: 'var(--advancare-muted)', lineHeight: 1.3 }}>{s.label}</div>
               <div className="source-note">{s.source}</div>
             </div>
           ))}

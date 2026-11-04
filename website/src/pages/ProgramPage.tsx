@@ -6,10 +6,6 @@ export const ProgramPage: React.FC = () => (
   <div className="program-page">
     <section className="page-hero">
       <div className="container">
-        <span className="kicker">
-          <Icon name="calendar" size={14} />
-          Program & roadmap
-        </span>
         <h1>Implementation plan: adoption and sustainability</h1>
         <p>A two-year program that starts with a pilot in Peñablanca and scales province-wide, with research running alongside.</p>
       </div>
@@ -18,12 +14,11 @@ export const ProgramPage: React.FC = () => (
     <section className="section-py section-white">
       <div className="container">
         <div className="section-head">
-          <span className="kicker">Phases</span>
           <h2>Pilot, expand, scale, sustain</h2>
         </div>
-        <div className="grid-4">
+        <div className="panel-cols">
           {PHASES.map((p) => (
-            <div key={p.name} className="card-base" style={{ padding: 24 }}>
+            <div key={p.name}>
               <h3>{p.name}</h3>
               <ul className="list-check" style={{ marginTop: 8 }}>
                 {p.items.map((i) => (
@@ -46,9 +41,9 @@ export const ProgramPage: React.FC = () => (
           <h2>Provinces across the country</h2>
           <p>{MARKET.population} at {MARKET.price}. {MARKET.nationwide}</p>
         </div>
-        <div className="grid-3">
+        <div className="stat-row stat-row--compact">
           {MARKET.tiers.map((t) => (
-            <div key={t.name} className="card-base">
+            <div key={t.name}>
               <span className="kicker">{t.name}</span>
               <p style={{ marginTop: 8 }}>{t.full}</p>
               <div className="stat-value" style={{ color: 'var(--advancare-deep)', marginTop: 8 }}>{t.value}</div>

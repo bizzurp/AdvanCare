@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Icon } from '../components/Icon';
 import { PlanCards } from '../components/PlanCards';
 import { CARE_PLANS, PLAN_INCLUSIONS, SLA_DEFINITION } from '../data/plansData';
 import { peso } from '../data/roadmapData';
@@ -9,10 +8,6 @@ export const PlansPage: React.FC = () => (
   <div className="plans-page">
     <section className="page-hero">
       <div className="container">
-        <span className="kicker">
-          <Icon name="shield-check" size={14} />
-          Subscription plans
-        </span>
         <h1>Accessible care for every family</h1>
         <p>
           Three yearly plans: Silver (₱150/mo), Gold (₱250/mo), and Platinum (₱350/mo). Under the proposed 50% LGU
@@ -30,7 +25,6 @@ export const PlansPage: React.FC = () => (
     <section className="section-py section-white">
       <div className="container">
         <div className="section-head">
-          <span className="kicker">Compare plans</span>
           <h2>Feature comparison</h2>
         </div>
         <div className="data-table-wrap">

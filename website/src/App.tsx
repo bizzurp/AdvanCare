@@ -45,7 +45,7 @@ export const App: React.FC = () => {
     <BrowserRouter>
       <ScrollToTop />
       <MotionLayer />
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100svh' }}>
         <Navbar />
         <main style={{ flex: 1 }}>
           <RouteView>

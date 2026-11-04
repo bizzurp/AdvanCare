@@ -9,7 +9,7 @@ export const PlanCards: React.FC = () => (
       {CARE_PLANS.map((plan) => (
         <div key={plan.id} className="card-base" style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 16 }}>
           {plan.badge && (
-            <span style={{ position: 'absolute', top: 16, right: 16, fontSize: 11, fontWeight: 700, background: 'var(--advancare-mint)', color: 'var(--advancare-deep)', padding: '3px 10px', borderRadius: 9999, textTransform: 'uppercase' }}>
+            <span style={{ position: 'absolute', top: 16, right: 16, fontSize: 13, fontWeight: 700, background: 'var(--advancare-mint)', color: 'var(--advancare-deep)', padding: '3px 10px', borderRadius: 9999, textTransform: 'uppercase' }}>
               {plan.badge}
             </span>
           )}
@@ -19,7 +19,7 @@ export const PlanCards: React.FC = () => (
           </div>
 
           {/* Primary price — full monthly rate as shown in brochure */}
-          <div style={{ paddingBottom: 16, borderBottom: '1px solid var(--advancare-line)' }}>
+          <div style={{ paddingBottom: 4 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
               <span className="stat-value" style={{ fontSize: 36 }}>{peso(plan.totalMonthly)}</span>
               <span style={{ fontSize: 14, color: 'var(--advancare-muted)' }}>/ month</span>

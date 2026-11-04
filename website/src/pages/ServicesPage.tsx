@@ -8,12 +8,8 @@ export const ServicesPage: React.FC = () => {
   return (
     <div className="services-page">
       {/* Hero */}
-      <section className="hero-surface" style={{ padding: '64px 0 48px 0', backgroundColor: 'var(--advancare-paper)', borderBottom: '1px solid var(--advancare-line)' }}>
+      <section style={{ padding: '64px 0 48px 0', backgroundColor: 'var(--advancare-paper)' }}>
         <div className="container" style={{ maxWidth: 840 }}>
-          <span className="kicker" style={{ marginBottom: 12 }}>
-            <Icon name="medical-kit" size={14} />
-            Services
-          </span>
           <h1 style={{ fontSize: 'clamp(32px, 4.5vw, 46px)', fontWeight: 800, marginBottom: 16 }}>
             One closed care loop, built for barangays in provinces across the country
           </h1>
@@ -24,10 +20,10 @@ export const ServicesPage: React.FC = () => {
       </section>
 
       {/* Services Deep Dive */}
-      <section className="section-py" style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid var(--advancare-line)' }}>
+      <section className="section-py" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="container">
           <div style={{ display: 'flex', flexDirection: 'column', gap: 48 }}>
-            {SERVICE_PILLARS.map((s, idx) => (
+            {SERVICE_PILLARS.map((s) => (
               <div
                 key={s.id}
                 id={s.id}
@@ -37,7 +33,7 @@ export const ServicesPage: React.FC = () => {
                   gridTemplateColumns: 'minmax(0, 1.2fr) minmax(280px, 0.8fr)',
                   gap: 36,
                   alignItems: 'start',
-                  backgroundColor: idx % 2 === 0 ? '#FFFFFF' : 'var(--advancare-paper)',
+                  backgroundColor: 'var(--advancare-paper)',
                 }}
               >
                 <div>
@@ -59,13 +55,13 @@ export const ServicesPage: React.FC = () => {
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
                         {s.badge && (
-                          <span style={{ fontSize: 11, fontWeight: 800, background: 'var(--advancare-deep)', color: '#FFFFFF', width: 20, height: 20, borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <span style={{ fontSize: 13, fontWeight: 800, background: 'var(--advancare-deep)', color: '#FFFFFF', width: 20, height: 20, borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                             {s.badge}
                           </span>
                         )}
                         <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--advancare-ink)' }}>{s.name}</h2>
                       </div>
-                      <span style={{ fontSize: 12, color: 'var(--advancare-muted)', fontWeight: 600 }}>{s.scope}</span>
+                      <span style={{ fontSize: 13, color: 'var(--advancare-muted)', fontWeight: 600 }}>{s.scope}</span>
                     </div>
                   </div>
 
@@ -88,12 +84,12 @@ export const ServicesPage: React.FC = () => {
 
                 {/* Right Rates Box */}
                 <div style={{ background: '#FFFFFF', padding: 24, borderRadius: 14, border: '1px solid var(--advancare-line)' }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--advancare-muted)', textTransform: 'uppercase' }}>Rate</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--advancare-muted)', textTransform: 'uppercase' }}>Rate</span>
                   <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--advancare-teal)', margin: '4px 0 10px 0' }} className="tabular">
                     {s.rate}
                   </div>
                   {s.payoutBreakdown && (
-                    <div style={{ fontSize: 12, color: 'var(--advancare-deep)', background: 'var(--advancare-mint)', padding: '6px 12px', borderRadius: 8, marginBottom: 16 }}>
+                    <div style={{ fontSize: 13, color: 'var(--advancare-deep)', background: 'var(--advancare-mint)', padding: '6px 12px', borderRadius: 8, marginBottom: 16 }}>
                       {s.payoutBreakdown}
                     </div>
                   )}
@@ -118,13 +114,9 @@ export const ServicesPage: React.FC = () => {
       </section>
 
       {/* Caregiver Badges & Accreditation */}
-      <section className="section-py" style={{ backgroundColor: 'var(--advancare-paper)', borderBottom: '1px solid var(--advancare-line)' }}>
+      <section className="section-py" style={{ backgroundColor: 'var(--advancare-paper)' }}>
         <div className="container">
           <div style={{ maxWidth: 720, marginBottom: 40 }}>
-            <span className="kicker" style={{ marginBottom: 10 }}>
-              <Icon name="shield-check" size={14} />
-              Accreditation Matrix
-            </span>
             <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>
               Digital Skill Badges & Competency Verification
             </h2>
@@ -137,7 +129,7 @@ export const ServicesPage: React.FC = () => {
             {CAREGIVER_BADGES.map((b) => (
               <div key={b.code} className="card-base" style={{ background: '#FFFFFF' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                  <span style={{ fontFamily: 'monospace', fontSize: 12, background: 'var(--advancare-mint)', color: 'var(--advancare-deep)', padding: '3px 8px', borderRadius: 6, fontWeight: 700 }}>
+                  <span style={{ fontFamily: 'monospace', fontSize: 13, background: 'var(--advancare-mint)', color: 'var(--advancare-deep)', padding: '3px 8px', borderRadius: 6, fontWeight: 700 }}>
                     {b.code}
                   </span>
                   <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--advancare-ink)' }}>{b.name}</h3>

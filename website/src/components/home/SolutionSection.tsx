@@ -14,10 +14,10 @@ export const SolutionSection: React.FC = () => (
             services and communities across provinces across the country.
           </p>
         </div>
-        <div className="grid-4">
+        <div className="panel-cols">
           {SOLUTION_STEPS.map((s, i) => (
-            <div key={s.title} className="card-base" style={{ padding: 24 }}>
-              <span className="step-num" style={{ marginBottom: 12 }}>{i + 1}</span>
+            <div key={s.title}>
+              <span className="step-num">{i + 1}</span>
               <h3>{s.title}</h3>
               <p>{s.body}</p>
             </div>
@@ -28,26 +28,27 @@ export const SolutionSection: React.FC = () => (
 
     <section id="care-loop" className="section-py section-paper">
       <div className="container">
-        <div className="section-head">
-          <span className="kicker">The proposed care ecosystem</span>
-          <h2>One closed care loop.</h2>
-          <p>Community-driven. Technology-enabled. People-centered.</p>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 24 }}>
-          {CARE_LOOP.map((s, i) => (
-            <div key={s.title} className="card-base" style={{ padding: 24 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+        <div className="loop-split">
+          <div className="section-head">
+            <h2>One closed care loop.</h2>
+            <p>Community-driven. Technology-enabled. People-centered.</p>
+          </div>
+          <ol className="loop-list">
+            {CARE_LOOP.map((s, i) => (
+              <li key={s.title}>
                 <span className="step-num">{i + 1}</span>
-                <Icon name={s.icon} size={22} color="var(--advancare-teal)" />
-              </div>
-              <h3>{s.title}</h3>
-              <p>{s.body}</p>
-            </div>
-          ))}
+                <div>
+                  <h3>{s.title}</h3>
+                  <p>{s.body}</p>
+                </div>
+                <Icon name={s.icon} size={26} color="var(--advancare-teal)" />
+              </li>
+            ))}
+          </ol>
         </div>
-        <div className="grid-4">
+        <div className="value-band">
           {LOOP_VALUES.map((v) => (
-            <div key={v.title} style={{ background: 'var(--advancare-deep)', color: '#FFFFFF', borderRadius: 12, padding: '16px 20px' }}>
+            <div key={v.title}>
               <div style={{ fontWeight: 700 }}>{v.title}</div>
               <div style={{ fontSize: 13, color: 'var(--advancare-mint)' }}>{v.body}</div>
             </div>
@@ -59,17 +60,16 @@ export const SolutionSection: React.FC = () => (
     <section className="section-py section-white">
       <div className="container">
         <div className="section-head">
-          <span className="kicker">Connected care process map</span>
           <h2>From family requests to coordinated care.</h2>
           <p>
             Patients and families use the mobile app. Coordinators run the operations dashboard. Caregivers, RHU teams,
             telehealth doctors, MediBox health workers and transport drivers deliver care.
           </p>
         </div>
-        <ol style={{ listStyle: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16 }}>
+        <ol className="step-flow" style={{ '--steps': PROCESS_STEPS.length } as React.CSSProperties}>
           {PROCESS_STEPS.map((s, i) => (
-            <li key={s.title} className="card-base" style={{ padding: 20 }}>
-              <span className="step-num" style={{ marginBottom: 10 }}>{i + 1}</span>
+            <li key={s.title}>
+              <span className="step-num">{i + 1}</span>
               <h3>{s.title}</h3>
               <p>{s.body}</p>
             </li>

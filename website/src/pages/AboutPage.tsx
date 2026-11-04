@@ -7,10 +7,6 @@ export const AboutPage: React.FC = () => (
   <div className="about-page">
     <section className="page-hero">
       <div className="container">
-        <span className="kicker">
-          <Icon name="user-heart" size={14} />
-          About AdvanCare
-        </span>
         <h1>AI-enabled healthcare management for grassroots communities</h1>
         <p>
           AdvanCare is a program of Cagayan State University, in Community &amp; Family Development. {TAGLINE}
@@ -21,7 +17,6 @@ export const AboutPage: React.FC = () => (
     <section className="section-py section-white">
       <div className="container">
         <div className="section-head">
-          <span className="kicker">Vision &amp; mission</span>
           <h2>Why AdvanCare exists</h2>
         </div>
         <div className="grid-2" style={{ marginBottom: 24, alignItems: 'stretch' }}>
@@ -62,13 +57,12 @@ export const AboutPage: React.FC = () => (
     <section className="section-py section-paper">
       <div className="container">
         <div className="section-head">
-          <span className="kicker">Goals</span>
           <h2>Circular and sustainable care</h2>
           <p>Four commitments that keep care accessible today and resource-wise for the long term.</p>
         </div>
-        <div className="grid-2">
+        <div className="grid-2 rule-cols" style={{ rowGap: 40 }}>
           {GOALS.map((g) => (
-            <div key={g.title} className="card-base" style={{ padding: 24 }}>
+            <div key={g.title}>
               <h3>{g.title}</h3>
               <p style={{ fontStyle: 'italic', color: 'var(--advancare-deep)', marginBottom: 12 }}>{g.tagline}</p>
               <ul className="list-check">
@@ -88,41 +82,34 @@ export const AboutPage: React.FC = () => (
     <section className="section-py section-white">
       <div className="container">
         <div className="section-head">
-          <span className="kicker">Project team</span>
           <h2>The people behind AdvanCare</h2>
         </div>
         <div className="grid-3">
           {TEAM.map((m) => (
             <div key={m.name} className="card-base" style={{ padding: 24 }}>
               {m.photo && (
-                <div
-                  style={{
-                    width: 72,
-                    height: 72,
-                    borderRadius: '50%',
-                    overflow: 'hidden',
-                    marginBottom: 14,
-                    border: '1px solid var(--advancare-line)',
-                  }}
-                >
+                <div className="team-photo">
                   <img
                     src={m.photo}
                     alt={m.name}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      objectPosition: 'center',
-                      transform: m.photoScale ? `scale(${m.photoScale})` : undefined,
-                      transformOrigin: 'center',
-                    }}
+                    loading="lazy"
+                    decoding="async"
+                    style={
+                      m.photoCrop
+                        ? {
+                            // Head centre (x, y % of the photo) lands on the circle's centre
+                            width: `${m.photoCrop.w}%`,
+                            transform: `translate(-${m.photoCrop.x}%, -${m.photoCrop.y}%)`,
+                          }
+                        : { left: 0, top: 0, width: '100%', height: '100%', objectFit: 'cover' }
+                    }
                   />
                 </div>
               )}
               <h3>{m.name}</h3>
               <p>{m.role}</p>
               {m.project && (
-                <span style={{ display: 'inline-block', marginTop: 10, fontSize: 12, fontWeight: 700, background: 'var(--advancare-mint)', color: 'var(--advancare-deep)', padding: '3px 10px', borderRadius: 9999 }}>
+                <span style={{ display: 'inline-block', marginTop: 10, fontSize: 13, fontWeight: 700, background: 'var(--advancare-mint)', color: 'var(--advancare-deep)', padding: '3px 10px', borderRadius: 9999 }}>
                   {m.project}
                 </span>
               )}
@@ -152,9 +139,9 @@ export const AboutPage: React.FC = () => (
           <span className="kicker">What makes us different</span>
           <h2>Others match, track or staff care. AdvanCare closes the loop.</h2>
         </div>
-        <div className="grid-3" style={{ marginBottom: 20 }}>
+        <div className="grid-3 rule-cols" style={{ marginBottom: 20 }}>
           {DIFFERENTIATORS.map((d) => (
-            <div key={d.title} className="card-base">
+            <div key={d.title}>
               <h3>{d.title}</h3>
               <p style={{ fontStyle: 'italic', color: 'var(--advancare-deep)', marginBottom: 8 }}>{d.question}</p>
               <p>{d.body}</p>

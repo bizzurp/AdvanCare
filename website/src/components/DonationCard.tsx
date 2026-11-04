@@ -59,7 +59,7 @@ export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = 
     <div
       className={`donation-card ${className}`}
       style={{
-        background: '#FFFFFF',
+        background: 'var(--advancare-white)',
         borderRadius: 20,
         border: 'none',
         boxShadow: 'none',
@@ -79,8 +79,6 @@ export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = 
           fontSize: 13,
           fontWeight: 600,
           color: 'var(--advancare-gold)',
-          letterSpacing: '0.04em',
-          textTransform: 'uppercase',
         }}
       >
         <Icon name="heart-pulse" size={15} color="var(--advancare-gold)" />
@@ -109,7 +107,7 @@ export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = 
                   fontSize: 13,
                   fontWeight: 600,
                   border: isSelected ? '1.5px solid var(--advancare-teal)' : '1px solid var(--advancare-line)',
-                  background: isSelected ? 'var(--advancare-mint)' : '#FFFFFF',
+                  background: isSelected ? 'var(--advancare-mint)' : 'var(--advancare-white)',
                   color: isSelected ? 'var(--advancare-deep)' : 'var(--advancare-ink)',
                 }}
               >
@@ -154,7 +152,7 @@ export const DonationCard: React.FC<{ className?: string; isHero?: boolean }> = 
           }}
         >
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 13, textTransform: 'uppercase', fontWeight: 600, color: 'var(--advancare-muted)' }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--advancare-muted)' }}>
               {CONTACT.person}
             </div>
             <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--advancare-ink)', overflowWrap: 'anywhere' }}>

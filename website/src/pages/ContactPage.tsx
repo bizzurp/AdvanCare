@@ -27,7 +27,7 @@ export const ContactPage: React.FC = () => {
       </section>
 
       {/* Main Content & Form */}
-      <section className="section-py" style={{ backgroundColor: '#FFFFFF' }}>
+      <section className="section-py" style={{ backgroundColor: 'var(--advancare-white)' }}>
         <div className="container" style={{ maxWidth: 960 }}>
           <div
             style={{
@@ -41,7 +41,7 @@ export const ContactPage: React.FC = () => {
             {/* Left: Contact Form */}
             <div>
               {/* Tab Selector */}
-              <div style={{ display: 'flex', gap: 6, marginBottom: 24, borderBottom: '1px solid var(--advancare-line)', paddingBottom: 12 }}>
+              <div className="contact-tabs" style={{ display: 'flex', gap: 6, marginBottom: 24, borderBottom: '1px solid var(--advancare-line)', paddingBottom: 12 }}>
                 <button
                   className="ac-toggle"
                   aria-pressed={tab === 'lgu'}
@@ -175,7 +175,7 @@ export const ContactPage: React.FC = () => {
                         fontSize: 14,
                         fontFamily: 'inherit',
                         outline: 'none',
-                        background: '#FFFFFF',
+                        background: 'var(--advancare-white)',
                       }}
                     >
                       <option>Tuguegarao City</option>
@@ -246,9 +246,11 @@ export const ContactPage: React.FC = () => {
 
               <div id="partnerships" className="card-base" style={{ background: 'var(--advancare-mint)', border: '1px solid rgba(8, 107, 91, 0.2)', padding: 24 }}>
                 <h4 style={{ fontSize: 16, fontWeight: 700, color: 'var(--advancare-deep)', marginBottom: 8 }}>Key partners we work with</h4>
-                <p style={{ fontSize: 13, color: 'var(--advancare-deep)', lineHeight: 1.5, margin: 0 }}>
-                  Local Government Units · Barangay health workers · Hospitals · DOH & local health offices · Doctors, nurses & midwives · Transport providers · Caregiver pool · Pharmacies
-                </p>
+                <ul className="plain-list">
+                  {['Local Government Units', 'Barangay health workers', 'Hospitals', 'DOH & local health offices', 'Doctors, nurses & midwives', 'Transport providers', 'Caregiver pool', 'Pharmacies'].map((p) => (
+                    <li key={p}>{p}</li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>

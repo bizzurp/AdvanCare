@@ -57,7 +57,7 @@ export const Navbar: React.FC = () => {
               <span style={{ color: 'var(--brand-blue)' }}>Advan</span>
               <span style={{ color: 'var(--brand-green)' }}>Care</span>
             </span>
-            <span style={{ fontSize: 10, color: 'var(--advancare-muted)', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+            <span style={{ fontSize: 12, color: 'var(--advancare-muted)', fontWeight: 500 }}>
               provinces across the country
             </span>
           </div>
@@ -104,9 +104,9 @@ export const Navbar: React.FC = () => {
             <span style={{ fontSize: 11, opacity: 0.7 }}>↗</span>
           </a>
 
-          <Link to="/donate" className="btn btn-primary btn-pill" style={{ padding: '8px 18px', fontSize: 13 }}>
+          <Link to="/donate" className="btn btn-primary btn-pill nav-donate" style={{ padding: '8px 18px', fontSize: 13 }}>
             <Icon name="heart-pulse" size={16} />
-            <span>Donate</span>
+            <span className="nav-donate-label">Donate</span>
           </Link>
 
           {/* Mobile Menu Toggle Button */}

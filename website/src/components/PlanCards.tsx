@@ -9,7 +9,7 @@ export const PlanCards: React.FC = () => (
       {CARE_PLANS.map((plan) => (
         <div key={plan.id} className="card-base" style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 16 }}>
           {plan.badge && (
-            <span style={{ position: 'absolute', top: 16, right: 16, fontSize: 13, fontWeight: 700, background: 'var(--advancare-mint)', color: 'var(--advancare-deep)', padding: '3px 10px', borderRadius: 9999, textTransform: 'uppercase' }}>
+            <span style={{ position: 'absolute', top: 16, right: 16, fontSize: 13, fontWeight: 700, background: 'var(--advancare-mint)', color: 'var(--advancare-deep)', padding: '3px 10px', borderRadius: 9999 }}>
               {plan.badge}
             </span>
           )}
@@ -56,8 +56,12 @@ export const PlanCards: React.FC = () => (
       ))}
     </div>
     <div className="card-base" style={{ padding: 20 }}>
-      <strong style={{ color: 'var(--advancare-ink)' }}>Across all plans:</strong>{' '}
-      <span style={{ color: 'var(--advancare-muted)' }}>{PLAN_INCLUSIONS.join(' · ')}</span>
+      <strong style={{ color: 'var(--advancare-ink)' }}>Across all plans:</strong>
+      <ul className="plain-list plain-list--cols">
+        {PLAN_INCLUSIONS.map((f) => (
+          <li key={f}>{f}</li>
+        ))}
+      </ul>
       <p className="source-note" style={{ marginTop: 8 }}>*{SUBSIDY_NOTE}</p>
     </div>
   </>

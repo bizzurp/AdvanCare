@@ -19,7 +19,7 @@ export const FAQAccordion: React.FC = () => {
             className="faq-item"
             data-open={isOpen ? '' : undefined}
             style={{
-              backgroundColor: '#FFFFFF',
+              backgroundColor: 'var(--advancare-white)',
               borderRadius: 14,
               border: isOpen ? '1px solid var(--advancare-teal)' : '1px solid transparent',
               overflow: 'hidden',

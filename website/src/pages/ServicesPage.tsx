@@ -20,21 +20,14 @@ export const ServicesPage: React.FC = () => {
       </section>
 
       {/* Services Deep Dive */}
-      <section className="section-py" style={{ backgroundColor: '#FFFFFF' }}>
+      <section className="section-py" style={{ backgroundColor: 'var(--advancare-white)' }}>
         <div className="container">
           <div style={{ display: 'flex', flexDirection: 'column', gap: 48 }}>
             {SERVICE_PILLARS.map((s) => (
               <div
                 key={s.id}
                 id={s.id}
-                className="card-base"
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'minmax(0, 1.2fr) minmax(280px, 0.8fr)',
-                  gap: 36,
-                  alignItems: 'start',
-                  backgroundColor: 'var(--advancare-paper)',
-                }}
+                className="card-base service-pillar"
               >
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
@@ -55,7 +48,7 @@ export const ServicesPage: React.FC = () => {
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
                         {s.badge && (
-                          <span style={{ fontSize: 13, fontWeight: 800, background: 'var(--advancare-deep)', color: '#FFFFFF', width: 20, height: 20, borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <span style={{ fontSize: 13, fontWeight: 800, background: 'var(--advancare-deep)', color: 'var(--advancare-white)', width: 20, height: 20, borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                             {s.badge}
                           </span>
                         )}
@@ -69,12 +62,12 @@ export const ServicesPage: React.FC = () => {
                     {s.description}
                   </p>
 
-                  <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--advancare-ink)', textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: 12 }}>
+                  <h4 style={{ fontSize: 16, fontWeight: 700, color: 'var(--advancare-ink)', marginBottom: 12 }}>
                     What's included
                   </h4>
                   <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {s.highlights.map((h, hIdx) => (
-                      <li key={hIdx} style={{ fontSize: 14, color: 'var(--advancare-ink)', display: 'flex', gap: 8, lineHeight: 1.5 }}>
+                      <li key={hIdx} style={{ fontSize: 15, color: 'var(--advancare-ink)', display: 'flex', gap: 8, lineHeight: 1.5 }}>
                         <Icon name="check-circle" size={16} color="var(--advancare-teal)" />
                         <span>{h}</span>
                       </li>
@@ -83,8 +76,8 @@ export const ServicesPage: React.FC = () => {
                 </div>
 
                 {/* Right Rates Box */}
-                <div style={{ background: '#FFFFFF', padding: 24, borderRadius: 14, border: '1px solid var(--advancare-line)' }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--advancare-muted)', textTransform: 'uppercase' }}>Rate</span>
+                <div className="service-rate">
+                  <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--advancare-muted)' }}>Rate</span>
                   <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--advancare-teal)', margin: '4px 0 10px 0' }} className="tabular">
                     {s.rate}
                   </div>
@@ -127,7 +120,7 @@ export const ServicesPage: React.FC = () => {
 
           <div className="grid-2">
             {CAREGIVER_BADGES.map((b) => (
-              <div key={b.code} className="card-base" style={{ background: '#FFFFFF' }}>
+              <div key={b.code} className="card-base" style={{ background: 'var(--advancare-white)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
                   <span style={{ fontFamily: 'monospace', fontSize: 13, background: 'var(--advancare-mint)', color: 'var(--advancare-deep)', padding: '3px 8px', borderRadius: 6, fontWeight: 700 }}>
                     {b.code}

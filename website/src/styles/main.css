@@ -433,3 +433,7 @@ li > .icon-svg { margin-top: 2px; }
 
 /* Disabled controls read as unavailable */
 .btn:disabled, button:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* Surfaces keep a tone step from whichever section shade they sit on */
+.section-white .loop-list > li { background: var(--advancare-paper); }
+.section-white .faq-item { background-color: var(--advancare-paper) !important; }

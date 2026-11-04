@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Icon } from './Icon';
 import emblemLogo from '../assets/logo-emblem.png';
 
 export const Footer: React.FC = () => {
@@ -14,25 +13,6 @@ export const Footer: React.FC = () => {
       }}
     >
       <div className="container">
-        {/* Top Emergency Notice Banner */}
-        <div
-          style={{
-            background: 'var(--advancare-redBg)',
-            border: '1px solid rgba(168, 58, 50, 0.25)',
-            borderRadius: 12,
-            padding: '14px 20px',
-            marginBottom: 48,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 14,
-          }}
-        >
-          <Icon name="shield-check" size={22} color="var(--advancare-red)" />
-          <div style={{ fontSize: 13, color: 'var(--advancare-red)', lineHeight: 1.5 }}>
-            <strong>Not an emergency service:</strong> AdvanCare provides scheduled, non-emergency transport, caregiving, triage and telehealth. In life-threatening emergencies, dial <strong>911</strong> or go to the nearest emergency facility.
-          </div>
-        </div>
-
         {/* 4-Column Footer Grid */}
         <div
           style={{
@@ -68,7 +48,7 @@ export const Footer: React.FC = () => {
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10, fontSize: 14 }}>
               <li>
                 <Link to="/services#rhu-services" style={{ color: 'var(--advancare-muted)' }}>
-                  RHU / barangay-led care
+                  Barangay-led care
                 </Link>
               </li>
               <li>

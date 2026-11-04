@@ -14,7 +14,7 @@ export const HomePage: React.FC = () => (
     <ProblemSection />
     <SolutionSection />
 
-    <section className="section-py section-paper">
+    <section className="section-py section-white">
       <div className="container">
         <div className="section-head">
           <h2>Serving underserved communities across provinces</h2>
@@ -32,7 +32,7 @@ export const HomePage: React.FC = () => (
       </div>
     </section>
 
-    <section className="section-py section-white">
+    <section className="section-py section-paper">
       <div className="container">
         <div className="section-head">
           <span className="kicker">Subscription plans</span>
@@ -43,7 +43,7 @@ export const HomePage: React.FC = () => (
       </div>
     </section>
 
-    <section className="section-py section-paper">
+    <section className="section-py section-white">
       <div className="container" style={{ maxWidth: 880 }}>
         <div className="section-head">
           <h2>Frequently asked questions</h2>
@@ -63,7 +63,8 @@ export const HomePage: React.FC = () => (
             Partner with us
           </Link>
           <Link to="/donate" className="btn btn-pill" style={{ border: '1px solid var(--advancare-mint)', color: 'var(--advancare-white)', padding: '14px 28px' }}>
-            Join the donor network
+            <Icon name="heart-pulse" size={18} />
+            <span>Join the donor network</span>
           </Link>
         </div>
       </div>

@@ -91,9 +91,9 @@ export const SOLUTION_STEPS = [
 
 export const CARE_LOOP = [
   { title: 'Affordable subscription', body: 'Silver, Gold and Platinum plans with a proposed 50% LGU subsidy.', icon: 'calendar' },
-  { title: 'RHU / Barangay-led initiatives', body: 'Local health teams, mobile checkups, basic care and health education.', icon: 'medical-kit' },
-  { title: 'Reliable transport', body: 'Reliable rides help patients reach clinics and hospitals safely and on time.', icon: 'tricycle' },
-  { title: 'Out-of-hospital triage: MediBox', body: 'Health workers assess patients early and guide the next step.', icon: 'heart-pulse' },
+  { title: 'Barangay-led initiatives', body: 'Local health teams, mobile checkups, basic care and health education.', icon: 'medical-kit' },
+  { title: 'Non-emergency medical transport', body: 'Reliable rides help patients reach clinics and hospitals safely and on time.', icon: 'tricycle' },
+  { title: 'MediBox: Out-of-hospital triage', body: 'Health workers assess patients early and guide the next step.', icon: 'heart-pulse' },
   { title: 'Multi-language TeleHealth', body: 'Remote consultation, specialists and health professional support.', icon: 'stethoscope' },
 ];
 

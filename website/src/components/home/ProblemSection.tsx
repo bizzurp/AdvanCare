@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from '../Icon';
-import { BARRIERS, BASELINE_STATS, JOURNEY, PATIENT_QUOTE } from '../../data/storyData';
+import { BARRIERS, JOURNEY, PATIENT_QUOTE } from '../../data/storyData';
 
 export const ProblemSection: React.FC = () => (
   <>
@@ -44,25 +44,5 @@ export const ProblemSection: React.FC = () => (
       </div>
     </section>
 
-    <section className="section-py section-paper">
-      <div className="container">
-        <div className="section-head">
-          <span className="kicker">02 · The problem</span>
-          <h2>Care exists. Access still falls short.</h2>
-          <p>
-            In most rural barangays and urban poor districts, care can be hard to access, afford, and coordinate.
-          </p>
-        </div>
-        <div className="stat-row">
-          {BASELINE_STATS.map((s) => (
-            <div key={s.value}>
-              <div className="stat-value" style={{ color: 'var(--advancare-deep)' }}>{s.value}</div>
-              <p style={{ marginTop: 8 }}>{s.label}</p>
-              <div className="source-note">Source: {s.source}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
   </>
 );

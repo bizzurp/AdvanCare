@@ -4,10 +4,10 @@ import { CARE_LOOP, LOOP_VALUES, PROCESS_STEPS, SOLUTION_STEPS } from '../../dat
 
 export const SolutionSection: React.FC = () => (
   <>
-    <section className="section-py section-white">
+    <section className="section-py section-paper">
       <div className="container">
         <div className="section-head">
-          <span className="kicker">03 · The proposed solution</span>
+          <span className="kicker">02 · The proposed solution</span>
           <h2>Connect. Coordinate. Continue care.</h2>
           <p>
             An integrated, community-based ecosystem for accessible, coordinated and sustainable care, linking people,
@@ -26,7 +26,7 @@ export const SolutionSection: React.FC = () => (
       </div>
     </section>
 
-    <section id="care-loop" className="section-py section-paper">
+    <section id="care-loop" className="section-py section-white">
       <div className="container">
         <div className="loop-split">
           <div className="section-head">
@@ -57,7 +57,7 @@ export const SolutionSection: React.FC = () => (
       </div>
     </section>
 
-    <section className="section-py section-white">
+    <section className="section-py section-paper">
       <div className="container">
         <div className="section-head">
           <h2>From family requests to coordinated care.</h2>

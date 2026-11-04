@@ -40,10 +40,6 @@ export const PlanCards: React.FC = () => (
               <span><strong>Caregiver SLA:</strong> hospital {plan.caregiverSla.hospital}, barangay {plan.caregiverSla.barangay}</span>
             </li>
             <li>
-              <Icon name="calendar" size={16} color="var(--advancare-teal)" />
-              <span><strong>Daily rate per household:</strong> {plan.dailyRate}</span>
-            </li>
-            <li>
               <Icon name="shield-check" size={16} color="var(--advancare-teal)" />
               <span><strong>Discount:</strong> {plan.discountNote}</span>
             </li>

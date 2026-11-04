@@ -122,7 +122,7 @@ export const SERVICE_PILLARS: ServicePillar[] = [
   {
     id: 'rhu-services',
     badge: '',
-    name: 'RHU / Barangay-led Initiatives',
+    name: 'Barangay-led Initiatives',
     rate: 'Delivered with RHU and barangay teams',
     badgeLabel: 'Local care',
     description:

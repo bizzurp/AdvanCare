@@ -49,12 +49,6 @@ export const PlansPage: React.FC = () => (
                 </tr>
               ))}
               <tr>
-                <th scope="row">Daily rate per household</th>
-                {CARE_PLANS.map((p) => (
-                  <td key={p.id}>{p.dailyRate}</td>
-                ))}
-              </tr>
-              <tr>
                 <th scope="row">Non-emergency medical transport SLA</th>
                 {CARE_PLANS.map((p) => (
                   <td key={p.id}>Urban {p.transportSla.urban} · Rural {p.transportSla.rural}</td>

@@ -7,3 +7,9 @@
 .env.*
 !.env.example
 AdvanCare/.obsidian/workspace.json
+
+# Playwright MCP browser-test logs and screenshots
+.playwright-mcp/
+
+# Over GitHub's 100 MB file limit; kept locally only
+Docs/Advancare.mp4

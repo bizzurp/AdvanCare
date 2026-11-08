@@ -24,3 +24,10 @@
 ### Reading `/Docs` (2026-10-22)
 - `Docs/AdvanCare.pdf` (18 slides, ~31 MB) is image-only: text extraction returns nothing. Render pages (e.g. PyMuPDF in a scratch venv) and read the images. The brochure and Gantt PDFs have extractable text; the budget is a PNG.
 - The deck's illustrations show a typical rural persona, not identified patients (brochure footnote). Keep that caveat when reusing them.
+
+### Git history rewrite (2026-11-09)
+- `main` was rewritten and force-pushed to remove 11 `Co-Authored-By: Claude` trailers from commits dated 2026-10-16. Authors, dates and file contents are unchanged, but 35 commit IDs changed (old tip `413ea7d` → new `0e8adb9` before this note).
+- Any clone made before 2026-11-09 has diverged. Re-sync with `git fetch && git reset --hard origin/main` (after saving local work), not `git pull`, or the old commits come back.
+- A full pre-rewrite backup is on the owner's Mac: `~/git-backups/2026-11-09/AdvanCare-before-history-rewrite.bundle`.
+- `Docs/Advancare.mp4` (205 MB) is git-ignored because it is over GitHub's 100 MB file limit. It exists only locally.
+- Commit rule: no AI co-author trailers or AI mentions in commit messages.

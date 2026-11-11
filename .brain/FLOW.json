@@ -1,0 +1,709 @@
+{
+ "version": 1,
+ "title": "advanCARE",
+ "summary": "Community healthcare platform for Cagayan: families request caregivers, transport, telehealth and prescriptions in a PWA, while municipality-scoped staff dispatch and audit them in an admin console.",
+ "nodes": [
+  {
+   "id": "family",
+   "label": "Family / client",
+   "kind": "actor",
+   "layer": "frontend",
+   "detail": "Household member or sponsor who subscribes, requests care and tracks it in the app.",
+   "file": ""
+  },
+  {
+   "id": "caregiver",
+   "label": "Caregiver",
+   "kind": "actor",
+   "layer": "frontend",
+   "detail": "Accredited caregiver who sees assigned shifts and clocks in and out.",
+   "file": ""
+  },
+  {
+   "id": "staff",
+   "label": "Staff / Admin",
+   "kind": "actor",
+   "layer": "frontend",
+   "detail": "Municipality-scoped admin or SUPER_ADMIN who runs requests and accounts in the console.",
+   "file": ""
+  },
+  {
+   "id": "visitor",
+   "label": "Website visitor",
+   "kind": "actor",
+   "layer": "frontend",
+   "detail": "Public reader learning about plans, services and donations.",
+   "file": ""
+  },
+  {
+   "id": "ui.site",
+   "label": "Marketing website",
+   "kind": "screen",
+   "layer": "frontend",
+   "detail": "Vite site with home, about, services, plans, program, donate and contact pages.",
+   "file": "website/src/App.tsx"
+  },
+  {
+   "id": "ui.entry",
+   "label": "Welcome & sign-in",
+   "kind": "screen",
+   "layer": "frontend",
+   "detail": "Welcome, onboarding, register and email-code sign-in screens of the app.",
+   "file": "frontend/src/screens/Auth.tsx"
+  },
+  {
+   "id": "ui.home",
+   "label": "Home & services",
+   "kind": "screen",
+   "layer": "frontend",
+   "detail": "App home and service menu behind the auth guard (HashRouter PWA).",
+   "file": "frontend/src/screens/Main.tsx"
+  },
+  {
+   "id": "ui.care",
+   "label": "Request flows",
+   "kind": "screen",
+   "layer": "frontend",
+   "detail": "Telehealth, triage, prescription, transport, supplies and caregiver request screens.",
+   "file": "frontend/src/screens/Care.tsx"
+  },
+  {
+   "id": "ui.requests",
+   "label": "Requests & reports",
+   "kind": "screen",
+   "layer": "frontend",
+   "detail": "Request list/detail, records, trends and dashboard screens.",
+   "file": "frontend/src/screens/Requests.tsx"
+  },
+  {
+   "id": "ui.assistant",
+   "label": "Care Assistant",
+   "kind": "screen",
+   "layer": "frontend",
+   "detail": "Chat screen that asks the Gemini-backed assistant for guidance.",
+   "file": "frontend/src/screens/Assistant.tsx"
+  },
+  {
+   "id": "ui.caregiver",
+   "label": "Caregiver mode",
+   "kind": "screen",
+   "layer": "frontend",
+   "detail": "Caregiver home and shift screen with clock in/out.",
+   "file": "frontend/src/screens/CaregiverMode.tsx"
+  },
+  {
+   "id": "cmp.state",
+   "label": "App state",
+   "kind": "component",
+   "layer": "frontend",
+   "detail": "Session, profile, requests, drafts and offline queue persisted in localStorage.",
+   "file": "frontend/src/state/AppState.tsx"
+  },
+  {
+   "id": "cmp.apiclient",
+   "label": "API client",
+   "kind": "component",
+   "layer": "frontend",
+   "detail": "The app's only network boundary; bearer-token fetches to /api/v1.",
+   "file": "frontend/src/services/api.ts"
+  },
+  {
+   "id": "cmp.catalog",
+   "label": "Catalog & rules",
+   "kind": "component",
+   "layer": "frontend",
+   "detail": "Approved plans, prices and service dependency rules, plus demo fixtures.",
+   "file": "frontend/src/data/catalog.ts"
+  },
+  {
+   "id": "cmp.native",
+   "label": "Capacitor shells",
+   "kind": "component",
+   "layer": "frontend",
+   "detail": "iOS and Android wrappers of the same PWA bundle.",
+   "file": "frontend/capacitor.config.ts"
+  },
+  {
+   "id": "ui.login",
+   "label": "Admin login & MFA",
+   "kind": "screen",
+   "layer": "frontend",
+   "detail": "Staff sign-in with password, TOTP code and MFA enrolment, plus invite acceptance.",
+   "file": "admin/src/pages/Login.tsx"
+  },
+  {
+   "id": "ui.admin",
+   "label": "Admin dashboards",
+   "kind": "screen",
+   "layer": "frontend",
+   "detail": "Overview, requests, shifts, clients, caregivers, drivers, telehealth, payments and reports pages.",
+   "file": "admin/src/App.tsx"
+  },
+  {
+   "id": "ui.adminacct",
+   "label": "Admin accounts",
+   "kind": "screen",
+   "layer": "frontend",
+   "detail": "SUPER_ADMIN pages for staff accounts, invitations, MFA reset and audit log.",
+   "file": "admin/src/pages/Admins.tsx"
+  },
+  {
+   "id": "cmp.proxy",
+   "label": "Pages API proxy",
+   "kind": "component",
+   "layer": "backend",
+   "detail": "Cloudflare Pages worker that forwards /api calls same-origin to the API worker.",
+   "file": "admin/public/_worker.js"
+  },
+  {
+   "id": "api.app",
+   "label": "Hono app & middleware",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "Mounts /api/v1 with request id, CORS and error handling.",
+   "file": "backend/src/index.ts"
+  },
+  {
+   "id": "api.auth",
+   "label": "Client auth API",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "Email one-time code request/verify, sessions, sign-out and account patch.",
+   "file": "backend/src/routes/auth.ts"
+  },
+  {
+   "id": "api.clients",
+   "label": "Clients & shifts API",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "Profile sync, shift request, cancel, rate, report and care notes.",
+   "file": "backend/src/routes/shifts.ts"
+  },
+  {
+   "id": "api.services",
+   "label": "Service requests API",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "Telehealth, prescription, transport and other service requests with idempotency.",
+   "file": "backend/src/routes/services.ts"
+  },
+  {
+   "id": "api.caregiver",
+   "label": "Caregiver API",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "Caregiver availability, assigned shifts, clock-in and clock-out.",
+   "file": "backend/src/routes/caregiver.ts"
+  },
+  {
+   "id": "api.assistant",
+   "label": "Assistant API",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "Rate-limited chat endpoint with a safety guard and emergency detection.",
+   "file": "backend/src/routes/assistant.ts"
+  },
+  {
+   "id": "api.storage",
+   "label": "Storage API",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "Signed upload URLs and owner-checked file reads.",
+   "file": "backend/src/routes/storage.ts"
+  },
+  {
+   "id": "api.adminauth",
+   "label": "Admin auth API",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "Staff login, MFA, enrolment, invitation and logout endpoints.",
+   "file": "backend/src/routes/admin/auth.ts"
+  },
+  {
+   "id": "api.adminops",
+   "label": "Admin operations API",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "Municipality-scoped overview, request, shift, client, provider and payment views and CSV exports.",
+   "file": "backend/src/routes/admin/operations.ts"
+  },
+  {
+   "id": "api.adminact",
+   "label": "Admin actions API",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "Assign caregiver, cancel, complete and record payout on requests.",
+   "file": "backend/src/routes/admin/actions.ts"
+  },
+  {
+   "id": "api.adminacct",
+   "label": "Admin accounts API",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "SUPER_ADMIN account, invitation, unlock and session management.",
+   "file": "backend/src/routes/admin/accounts.ts"
+  },
+  {
+   "id": "svc.staff",
+   "label": "Staff security",
+   "kind": "service",
+   "layer": "backend",
+   "detail": "PBKDF2 passwords, TOTP, encrypted secrets, sessions, scope rules.",
+   "file": "backend/src/staff/sessions.ts"
+  },
+  {
+   "id": "svc.assistant",
+   "label": "Assistant logic",
+   "kind": "service",
+   "layer": "backend",
+   "detail": "Prompt, knowledge base, guard and Gemini calls with a fallback model.",
+   "file": "backend/src/assistant/gemini.ts"
+  },
+  {
+   "id": "svc.mail",
+   "label": "Mailer & notify",
+   "kind": "service",
+   "layer": "backend",
+   "detail": "SMTP client over cloudflare:sockets for sign-in codes and family notices.",
+   "file": "backend/src/lib/mailer.ts"
+  },
+  {
+   "id": "svc.audit",
+   "label": "Audit log",
+   "kind": "service",
+   "layer": "backend",
+   "detail": "Records every staff write and sensitive read.",
+   "file": "backend/src/audit.ts"
+  },
+  {
+   "id": "db.neon",
+   "label": "Neon Postgres",
+   "kind": "store",
+   "layer": "backend",
+   "detail": "Drizzle schema: users, profiles, shifts, service requests, payments, staff, sessions, audit logs.",
+   "file": "backend/src/db/schema.ts"
+  },
+  {
+   "id": "db.r2",
+   "label": "R2 uploads bucket",
+   "kind": "store",
+   "layer": "backend",
+   "detail": "Object storage for uploaded files (prescriptions and similar).",
+   "file": "backend/wrangler.toml"
+  },
+  {
+   "id": "ext.gemini",
+   "label": "Google Gemini",
+   "kind": "external",
+   "layer": "external",
+   "detail": "LLM behind the Care Assistant.",
+   "file": ""
+  },
+  {
+   "id": "ext.smtp",
+   "label": "Gmail SMTP",
+   "kind": "external",
+   "layer": "external",
+   "detail": "Delivers sign-in codes and family notices.",
+   "file": ""
+  },
+  {
+   "id": "ext.cf",
+   "label": "Cloudflare Workers",
+   "kind": "external",
+   "layer": "external",
+   "detail": "Hosts the API (Hyperdrive, rate limiters) and the Pages sites.",
+   "file": ""
+  }
+ ],
+ "edges": [
+  {
+   "from": "visitor",
+   "to": "ui.site",
+   "label": "browses"
+  },
+  {
+   "from": "family",
+   "to": "ui.entry",
+   "label": "signs in"
+  },
+  {
+   "from": "ui.entry",
+   "to": "ui.home",
+   "label": "after sign-in"
+  },
+  {
+   "from": "family",
+   "to": "ui.home",
+   "label": "uses"
+  },
+  {
+   "from": "ui.home",
+   "to": "ui.care",
+   "label": "opens"
+  },
+  {
+   "from": "ui.home",
+   "to": "ui.requests",
+   "label": "opens"
+  },
+  {
+   "from": "ui.home",
+   "to": "ui.assistant",
+   "label": "opens"
+  },
+  {
+   "from": "ui.entry",
+   "to": "cmp.state",
+   "label": "stores session"
+  },
+  {
+   "from": "ui.care",
+   "to": "cmp.state",
+   "label": "queues drafts"
+  },
+  {
+   "from": "ui.requests",
+   "to": "cmp.state",
+   "label": "reads"
+  },
+  {
+   "from": "ui.care",
+   "to": "cmp.catalog",
+   "label": "checks rules"
+  },
+  {
+   "from": "ui.home",
+   "to": "cmp.catalog",
+   "label": "shows plans"
+  },
+  {
+   "from": "ui.entry",
+   "to": "cmp.apiclient",
+   "label": "calls"
+  },
+  {
+   "from": "ui.care",
+   "to": "cmp.apiclient",
+   "label": "calls"
+  },
+  {
+   "from": "ui.requests",
+   "to": "cmp.apiclient",
+   "label": "calls"
+  },
+  {
+   "from": "ui.assistant",
+   "to": "cmp.apiclient",
+   "label": "chats"
+  },
+  {
+   "from": "ui.caregiver",
+   "to": "cmp.apiclient",
+   "label": "calls"
+  },
+  {
+   "from": "cmp.state",
+   "to": "cmp.apiclient",
+   "label": "syncs queue"
+  },
+  {
+   "from": "cmp.native",
+   "to": "ui.home",
+   "label": "wraps"
+  },
+  {
+   "from": "caregiver",
+   "to": "ui.caregiver",
+   "label": "opens"
+  },
+  {
+   "from": "cmp.apiclient",
+   "to": "api.app",
+   "label": "HTTPS /api/v1"
+  },
+  {
+   "from": "api.app",
+   "to": "api.auth",
+   "label": "routes"
+  },
+  {
+   "from": "api.app",
+   "to": "api.clients",
+   "label": "routes"
+  },
+  {
+   "from": "api.app",
+   "to": "api.services",
+   "label": "routes"
+  },
+  {
+   "from": "api.app",
+   "to": "api.caregiver",
+   "label": "routes"
+  },
+  {
+   "from": "api.app",
+   "to": "api.assistant",
+   "label": "routes"
+  },
+  {
+   "from": "api.app",
+   "to": "api.storage",
+   "label": "routes"
+  },
+  {
+   "from": "api.auth",
+   "to": "svc.mail",
+   "label": "sends code"
+  },
+  {
+   "from": "svc.mail",
+   "to": "ext.smtp",
+   "label": "SMTP 465"
+  },
+  {
+   "from": "svc.mail",
+   "to": "family",
+   "label": "emails"
+  },
+  {
+   "from": "api.auth",
+   "to": "db.neon",
+   "label": "sessions, codes"
+  },
+  {
+   "from": "api.clients",
+   "to": "db.neon",
+   "label": "reads/writes"
+  },
+  {
+   "from": "api.services",
+   "to": "db.neon",
+   "label": "writes requests"
+  },
+  {
+   "from": "api.caregiver",
+   "to": "db.neon",
+   "label": "updates shifts"
+  },
+  {
+   "from": "api.services",
+   "to": "db.r2",
+   "label": "stores files"
+  },
+  {
+   "from": "api.storage",
+   "to": "db.r2",
+   "label": "signed URLs"
+  },
+  {
+   "from": "api.storage",
+   "to": "db.neon",
+   "label": "upload rows"
+  },
+  {
+   "from": "api.assistant",
+   "to": "svc.assistant",
+   "label": "asks"
+  },
+  {
+   "from": "svc.assistant",
+   "to": "ext.gemini",
+   "label": "generates"
+  },
+  {
+   "from": "staff",
+   "to": "ui.login",
+   "label": "signs in"
+  },
+  {
+   "from": "ui.login",
+   "to": "ui.admin",
+   "label": "after MFA"
+  },
+  {
+   "from": "staff",
+   "to": "ui.admin",
+   "label": "works"
+  },
+  {
+   "from": "ui.admin",
+   "to": "ui.adminacct",
+   "label": "opens"
+  },
+  {
+   "from": "ui.login",
+   "to": "cmp.proxy",
+   "label": "calls /api"
+  },
+  {
+   "from": "ui.admin",
+   "to": "cmp.proxy",
+   "label": "calls /api"
+  },
+  {
+   "from": "ui.adminacct",
+   "to": "cmp.proxy",
+   "label": "calls /api"
+  },
+  {
+   "from": "cmp.proxy",
+   "to": "api.app",
+   "label": "forwards"
+  },
+  {
+   "from": "api.app",
+   "to": "api.adminauth",
+   "label": "routes /admin"
+  },
+  {
+   "from": "api.app",
+   "to": "api.adminops",
+   "label": "routes /admin"
+  },
+  {
+   "from": "api.app",
+   "to": "api.adminact",
+   "label": "routes /admin"
+  },
+  {
+   "from": "api.app",
+   "to": "api.adminacct",
+   "label": "routes /admin"
+  },
+  {
+   "from": "api.adminauth",
+   "to": "svc.staff",
+   "label": "verifies"
+  },
+  {
+   "from": "api.adminacct",
+   "to": "svc.staff",
+   "label": "manages"
+  },
+  {
+   "from": "svc.staff",
+   "to": "db.neon",
+   "label": "sessions"
+  },
+  {
+   "from": "api.adminops",
+   "to": "db.neon",
+   "label": "scoped reads"
+  },
+  {
+   "from": "api.adminact",
+   "to": "db.neon",
+   "label": "assigns, pays"
+  },
+  {
+   "from": "api.adminact",
+   "to": "svc.mail",
+   "label": "notifies family"
+  },
+  {
+   "from": "api.adminact",
+   "to": "svc.audit",
+   "label": "records"
+  },
+  {
+   "from": "api.adminacct",
+   "to": "svc.audit",
+   "label": "records"
+  },
+  {
+   "from": "svc.audit",
+   "to": "db.neon",
+   "label": "appends"
+  },
+  {
+   "from": "api.app",
+   "to": "ext.cf",
+   "label": "runs on"
+  },
+  {
+   "from": "ui.site",
+   "to": "ext.cf",
+   "label": "hosted on"
+  }
+ ],
+ "flows": [
+  {
+   "name": "Family signs in and requests care",
+   "steps": [
+    "family",
+    "ui.entry",
+    "cmp.apiclient",
+    "api.app",
+    "api.auth",
+    "svc.mail",
+    "ext.smtp"
+   ]
+  },
+  {
+   "name": "Family requests a service",
+   "steps": [
+    "family",
+    "ui.home",
+    "ui.care",
+    "cmp.apiclient",
+    "api.app",
+    "api.services",
+    "db.neon"
+   ]
+  },
+  {
+   "name": "Ask the Care Assistant",
+   "steps": [
+    "family",
+    "ui.home",
+    "ui.assistant",
+    "cmp.apiclient",
+    "api.app",
+    "api.assistant",
+    "svc.assistant",
+    "ext.gemini"
+   ]
+  },
+  {
+   "name": "Admin assigns a caregiver",
+   "steps": [
+    "staff",
+    "ui.login",
+    "ui.admin",
+    "cmp.proxy",
+    "api.app",
+    "api.adminact",
+    "db.neon",
+    "api.adminact",
+    "svc.mail",
+    "family"
+   ]
+  },
+  {
+   "name": "Caregiver works a shift",
+   "steps": [
+    "caregiver",
+    "ui.caregiver",
+    "cmp.apiclient",
+    "api.app",
+    "api.caregiver",
+    "db.neon"
+   ]
+  },
+  {
+   "name": "Super admin invites staff",
+   "steps": [
+    "staff",
+    "ui.admin",
+    "ui.adminacct",
+    "cmp.proxy",
+    "api.app",
+    "api.adminacct",
+    "svc.staff",
+    "db.neon"
+   ]
+  }
+ ]
+}

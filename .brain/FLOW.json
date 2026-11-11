@@ -314,6 +314,62 @@
    "layer": "external",
    "detail": "Hosts the API (Hyperdrive, rate limiters) and the Pages sites.",
    "file": ""
+  },
+  {
+   "id": "dec.code",
+   "label": "Email code valid?",
+   "kind": "decision",
+   "layer": "backend",
+   "detail": "Verify checks the one-time code is correct, unexpired and not locked after too many tries; a wrong code returns 401.",
+   "file": "backend/src/routes/auth.ts"
+  },
+  {
+   "id": "dec.session",
+   "label": "Signed-in client?",
+   "kind": "decision",
+   "layer": "backend",
+   "detail": "requireClient rejects app requests without a valid bearer session (401 UNAUTHENTICATED).",
+   "file": "backend/src/middleware/auth.ts"
+  },
+  {
+   "id": "dec.staffsess",
+   "label": "Staff session valid?",
+   "kind": "decision",
+   "layer": "backend",
+   "detail": "requireStaff loads the staff session; suspended, MFA-reset or revoked sessions get 401.",
+   "file": "backend/src/middleware/staff.ts"
+  },
+  {
+   "id": "dec.staffrole",
+   "label": "Role is Super Admin?",
+   "kind": "decision",
+   "layer": "backend",
+   "detail": "Account-management routes require SUPER_ADMIN; other roles get 403 FORBIDDEN.",
+   "file": "backend/src/middleware/staff.ts"
+  },
+  {
+   "id": "dec.eligible",
+   "label": "Caregiver eligible?",
+   "kind": "decision",
+   "layer": "backend",
+   "detail": "Assign runs assignmentCheck (accredited, available, active, municipality, no clashing shift); blockers return 409 NOT_ELIGIBLE.",
+   "file": "backend/src/routes/admin/actions.ts"
+  },
+  {
+   "id": "dec.clockin",
+   "label": "In clock-in window?",
+   "kind": "decision",
+   "layer": "backend",
+   "detail": "Clock-in needs a CONFIRMED shift, at most 2 hours early and not more than 8 hours late.",
+   "file": "backend/src/routes/caregiver.ts"
+  },
+  {
+   "id": "dec.safe",
+   "label": "Safe to answer?",
+   "kind": "decision",
+   "layer": "backend",
+   "detail": "Gemini result is checked: emergency gets the emergency reply, disallowed or empty gets a refusal, otherwise the reply is sent.",
+   "file": "backend/src/routes/assistant.ts"
   }
  ],
  "edges": [
@@ -429,27 +485,7 @@
   },
   {
    "from": "api.app",
-   "to": "api.clients",
-   "label": "routes"
-  },
-  {
-   "from": "api.app",
-   "to": "api.services",
-   "label": "routes"
-  },
-  {
-   "from": "api.app",
-   "to": "api.caregiver",
-   "label": "routes"
-  },
-  {
-   "from": "api.app",
    "to": "api.assistant",
-   "label": "routes"
-  },
-  {
-   "from": "api.app",
-   "to": "api.storage",
    "label": "routes"
   },
   {
@@ -481,11 +517,6 @@
    "from": "api.services",
    "to": "db.neon",
    "label": "writes requests"
-  },
-  {
-   "from": "api.caregiver",
-   "to": "db.neon",
-   "label": "updates shifts"
   },
   {
    "from": "api.services",
@@ -558,21 +589,6 @@
    "label": "routes /admin"
   },
   {
-   "from": "api.app",
-   "to": "api.adminops",
-   "label": "routes /admin"
-  },
-  {
-   "from": "api.app",
-   "to": "api.adminact",
-   "label": "routes /admin"
-  },
-  {
-   "from": "api.app",
-   "to": "api.adminacct",
-   "label": "routes /admin"
-  },
-  {
    "from": "api.adminauth",
    "to": "svc.staff",
    "label": "verifies"
@@ -591,11 +607,6 @@
    "from": "api.adminops",
    "to": "db.neon",
    "label": "scoped reads"
-  },
-  {
-   "from": "api.adminact",
-   "to": "db.neon",
-   "label": "assigns, pays"
   },
   {
    "from": "api.adminact",
@@ -626,6 +637,131 @@
    "from": "ui.site",
    "to": "ext.cf",
    "label": "hosted on"
+  },
+  {
+   "from": "api.auth",
+   "to": "dec.code",
+   "label": "verifies code"
+  },
+  {
+   "from": "dec.code",
+   "to": "db.neon",
+   "label": "yes: creates session"
+  },
+  {
+   "from": "dec.code",
+   "to": "ui.entry",
+   "label": "no: asks again"
+  },
+  {
+   "from": "dec.session",
+   "to": "api.clients",
+   "label": "yes"
+  },
+  {
+   "from": "dec.session",
+   "to": "api.services",
+   "label": "yes"
+  },
+  {
+   "from": "dec.session",
+   "to": "api.caregiver",
+   "label": "yes"
+  },
+  {
+   "from": "dec.session",
+   "to": "api.storage",
+   "label": "yes"
+  },
+  {
+   "from": "api.app",
+   "to": "dec.session",
+   "label": "authenticates"
+  },
+  {
+   "from": "dec.session",
+   "to": "ui.entry",
+   "label": "no: sign in again"
+  },
+  {
+   "from": "dec.staffsess",
+   "to": "api.adminops",
+   "label": "yes"
+  },
+  {
+   "from": "dec.staffsess",
+   "to": "api.adminact",
+   "label": "yes"
+  },
+  {
+   "from": "api.app",
+   "to": "dec.staffsess",
+   "label": "checks session"
+  },
+  {
+   "from": "dec.staffsess",
+   "to": "ui.login",
+   "label": "no: sign in again"
+  },
+  {
+   "from": "dec.staffsess",
+   "to": "dec.staffrole",
+   "label": "yes"
+  },
+  {
+   "from": "dec.staffrole",
+   "to": "api.adminacct",
+   "label": "yes"
+  },
+  {
+   "from": "dec.staffrole",
+   "to": "ui.admin",
+   "label": "no: forbidden"
+  },
+  {
+   "from": "api.adminact",
+   "to": "dec.eligible",
+   "label": "assigns caregiver"
+  },
+  {
+   "from": "dec.eligible",
+   "to": "db.neon",
+   "label": "yes: assigns, pays"
+  },
+  {
+   "from": "dec.eligible",
+   "to": "ui.admin",
+   "label": "no: blocked"
+  },
+  {
+   "from": "api.caregiver",
+   "to": "dec.clockin",
+   "label": "clock in/out"
+  },
+  {
+   "from": "dec.clockin",
+   "to": "db.neon",
+   "label": "yes: updates shift"
+  },
+  {
+   "from": "dec.clockin",
+   "to": "ui.caregiver",
+   "label": "no: too early/late"
+  },
+  {
+   "from": "svc.assistant",
+   "to": "dec.safe",
+   "label": "checks answer"
+  },
+  {
+   "from": "dec.safe",
+   "to": "ui.assistant",
+   "label": "yes: reply"
+  },
+  {
+   "from": "dec.safe",
+   "to": "api.assistant",
+   "label": "no: refusal/emergency"
   }
  ],
  "flows": [
@@ -638,7 +774,15 @@
     "api.app",
     "api.auth",
     "svc.mail",
-    "ext.smtp"
+    "ext.smtp",
+    "svc.mail",
+    "family",
+    "ui.entry",
+    "cmp.apiclient",
+    "api.app",
+    "api.auth",
+    "dec.code",
+    "db.neon"
    ]
   },
   {
@@ -649,6 +793,7 @@
     "ui.care",
     "cmp.apiclient",
     "api.app",
+    "dec.session",
     "api.services",
     "db.neon"
    ]
@@ -663,7 +808,10 @@
     "api.app",
     "api.assistant",
     "svc.assistant",
-    "ext.gemini"
+    "ext.gemini",
+    "svc.assistant",
+    "dec.safe",
+    "api.assistant"
    ]
   },
   {
@@ -674,8 +822,11 @@
     "ui.admin",
     "cmp.proxy",
     "api.app",
+    "dec.staffsess",
     "api.adminact",
+    "dec.eligible",
     "db.neon",
+    "dec.eligible",
     "api.adminact",
     "svc.mail",
     "family"
@@ -688,7 +839,9 @@
     "ui.caregiver",
     "cmp.apiclient",
     "api.app",
+    "dec.session",
     "api.caregiver",
+    "dec.clockin",
     "db.neon"
    ]
   },
@@ -700,6 +853,8 @@
     "ui.adminacct",
     "cmp.proxy",
     "api.app",
+    "dec.staffsess",
+    "dec.staffrole",
     "api.adminacct",
     "svc.staff",
     "db.neon"

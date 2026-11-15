@@ -3,7 +3,8 @@
 ## 1. Project Identification
 - **Project Name:** advanCARE — "AI-Enabled Healthcare Management Platform for Grassroots Communities"
 - **Active Workspace:** `/Users/mclein/Documents/Developer/Personal_Projects/AdvanCare`
-- **Source of truth for program facts:** `/Docs` (proposal deck `AdvanCare.pdf`, brochure `AdvanCare-brochure (2).pdf`, `AdvanCare-Two-Year-Gantt-One-Page.pdf`, budget image). The deck PDF is image-only; read it by rendering pages.
+- **Source of truth for program facts:** `/Docs` (proposal deck `AdvanCare.pdf`, brochure `AdvanCare-brochure (2).pdf`, `AdvanCare-Two-Year-Gantt-One-Page.pdf`, budget image; added 2026-11-04: `AdvanCare_Brochure_Rural.pdf`, `AdvanCare_Corporate_Profile.docx`, `AdvanCare_Profile_V3.docx`, `AdvanCare_Investment_Evaluation_Portfolio.docx`). The deck PDF is image-only; read it by rendering pages (see NOTES).
+- **Repository:** `github.com/bizzurp/AdvanCare` (branch `main`). Deep knowledge: Obsidian vault `AdvanCare_Vault/`.
 - **Institutions:** Cagayan State University (Carig Campus, College of Information and Computing Sciences), Community & Family Development, with the Province of Cagayan.
 - **Tagline:** "From access to grassroots affordability to specialized healthcare, NO Cagayano Barangay resident left behind." (Older internal line: "No Farmer, Fisher, and Barangay Left Behind.")
 - **Team:** Fernando M. Jaminola Jr. (Assistant Professor, Program Leader); Charmie Calvo, DIT (Dean, CICS; ICT Project Leader); Dr. Rebecca Battung, MD (Provincial Health Officer; Healthcare Policy Project Leader); Prof. Sherwin Caacbay (Program Coordinator, BSIT); Prof. Marvin Uanang (Campus MIS Head).
@@ -32,11 +33,21 @@
 - **Budget:** Year 1 ₱16,038,759 · Year 2 ₱5,601,560 · Grand total ₱21,640,319 (includes ₱11,442,199 supplies & materials in Y1; cloud hosting ₱500k Y1 → ₱1.5M Y2).
 - **Competitive set:** PhilHealth, Maxicare, Metrobank Health & Wellness (none intergenerational; limited community integration).
 
-## 3. Technology & Automation Stack
-- **Client & Caregiver Interface:** Cross-platform Mobile App (PWA / Android / iOS) with low-bandwidth offline caching.
-- **Orchestration:** Event-driven Agentic AI by **n8n** coordinating LLM tool-calling, SMS gateways (Twilio/Semaphore), and database queries.
-- **Database:** PostgreSQL 16+ with PostGIS for spatial queries and rural routing.
-- **Reporting:** Real-time Tabular Ledgers, Trend Graphs, and Role Dashboards (Family/OFW, LGU, Executive Operations).
+## 3. Technology Stack (as built, verified 2026-11-15)
+- **API (`backend/`):** Cloudflare Workers + Hono + TypeScript, Valibot validation, Drizzle ORM over `pg`; migrations `0000`–`0007` in `backend/drizzle/`. Vitest 4 in workerd.
+- **Database:** Neon Postgres 17 (project `curly-voice-70911282`, Singapore), reached through Hyperdrive. Latitude/longitude only; PostGIS not enabled.
+- **Files:** Cloudflare R2 (`advancare-uploads`, `advancare-uploads-dev`), uploaded through the API.
+- **Families' app (`frontend/`):** React 18 + Vite 5 PWA, HashRouter; wrapped as iOS/Android apps with Capacitor 8 (`ph.advancare.app`). Caregivers use the same app (caregiver mode).
+- **Staff console (`admin/`):** React 18 + Vite 5, BrowserRouter; email + password + TOTP staff accounts, municipality scope, append-only audit.
+- **Public website (`website/`):** standalone React 18 + Vite site built from `/Docs` content.
+- **Care Assistant:** Gemini (`gemini-3.5-flash-lite`, fallback `gemini-3.1-flash-lite`) behind a server guard; English/Tagalog/Ilocano replies.
+- **Sign-in & email:** 6-digit email codes over Gmail SMTP (no SMS yet).
+- **Planned, not built:** n8n async automations, SMS gateway (Twilio/Semaphore), PostGIS routing, online payments, encrypted offline storage. Details: ARCHITECTURE.md; decisions: DECISIONS.md.
+
+## 3a. Current Status (2026-11-15)
+- **Stage:** working online prototype of one full care loop (family → staff → caregiver) plus TeleHealth, RHU, triage, prescription, transport and supplies requests. Pilot not started; program decisions pending with the program leader (ADR-017).
+- **Live (demo data):** API `https://advancare-api.mcleinonza0531.workers.dev`, families `https://advancare-app.pages.dev`, staff `https://advancare-admin.pages.dev` (Vercel alternates `advancare.vercel.app`, `advancare-admin.vercel.app`). The production API is bound to the Neon **demo** branch by owner decision. The website is not yet published.
+- **Blocker:** `main` contains unresolved merge-conflict markers in app/console/backend source since 2026-11-04 (TODO.md), so the 2026-10-28 supplies work is not deployed.
 
 ## 4. International Benchmark Syntheses (internal research; not in /Docs, not shown on the website)
 Operational models integrated from global and regional leaders:

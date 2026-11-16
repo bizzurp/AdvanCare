@@ -150,19 +150,26 @@ function progress(status: RequestStatus): number {
   switch (status) {
     case 'saved-demo':
     case 'queued':
-      return 0;
     case 'submitted':
-      return 1;
+      return 0;
     case 'confirmed':
-      return 2;
+      return 1;
     case 'in-progress':
-      return 2.5;
+      return 2;
     case 'completed':
       return 4;
     default:
       return -1;
   }
 }
+
+const STEP_CAPTION: Partial<Record<RequestStatus, string>> = {
+  'saved-demo': 'Saved on this device. Not sent to a provider.',
+  queued: 'Waiting for a connection to send.',
+  submitted: 'Awaiting confirmation from your care team.',
+  confirmed: 'Confirmed by your care team.',
+  'in-progress': 'In progress',
+};
 
 export function RequestDetail() {
   const { id } = useParams();
@@ -332,16 +339,14 @@ export function RequestDetail() {
             </h3>
             <ol className="timeline">
               {steps.map((s, i) => {
-                const done = i < Math.floor(p) || (p >= 4 && i <= 3);
-                const current = !done && i === Math.floor(p);
+                const done = i < p;
+                const current = !done && i === p;
+                const caption = current ? STEP_CAPTION[r.status] : undefined;
                 return (
-                  <li key={s} className={done ? 'done' : current ? 'current' : ''}>
+                  <li key={s} className={done ? 'done' : current ? 'current' : ''} aria-current={current ? 'step' : undefined}>
                     <span className="dot" />
                     <div className="t-medium">{s}</div>
-                    {current && i === 0 && (
-                      <div className="t-caption t-muted">{r.status === 'queued' ? 'Waiting for a connection to send.' : 'Saved on this device. Not sent to a provider.'}</div>
-                    )}
-                    {current && i > 0 && <div className="t-caption t-muted">In progress</div>}
+                    {caption && <div className="t-caption t-muted">{caption}</div>}
                     <span className="sr-only">{done ? 'completed' : current ? 'current step' : 'not started'}</span>
                   </li>
                 );

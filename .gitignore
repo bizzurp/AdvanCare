@@ -13,3 +13,6 @@ AdvanCare/.obsidian/workspace.json
 
 # Over GitHub's 100 MB file limit; kept locally only
 Docs/Advancare.mp4
+
+# Website dependencies
+website/node_modules/

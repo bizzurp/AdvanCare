@@ -5,6 +5,9 @@ Newest first. Entries from 2026-10-15 to 2026-10-16 (backend core, staff console
 ## [2026-11-16] - Resolve merge-conflict markers from `8eb7e1f`
 - Resolved all 67 committed `<<<<<<<` / `=======` / `>>>>>>>` conflict blocks across 31 tracked files (`backend/`, `frontend/`, `admin/`, `AdvanCare_Vault/`, `tmp/pdfs/brochure/build_brochure.py`), keeping the `72d5a43` parent changes (2026-10-28 discounted pharmacy & supplies service, simplified staff next-step actions, split per-IP/per-email sign-in rate limiters; 2026-10-29 password reveal toggle; 2026-10-30 provider-neutral design handoff and font path updates).
 - Verified typecheck, build, and test suites across `backend/`, `frontend/`, and `admin/`, plus `AdvanCare_Vault/AdvanCare-design-handoff/SHA256SUMS.txt`. Recorded per-file resolution notes in `NOTES.md`.
+- Untracked `website/node_modules` (`git rm -r --cached website/node_modules`), added `website/node_modules/` to `.gitignore`, reinstalled macOS dependencies, and verified `npm --prefix website run build`.
+- Fixed request timeline step mapping in `frontend/src/screens/Requests.tsx` (`progress()` and `STEP_CAPTION`) so `submitted` highlights step 0 ("Awaiting confirmation from your care team."), `confirmed` highlights step 1 ("Confirmed by your care team."), and `in-progress` highlights step 2 ("In progress").
+- Updated `AdvanCare_Vault/Architecture/Data Models & Entity Schemas.md` (ERD, DDL for migrations `0000`–`0007`, and API contracts) to match `backend/src/db/schema.ts` and ADR-006/007/011 (`ON DELETE RESTRICT ON UPDATE RESTRICT`, no default clinical/vital values, append-only `audit_logs` triggers).
 
 ## [2026-11-15] - Brain cleanup
 - Resolved leftover merge-conflict markers in `CHANGELOG.md` and `TODO.md` (both sides kept; neutral wording chosen), put entries in newest-first order, and moved the 2026-10-15/16 entries verbatim to `archive/CHANGELOG_ARCHIVE.md`.

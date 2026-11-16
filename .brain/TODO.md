@@ -9,7 +9,7 @@ Legend: ⬜ to do · 👤 needs the owner (account, decision or paperwork) · �
 
 ## Open — prototype
 
-- ⬜ App timeline: a request that is only Confirmed shows "Shift in progress · current step" (progress mapping in `frontend/src/screens/Requests.tsx`) — review wording.
+- ✅ App timeline: a request that is only Confirmed shows "Shift in progress · current step" (progress mapping in `frontend/src/screens/Requests.tsx`) — review wording. — done 2026-11-16: mapped `saved-demo`/`queued`/`submitted` to step 0, `confirmed` to step 1, `in-progress` to step 2, and `completed` to 4 with status-specific step captions (`STEP_CAPTION`) and `aria-current="step"`.
 - ⬜ Plans (Silver/Gold/Platinum) stored on the server (`subscriptions`, console phase D); LGU subsidy report (Table 4); SLA deadlines and adherence on the Overview once tiers exist; System status page; scheduled exports.
 - ⬜ Staff "promote to Super Admin" with second-Super-Admin approval (only invites exist now).
 - ⬜ Offline: encrypted on-device storage (Dexie + WebCrypto or native secure storage) replacing `localStorage` `advancare.v1` (ADV-FE-001).
@@ -17,7 +17,7 @@ Legend: ⬜ to do · 👤 needs the owner (account, decision or paperwork) · �
 - ⬜ DB-backed integration tests for the role × endpoint matrix and lockout in CI (needs a disposable Postgres/Neon branch).
 - ⬜ Tele-Consultation voice memo input (not built).
 - ⬜ Keep `backend/src/assistant/knowledge.ts` in sync with price/service changes.
-- ⬜ Update the Obsidian data-model note (`AdvanCare_Vault/Architecture/Data Models & Entity Schemas.md`): its DDL still shows CASCADE and default vitals (superseded by ADR-007).
+- ✅ Update the Obsidian data-model note (`AdvanCare_Vault/Architecture/Data Models & Entity Schemas.md`): its DDL still shows CASCADE and default vitals (superseded by ADR-007). — done 2026-11-16: updated ERD, DDL (all 19 tables, enums, indexes, CHECK constraints, and triggers across migrations `0000`–`0007` with `ON DELETE RESTRICT ON UPDATE RESTRICT` and nullable `clinical_baseline`/`vitals_recorded`/`average_rating`), and API payload examples to match `backend/src/db/schema.ts`.
 - ⬜ Demo reviewer Super Admin (`demo.reviewer@demo.advancare.test`) and QA family `qa.family@demo.advancare.test` exist only on the demo branch; remove with the branch.
 
 ## Open — before real use
@@ -43,7 +43,7 @@ Legend: ⬜ to do · 👤 needs the owner (account, decision or paperwork) · �
 ## Open — website
 
 - ⬜ Deploy the updated `website/` (`npm run build`, then publish `dist/`; `website/wrangler.toml` names Pages project `advancare-website`). The contact form is still not wired to any backend.
-- ⬜ `website/node_modules` is committed with Windows-only esbuild/rollup binaries, so `npm run dev` fails on macOS; untrack it and reinstall.
+- ✅ `website/node_modules` is committed with Windows-only esbuild/rollup binaries, so `npm run dev` fails on macOS; untrack it and reinstall. — done 2026-11-16: untracked with `git rm -r --cached website/node_modules`, added `website/node_modules/` to `.gitignore`, reinstalled macOS dependencies with `npm install`, and verified `npm run build` in `website/`.
 
 ## Later (not needed for the prototype)
 

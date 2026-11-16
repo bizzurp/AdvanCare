@@ -7,11 +7,7 @@ import { Icon } from '../components/Icon';
 import { MunicipalityFilter, CAGAYAN_MUNICIPALITIES } from '../components/MunicipalityFilter';
 import { ScopeNote, StatusBadge } from '../components/ops';
 import { Badge, Button, ErrorNotice, Loading, Modal, Notice, PageHeader, useLoad } from '../components/ui';
-<<<<<<< HEAD
-import { actionLabel, clock, day, dateTime, isFailureAction, money, num, personName, relative, scopeLabel, TIER_LABEL, todayManila, waitedFor } from '../format';
-=======
 import { actionLabel, clock, day, dateTime, isFailureAction, money, num, personName, relative, scopeLabel, SERVICE_KIND_LABEL, SERVICE_STATUS, TIER_LABEL, todayManila, waitedFor } from '../format';
->>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
 import { AssignProviderModal } from './Services';
 
 function greeting(): string {
@@ -71,10 +67,7 @@ export function Home() {
     () => (isSuper ? api.services({ kind: 'telehealth', status: 'OPEN', page: '1' }) : Promise.resolve(null)),
     [isSuper],
   );
-<<<<<<< HEAD
-=======
   const services = useLoad(() => api.services({ status: 'OPEN', page: '1' }), []);
->>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
   const assignDetail = useLoad(
     () => (assignModalId ? api.service(assignModalId) : Promise.resolve(null)),
     [assignModalId],
@@ -128,11 +121,7 @@ export function Home() {
             availableMunicipalities={availableMunicipalities}
           />
         ) : null}
-<<<<<<< HEAD
-        <Button variant="quiet" onClick={() => void overview.reload()} busy={overview.loading && !!o}>
-=======
         <Button variant="quiet" onClick={() => { void overview.reload(); void services.reload(); }} busy={overview.loading && !!o}>
->>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
           Refresh
         </Button>
       </div>
@@ -165,15 +154,9 @@ export function Home() {
           <div className="grid-detail">
             <section className="card">
               <div className="card-head">
-<<<<<<< HEAD
-                <h2>Needs attention</h2>
-                <Link to="/requests?status=OPEN" className="link-arrow">
-                  Open requests <Icon name="alt-arrow-right" size={16} />
-=======
                 <h2>Caregiver bookings needing a caregiver</h2>
                 <Link to="/requests?status=OPEN" className="link-arrow">
                   All bookings <Icon name="alt-arrow-right" size={16} />
->>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
                 </Link>
               </div>
               <AttentionList waiting={o.alerts.waiting} escalated={o.alerts.escalated} />
@@ -196,8 +179,6 @@ export function Home() {
 
           <section className="card">
             <div className="card-head">
-<<<<<<< HEAD
-=======
               <h2>Service requests waiting for staff</h2>
               <Link to="/services?status=OPEN" className="link-arrow">
                 All service requests <Icon name="alt-arrow-right" size={16} />
@@ -208,7 +189,6 @@ export function Home() {
 
           <section className="card">
             <div className="card-head">
->>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
               <h2>New requests per day</h2>
             </div>
             <ColumnChart
@@ -384,10 +364,7 @@ export function Home() {
             setAssignModalId(null);
             void telehealthQueue.reload();
             void overview.reload();
-<<<<<<< HEAD
-=======
             void services.reload();
->>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
           }}
         />
       ) : null}
@@ -405,8 +382,6 @@ function Kpi({ label, value, to, sub, tone }: { label: string; value: number | s
   );
 }
 
-<<<<<<< HEAD
-=======
 /** TeleHealth, RHU, Triage, Prescription, Transport and Pharmacy requests nobody has confirmed yet. */
 function WaitingServices({ rows, loading, error }: { rows: ServiceRow[] | undefined; loading: boolean; error: unknown }) {
   if (loading && !rows) return <Loading />;
@@ -436,7 +411,6 @@ function WaitingServices({ rows, loading, error }: { rows: ServiceRow[] | undefi
   );
 }
 
->>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
 function AttentionList({ waiting, escalated }: { waiting: AlertRow[]; escalated: AlertRow[] }) {
   if (!waiting.length && !escalated.length) return <p className="muted">Nothing waiting. Every request has a caregiver or is closed.</p>;
   const rows = [...escalated.map((r) => ({ ...r, why: 'Escalated' })), ...waiting.map((r) => ({ ...r, why: `Waiting ${waitedFor(r.createdAt)}` }))];
@@ -579,11 +553,7 @@ function TelehealthQueueSection({
                       <Link to={`/services/${r.id}`} className="strong-link">
                         {r.ref}
                       </Link>
-<<<<<<< HEAD
-                      <span className="cell-sub">{r.status}</span>
-=======
                       <span className="cell-sub">{SERVICE_STATUS[r.status]?.label ?? r.status}</span>
->>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
                     </td>
                     <td>{r.client.name}</td>
                     <td>{r.municipality}</td>

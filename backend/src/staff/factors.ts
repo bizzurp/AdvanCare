@@ -82,15 +82,6 @@ export async function replaceRecoveryCodes(db: Executor, userId: string): Promis
   return codes;
 }
 
-<<<<<<< HEAD
-/** Rate limit by IP and, when known, by email. Missing binding (tests) = no limit. */
-export async function limitSignIn(c: Context<AppEnv>, email?: string): Promise<void> {
-  const limiter = c.env.ADMIN_LOGIN_LIMITER;
-  if (!limiter) return;
-  const keys = [`ip:${c.req.header('CF-Connecting-IP') ?? 'local'}`];
-  if (email) keys.push(`email:${email}`);
-  for (const key of keys) {
-=======
 /**
  * Rate limit by IP (generous: staff may share an office or venue network) and, when known,
  * strictly by email. Missing binding (tests) = no limit.
@@ -100,7 +91,6 @@ export async function limitSignIn(c: Context<AppEnv>, email?: string): Promise<v
   if (email) checks.push([c.env.ADMIN_LOGIN_LIMITER, `email:${email}`]);
   for (const [limiter, key] of checks) {
     if (!limiter) continue;
->>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
     const { success } = await limiter.limit({ key: `admin-login:${key}` });
     if (!success) throw new ApiError(429, 'RATE_LIMITED', 'Too many attempts. Please wait a minute and try again.');
   }

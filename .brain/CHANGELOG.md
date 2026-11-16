@@ -2,6 +2,10 @@
 
 Newest first. Entries from 2026-10-15 to 2026-10-16 (backend core, staff console phases A/B, sign-in, native apps, P1–P3, multi-provider) are in [archive/CHANGELOG_ARCHIVE.md](archive/CHANGELOG_ARCHIVE.md).
 
+## [2026-11-16] - Resolve merge-conflict markers from `8eb7e1f`
+- Resolved all 67 committed `<<<<<<<` / `=======` / `>>>>>>>` conflict blocks across 31 tracked files (`backend/`, `frontend/`, `admin/`, `AdvanCare_Vault/`, `tmp/pdfs/brochure/build_brochure.py`), keeping the `72d5a43` parent changes (2026-10-28 discounted pharmacy & supplies service, simplified staff next-step actions, split per-IP/per-email sign-in rate limiters; 2026-10-29 password reveal toggle; 2026-10-30 provider-neutral design handoff and font path updates).
+- Verified typecheck, build, and test suites across `backend/`, `frontend/`, and `admin/`, plus `AdvanCare_Vault/AdvanCare-design-handoff/SHA256SUMS.txt`. Recorded per-file resolution notes in `NOTES.md`.
+
 ## [2026-11-15] - Brain cleanup
 - Resolved leftover merge-conflict markers in `CHANGELOG.md` and `TODO.md` (both sides kept; neutral wording chosen), put entries in newest-first order, and moved the 2026-10-15/16 entries verbatim to `archive/CHANGELOG_ARCHIVE.md`.
 - `TODO.md` reorganised into Open / Later / Done; items the code shows as finished (storage auth, server 12 h lead time, production origins/secrets, caregiver mode, Phase C, Gmail sign-in) moved to Done; duplicates merged. Added the open blocker: committed conflict markers in app/console/backend source since merge `8eb7e1f` (2026-11-04).

@@ -79,10 +79,7 @@ export const SERVICES: ServiceDef[] = [
   { kind: 'rhu', title: 'RHU services', desc: 'Doctor, dentist, nurse, or midwife at your RHU', icon: 'medical-kit', path: '/services/rhu', group: 'consult' },
   { kind: 'triage', title: 'Triage & referral', desc: 'Get assessed and referred to the right facility', icon: 'heart-pulse', path: '/services/triage', group: 'consult' },
   { kind: 'prescription', title: 'Medical prescription', desc: 'Request a prescription from your doctor', icon: 'document-medicine', path: '/services/prescription', group: 'consult' },
-<<<<<<< HEAD
-=======
   { kind: 'supplies', title: 'Discounted pharmacy & supplies', desc: 'Vitamins, medicines and care supplies at member prices', icon: 'document-medicine', path: '/services/supplies', group: 'consult' },
->>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
   { kind: 'transport', title: 'Non-emergency transport', desc: 'Public or private vehicle to your next visit', icon: 'bus', path: '/services/transport', group: 'travel' },
   { kind: 'home-caregiver', title: 'Home-based caregiver', desc: `${peso(300)} for an 8-hour visit`, icon: 'user-heart', path: '/services/home-caregiver', group: 'care' },
   { kind: 'cvmc-caregiver', title: 'Hospital institutional caregiver', desc: `${peso(500)} for an 8-hour visit`, icon: 'hospital', path: '/services/cvmc-caregiver', group: 'care' },
@@ -133,8 +130,6 @@ export const VEHICLES: Record<VehicleCategory, { id: string; title: string; desc
   ],
 };
 
-<<<<<<< HEAD
-=======
 // ---------- Discounted pharmacy & supplies ----------
 // Website: "Discounted Medical Supplies · member discounts · through partner pharmacies",
 // covering items outside PhilHealth YAKAP. Prices are pilot estimates until partner pharmacy
@@ -177,7 +172,6 @@ export const SUPPLIES: SupplyItem[] = [
   { id: 'gloves', name: 'Disposable gloves', pack: 'Box of 100', category: 'care', price: 280 },
 ];
 
->>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
 // ---------- Facilities (Triage / Transport destinations) ----------
 export type FacilityLevel = 'RHU' | 'DISTRICT' | 'CVMC' | 'PRIVATE';
 
@@ -209,10 +203,7 @@ export const DEPENDENCIES = {
   triage:
     'Approved triage protocol is missing. AdvanCare does not assign urgency or a destination automatically; a clinician must review every assessment.',
   transport: 'Your request goes to the care team, who confirm the vehicle, pickup time and fare here.',
-<<<<<<< HEAD
-=======
   supplies: 'Your order goes to the care team, who confirm stock and the final member price with the partner pharmacy before you pay. Medicines marked Rx need a valid prescription.',
->>>>>>> 72d5a43575c6e05205d997b4b64e887bd2c6625c
   prescription: 'Your request and photo go to the care team for review. DoH Yakap pickup or delivery is arranged by the team for now.',
   caregiver: 'Your booking goes to the care team, who assign an accredited caregiver and confirm here. You can change or cancel it until a caregiver is assigned.',
   facilities: 'Facility directory (district hospitals, private clinics) needs a verified list for the pilot area.',

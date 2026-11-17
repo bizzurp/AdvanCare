@@ -72,7 +72,7 @@
    "label": "Requests & reports",
    "kind": "screen",
    "layer": "frontend",
-   "detail": "Request list/detail, records, trends and dashboard screens.",
+   "detail": "Request list/detail (tracking, ratings, issue reports), records, trends and dashboard screens.",
    "file": "frontend/src/screens/Requests.tsx"
   },
   {
@@ -184,7 +184,7 @@
    "label": "Service requests API",
    "kind": "api",
    "layer": "backend",
-   "detail": "Telehealth, prescription, transport and other service requests with idempotency.",
+   "detail": "Telehealth doctors/slots, service requests (RHU, triage, Rx, transport, supplies), uploads, ratings and reports.",
    "file": "backend/src/routes/services.ts"
   },
   {
@@ -236,6 +236,22 @@
    "file": "backend/src/routes/admin/actions.ts"
   },
   {
+   "id": "api.adminsvc",
+   "label": "Admin services API",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "Lists service requests, checks and assigns doctors or drivers, updates statuses, and serves audited files.",
+   "file": "backend/src/routes/admin/services.ts"
+  },
+  {
+   "id": "api.adminprov",
+   "label": "Admin providers API",
+   "kind": "api",
+   "layer": "backend",
+   "detail": "Lists, creates, and updates telehealth doctors (Super Admin) and municipal transport drivers.",
+   "file": "backend/src/routes/admin/providers.ts"
+  },
+  {
    "id": "api.adminacct",
    "label": "Admin accounts API",
    "kind": "api",
@@ -280,7 +296,7 @@
    "label": "Neon Postgres",
    "kind": "store",
    "layer": "backend",
-   "detail": "Drizzle schema: users, profiles, shifts, service requests, payments, staff, sessions, audit logs.",
+   "detail": "Drizzle schema: users, profiles, caregivers, providers, shifts, service requests, payments, staff, sessions, audit logs.",
    "file": "backend/src/db/schema.ts"
   },
   {
@@ -332,6 +348,14 @@
    "file": "backend/src/middleware/auth.ts"
   },
   {
+   "id": "dec.slotfree",
+   "label": "TeleHealth slot free?",
+   "kind": "decision",
+   "layer": "backend",
+   "detail": "slotTaken checks whether the chosen doctor and preferred time are already booked; conflicts return 409 SLOT_TAKEN.",
+   "file": "backend/src/routes/services.ts"
+  },
+  {
    "id": "dec.staffsess",
    "label": "Staff session valid?",
    "kind": "decision",
@@ -354,6 +378,14 @@
    "layer": "backend",
    "detail": "Assign runs assignmentCheck (accredited, available, active, municipality, no clashing shift); blockers return 409 NOT_ELIGIBLE.",
    "file": "backend/src/routes/admin/actions.ts"
+  },
+  {
+   "id": "dec.provelig",
+   "label": "Provider eligible?",
+   "kind": "decision",
+   "layer": "backend",
+   "detail": "Checks provider type, municipal scope for drivers, accreditation, availability, and conflicting appointments before assignment.",
+   "file": "backend/src/routes/admin/services.ts"
   },
   {
    "id": "dec.clockin",
@@ -524,6 +556,21 @@
    "label": "stores files"
   },
   {
+   "from": "api.services",
+   "to": "dec.slotfree",
+   "label": "checks telehealth slot"
+  },
+  {
+   "from": "dec.slotfree",
+   "to": "db.neon",
+   "label": "yes: creates request"
+  },
+  {
+   "from": "dec.slotfree",
+   "to": "ui.care",
+   "label": "no: slot taken"
+  },
+  {
    "from": "api.storage",
    "to": "db.r2",
    "label": "signed URLs"
@@ -619,6 +666,51 @@
    "label": "records"
   },
   {
+   "from": "api.adminsvc",
+   "to": "dec.provelig",
+   "label": "assigns provider"
+  },
+  {
+   "from": "dec.provelig",
+   "to": "db.neon",
+   "label": "yes: schedules"
+  },
+  {
+   "from": "dec.provelig",
+   "to": "ui.admin",
+   "label": "no: blocked"
+  },
+  {
+   "from": "api.adminsvc",
+   "to": "db.neon",
+   "label": "reads/updates requests"
+  },
+  {
+   "from": "api.adminsvc",
+   "to": "db.r2",
+   "label": "reads files"
+  },
+  {
+   "from": "api.adminsvc",
+   "to": "svc.mail",
+   "label": "notifies family"
+  },
+  {
+   "from": "api.adminsvc",
+   "to": "svc.audit",
+   "label": "records"
+  },
+  {
+   "from": "api.adminprov",
+   "to": "db.neon",
+   "label": "reads/writes providers"
+  },
+  {
+   "from": "api.adminprov",
+   "to": "svc.audit",
+   "label": "records"
+  },
+  {
    "from": "api.adminacct",
    "to": "svc.audit",
    "label": "records"
@@ -691,6 +783,16 @@
   {
    "from": "dec.staffsess",
    "to": "api.adminact",
+   "label": "yes"
+  },
+  {
+   "from": "dec.staffsess",
+   "to": "api.adminsvc",
+   "label": "yes"
+  },
+  {
+   "from": "dec.staffsess",
+   "to": "api.adminprov",
    "label": "yes"
   },
   {
@@ -795,6 +897,7 @@
     "api.app",
     "dec.session",
     "api.services",
+    "dec.slotfree",
     "db.neon"
    ]
   },
